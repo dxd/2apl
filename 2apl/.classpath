@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="license"/>
+	<classpathentry kind="lib" path="lib/apleis/eis-0.2-lib.jar"/>
+	<classpathentry kind="lib" path="lib/jade/commons-codec/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/jade/jade.jar"/>
+	<classpathentry kind="lib" path="lib/javacc/javacc.jar"/>
+	<classpathentry kind="lib" path="lib/jiprolog/JIProlog.jar"/>
+	<classpathentry kind="lib" path="lib/jiprolog/jipxsets.jar"/>
+	<classpathentry kind="lib" path="lib/jiprolog/jipxsystem.jar"/>
+	<classpathentry kind="lib" path="lib/junit/junit-4.7.jar"/>
+	<classpathentry kind="lib" path="resources/cartago/examples.jar"/>
+	<classpathentry kind="lib" path="resources/examples/agentcontest2007/eis-0.2-acconnector2007.jar"/>
+	<classpathentry kind="lib" path="resources/examples/agentcontest2010/eis-0.2-acconnector2010.jar"/>
+	<classpathentry kind="lib" path="resources/examples/carriage/eis-0.2-carriage.jar"/>
+	<classpathentry kind="lib" path="resources/examples/domestic/eis-domestic-robot.jar"/>
+	<classpathentry kind="lib" path="resources/examples/elevator/elevatorenv.jar"/>
+	<classpathentry kind="lib" path="resources/examples/msagent/output/msagent/msagentenvironment.jar"/>
+	<classpathentry kind="lib" path="resources/examples/Virtual Recipe Assistant/output/virtual_recipe_assistant/environments/msagentenvironment.jar"/>
+	<classpathentry kind="lib" path="resources/examples/Virtual Recipe Assistant/output/virtual_recipe_assistant/environments/virtualrecipeassistant.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
