@@ -19,6 +19,11 @@
 	<classpathentry kind="lib" path="resources/examples/msagent/output/msagent/msagentenvironment.jar"/>
 	<classpathentry kind="lib" path="resources/examples/Virtual Recipe Assistant/output/virtual_recipe_assistant/environments/msagentenvironment.jar"/>
 	<classpathentry kind="lib" path="resources/examples/Virtual Recipe Assistant/output/virtual_recipe_assistant/environments/virtualrecipeassistant.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/lime/jars/comm.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/lime/jars/lights.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/lime/jars/lime.jar" sourcepath="/Users/dxd/lime/src/lime"/>
+	<classpathentry kind="lib" path="/Users/dxd/lime/jars/mucode.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/TinyLime/jars/simpleExamples.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
