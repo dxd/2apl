@@ -704,6 +704,7 @@ public class Env extends Environment implements ObsVectListener
 
 		// set the agent position
 		agent._position = position;
+
 		return true;
 	}
 	

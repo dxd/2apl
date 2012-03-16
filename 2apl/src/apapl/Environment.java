@@ -11,6 +11,9 @@ import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lime.LimeException;
+import lime.LimeServer;
+
 import apapl.data.APLFunction;
 import apapl.data.Term;
 import eis.AgentListener;
@@ -54,7 +57,9 @@ import eis.iilang.Percept;
  */
 public class Environment implements EnvironmentInterfaceStandard {
 
-    /**
+    private static final int NUMLOCALPARAMETERS = 1;
+
+	/**
      * This method is meant to be overriden by sub-classes. It is invoked when
      * an agent enters the environment. Note that this method is also invoked each
      * time an agent is re-compiled.
@@ -211,7 +216,25 @@ public class Environment implements EnvironmentInterfaceStandard {
         entities = new LinkedList<String>();
         freeEntities = new LinkedList<String>();
         agentsToEntities = new ConcurrentHashMap<String, HashSet<String>>();
-    }
+        
+        // Pass Lime arguments (if any) through the Launcher and launch the
+	    // LimeServer. In this case, NUMLOCALPARAMETERS is the index of the 
+	    // first Lime parameter (as opposed to the index of the application
+	    // parameter)
+	    new lime.util.Launcher().launch(new String[]{},NUMLOCALPARAMETERS);
+
+			
+	    // load a SimpleLime, passing the first command line argument as the
+	    // only paramter
+	    try{
+	      LimeServer.getServer().loadAgent("ts.InteractiveAgent",
+	                                       new String[]{});
+	    } catch (LimeException le) { 
+	      System.out.println("Trouble Loading the agent");
+	      le.printStackTrace(); 
+	    }
+	  }
+    
 
     /*
      * Listener functionality. Attaching, detaching, notifying listeners.

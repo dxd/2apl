@@ -20,10 +20,13 @@ package ts;
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
+import lights.adapters.Tuple;
+import lights.interfaces.ITuple;
 import lime.util.console.*;
 import lime.*;
 import devutil.awt.*;
 import java.awt.*;
+import apapl.*;
 
 /**
  * An interactive agent used for testing the tuple spaces.  A user interface
@@ -35,6 +38,7 @@ public class InteractiveAgent extends StationaryAgent
   implements IConsoleProvider {
   LimeTupleSpace lts = null;
   LimeConsole c;
+
 	
   public InteractiveAgent() throws LimeException {
     super("InteractiveAgent");
@@ -48,7 +52,13 @@ public class InteractiveAgent extends StationaryAgent
       lts = new LimeTupleSpace(); 
     } catch (LimeException le) { le.printStackTrace(); }
     c = new LimeConsole(getMgr().getID(), lts, this);
-    new MsgDialog(new Frame(), "Error!", "This agent is stationary, it cannot migrate.");
+    ITuple myTuple = new Tuple().addActual("hello world");
+    try {
+		lts.out(myTuple);
+	} catch (TupleSpaceEngineException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     while(true) {
       String s = c.performQueuedOp();
       if (s != null)

@@ -37,27 +37,21 @@ public class SimpleTuple {
 
   }
 	
-  public static void main (String[] args) {
+  public static void run () {
 		
-	    // must be at least one argument 
-	    if (args.length == 0) {
-	      System.out.println("Usage: java SimpleLime one_word_message [lime args]\n");
-	      System.exit(1);
-	    }
+
 
 	    // Pass Lime arguments (if any) through the Launcher and launch the
 	    // LimeServer. In this case, NUMLOCALPARAMETERS is the index of the 
 	    // first Lime parameter (as opposed to the index of the application
 	    // parameter)
-	    new lime.util.Launcher().launch(args,NUMLOCALPARAMETERS);
+	    new lime.util.Launcher().launch(new String[]{},NUMLOCALPARAMETERS);
 
 			
 	    // load a SimpleLime, passing the first command line argument as the
 	    // only paramter
 	    try{
-	      int i = LimeServer.getServer().getLoadPort();
-	      System.out.println(i);
-	      LimeServer.getServer().loadAgent("ts.InteractiveMonitorAgent",
+	      LimeServer.getServer().loadAgent("ts.InteractiveAgent",
 	                                       new String[]{});
 	    } catch (LimeException le) { 
 	      System.out.println("Trouble Loading the agent");
