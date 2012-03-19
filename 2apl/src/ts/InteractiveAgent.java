@@ -38,6 +38,9 @@ public class InteractiveAgent extends StationaryAgent
   implements IConsoleProvider {
   LimeTupleSpace lts = null;
   LimeConsole c;
+  
+  private Queue  opQueue;
+  private Lime2APLSet lime2APLSet;
 
 	
   public InteractiveAgent() throws LimeException {
@@ -46,12 +49,20 @@ public class InteractiveAgent extends StationaryAgent
 	
   public void setConsole(LimeConsole c) { this.c = c; }
   public LimeConsole getConsole() { return c; }
+  
+  void enqueueOp(Runnable op) {
+	    opQueue.add(op);
+	  }
 	
   public void run() { 
     try { 
       lts = new LimeTupleSpace(); 
     } catch (LimeException le) { le.printStackTrace(); }
     c = new LimeConsole(getMgr().getID(), lts, this);
+    opQueue = new Queue();
+    lime2APLSet = new Lime2APLSet("test", this,lts);
+    lime2APLSet.addPuzzlePieceSetListener(this);
+    
     ITuple myTuple = new Tuple().addActual("hello world");
     try {
 		lts.out(myTuple);
@@ -63,6 +74,13 @@ public class InteractiveAgent extends StationaryAgent
       String s = c.performQueuedOp();
       if (s != null)
         new MsgDialog(new Frame(), "Error!", "This agent is stationary, it cannot migrate.");
+      /*
+      Runnable op = (Runnable) opQueue.getNext();
+      if(op == null) break;
+
+      try { op.run(); }
+      catch(Exception ex) { ex.printStackTrace(System.err); }*/
+    }
     }
   }
-}
+

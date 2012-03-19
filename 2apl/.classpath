@@ -24,6 +24,10 @@
 	<classpathentry kind="lib" path="/Users/dxd/lime/jars/lime.jar" sourcepath="/Users/dxd/lime/src/lime"/>
 	<classpathentry kind="lib" path="/Users/dxd/lime/jars/mucode.jar"/>
 	<classpathentry kind="lib" path="/Users/dxd/TinyLime/jars/simpleExamples.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib/jini-core.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib/sun-util.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib/jini-ext.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib-ext/jsk-policy.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

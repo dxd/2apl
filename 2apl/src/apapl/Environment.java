@@ -11,8 +11,6 @@ import java.util.Vector;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import lime.LimeException;
-import lime.LimeServer;
 
 import apapl.data.APLFunction;
 import apapl.data.Term;
@@ -217,22 +215,7 @@ public class Environment implements EnvironmentInterfaceStandard {
         freeEntities = new LinkedList<String>();
         agentsToEntities = new ConcurrentHashMap<String, HashSet<String>>();
         
-        // Pass Lime arguments (if any) through the Launcher and launch the
-	    // LimeServer. In this case, NUMLOCALPARAMETERS is the index of the 
-	    // first Lime parameter (as opposed to the index of the application
-	    // parameter)
-	    new lime.util.Launcher().launch(new String[]{},NUMLOCALPARAMETERS);
-
-			
-	    // load a SimpleLime, passing the first command line argument as the
-	    // only paramter
-	    try{
-	      LimeServer.getServer().loadAgent("ts.InteractiveAgent",
-	                                       new String[]{});
-	    } catch (LimeException le) { 
-	      System.out.println("Trouble Loading the agent");
-	      le.printStackTrace(); 
-	    }
+        
 	  }
     
 
