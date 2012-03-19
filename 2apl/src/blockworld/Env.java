@@ -15,19 +15,19 @@ import apapl.data.*;
 
 // Standard java imports
 import java.awt.Point;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 import java.util.LinkedList;
 import javax.swing.SwingUtilities;
 
+import net.jini.core.entry.UnusableEntryException;
+import net.jini.core.transaction.TransactionException;
+
 import eis.exceptions.EntityException;
 import eis.exceptions.ManagementException;
 import eis.exceptions.NoEnvironmentException;
-import eis.exceptions.RelationException;
 import eis.iilang.EnvironmentCommand;
 import eis.iilang.Function;
 import eis.iilang.Numeral;
@@ -42,31 +42,18 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-
-import lime.LimeException;
-import lime.LimeServer;
 
 import blockworld.lib.ObsVectListener;
 import blockworld.lib.Signal;
 import blockworld.lib.ObsVect;
 
+import tuplespace.*;
 
-import net.jini.core.discovery.LookupLocator;
-import net.jini.core.entry.Entry;
-import net.jini.core.lookup.ServiceItem;
-import net.jini.core.lookup.ServiceMatches;
-import net.jini.core.lookup.ServiceRegistrar;
-import net.jini.core.lookup.ServiceTemplate;
-import net.jini.discovery.LookupDiscovery;
-import net.jini.lease.LeaseRenewalManager;
-import net.jini.lookup.ServiceDiscoveryManager;
-import net.jini.space.*;
-import com.sun.jini.*;
+
 
 public class Env extends Environment implements ObsVectListener
 {
-	private static final int NUMLOCALPARAMETERS = 1;
+
 
 	// To hold our reference to the window
 	final protected Window 					m_window;
@@ -94,7 +81,7 @@ public class Env extends Environment implements ObsVectListener
 	
 	/* ------------------------------------------*/
 
-
+    protected Service						service;
 	/* ---- SIGNALS -------------------------------*/
 	// / emitted on collection of a bomb in the bomb trap
 	public transient Signal signalBombTrapped = new Signal( "env bomb trapped" );
@@ -118,53 +105,24 @@ public class Env extends Environment implements ObsVectListener
 		super();
 		// Create the window
 		m_window = new Window( this );
-		
-		
-		System.setSecurityManager(new RMISecurityManager());
-		
-		
-		LookupLocator ll = null;
+		service = new Service();
 		try {
-			ll = new LookupLocator("jini://localhost:4160");
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ServiceRegistrar sr = null;
-		try {
-			sr = ll.getRegistrar();
-		} catch (IOException e) {
-			
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		System.out.println("Service Registrar: "+sr.getServiceID());
-
-
-		ServiceTemplate template = new ServiceTemplate(null, new Class[] { JavaSpace.class }, null);
-
-		ServiceMatches sms = null;
-		try {
-			sms = sr.lookup(template, 10);
+			service.initialize();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (UnusableEntryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		if(0 < sms.items.length) {
-		    JavaSpace space = (JavaSpace) sms.items[0].service;
-		    System.out.println("Java Space found.");
-		    // do something with the space
-		} else {
-		    System.out.println("No Java Space found.");
-		}
+		
+	
 	}
 
 	/* Called from 2APL */
