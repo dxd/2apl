@@ -436,7 +436,7 @@ public class Env extends Environment implements ObsVectListener
 	}
 	
 	// Sends a bom in the senserange of the agent
-	public synchronized Term senseBombs(String agent) throws ExternalActionFailedException
+	public synchronized Term senseBombs(String agent) throws ExternalActionFailedException, RemoteException, TransactionException
 	{
 		// Get the agent his position
 		Point position = getAgent(agent).getPosition();
@@ -449,8 +449,11 @@ public class Env extends Environment implements ObsVectListener
 		while( i.hasNext() ) 
 		{
 			TypeObject b = (TypeObject) i.next();
-			if( position.distance( b.getPosition() ) <= _senserange )
+			if( position.distance( b.getPosition() ) <= _senserange ) {
 				visible.add( b );
+			service.addBomb(b.getPosition());
+			}
+				
 		}
 		
 		return convertCollectionToTerm(visible);
@@ -730,7 +733,21 @@ public class Env extends Environment implements ObsVectListener
 
 		// set the agent position
 		agent._position = position;
-
+		try {
+			service.writePosition(agent.getName(), position);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnusableEntryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 	
@@ -818,7 +835,8 @@ public class Env extends Environment implements ObsVectListener
     			TypeObject bomb = (TypeObject) i.next();
     			if (position.equals(bomb.getPosition()))
     			{
-    				i.remove();				
+    				i.remove();	
+    				service.removeBomb(position);
     				return bomb;
     			}
     		}

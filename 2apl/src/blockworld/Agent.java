@@ -10,8 +10,6 @@ package blockworld;
 
 import java.awt.Point;
 
-import ts.SimpleTuple;
-
 import blockworld.lib.Signal;
 
 // / Agent representation in Env. This doubles as a plugin instance.
