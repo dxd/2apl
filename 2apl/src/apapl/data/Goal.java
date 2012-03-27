@@ -6,9 +6,12 @@ import apapl.Prolog;
 import apapl.Parser;
 import apapl.program.Beliefbase;
 import apapl.program.Base;
+
 import java.util.LinkedList;
 import java.util.ArrayList;
 import apapl.SubstList;
+
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Collections;
@@ -20,6 +23,7 @@ import java.util.Iterator;
 public class Goal implements Iterable<Literal>
 {
 	private LinkedList<Literal> goal;
+	private Date				deadline;
 	
 	/**
 	 * Constructs a new empty goal.
@@ -37,6 +41,7 @@ public class Goal implements Iterable<Literal>
 	public Goal(LinkedList<Literal> goal)
 	{
 		this.goal = goal;
+		this.deadline = null;
 	}
 	
 	/**
@@ -47,6 +52,17 @@ public class Goal implements Iterable<Literal>
 	public void addLiteral(Literal l)
 	{
 		goal.add(l);
+	}
+	
+	/**
+	 * Adds a Literal to this goal. Used for construction only.
+	 * 
+	 * @param l the literal to add
+	 */
+	public void addDeadldine(String time)
+	{
+		Long t = Long.valueOf(time);
+		deadline = new Date(System.currentTimeMillis() + t);
 	}
 	
 	/**

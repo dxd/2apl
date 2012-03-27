@@ -278,8 +278,8 @@ void Goalbase(Goalbase goals, APLModule m) :
 Goal Goal() :
 {Goal g = new Goal(); Literal l;}
 {
-	l = LiteralBody(true) {g.addLiteral(l);} 
-	(<AND> l = LiteralBody(true) {g.addLiteral(l);})* {return g;}
+	l = LiteralBody(true) {g.addLiteral(l);g.addDeadline(18000);} 
+	{return g;}
 }
 
 Query GoalQuery() :
@@ -797,6 +797,14 @@ Literal Literal() :
 	l = LiteralBody(sign) {return l;}
 }
 
+Literal LiteralDuration() :
+{Literal l; boolean sign = true; String time=null;}
+{
+	
+	l = LiteralBody(sign) {return l;}
+	| <COLON> time = AnyName() {return time;}
+}
+
 Term FunctionIdent() :
 {Term a;}
 {
@@ -817,6 +825,14 @@ Literal LiteralBody(boolean sign) :
 	}
 }
 
+Literal LiteralBodyDuration(boolean sign) :
+{Term a; String time;}
+{
+	a = FunctionIdent()
+	{
+		return new LiteralDuration(a,sign,time);
+	}
+}
 
 ArrayList<Literal> Literals() :
 {
