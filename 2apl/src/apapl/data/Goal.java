@@ -59,7 +59,7 @@ public class Goal implements Iterable<Literal>
 	 * 
 	 * @param l the literal to add
 	 */
-	public void addDeadldine(String time)
+	public void addDeadline(String time)
 	{
 		Long t = Long.valueOf(time);
 		deadline = new Date(System.currentTimeMillis() + t);
@@ -189,8 +189,14 @@ public class Goal implements Iterable<Literal>
 	public String toString(boolean inplan)
 	{
 		String r = "";
-		for (Literal l : goal) r = r + l.toString(inplan) + " and ";
-		if (r.length()>=5) r = r.substring(0,r.length()-5);	
+		for (Literal l : goal) r = r + l.toString(inplan);
+		if (deadline != null) {
+			r = r + " : " + deadline.toGMTString();
+		}
+		else {
+			r = r + " : Infinite";
+		}
+		//if (r.length()>=5) r = r.substring(0,r.length()-5);	
 		return r;
 	}
 	
@@ -205,7 +211,15 @@ public class Goal implements Iterable<Literal>
 		
 		String r = "";
 		String s = "\\cf1  and \\cf0 ";
-		for (Literal l : goal) r = r + l.toRTF(inplan) + s;
+		for (Literal l : goal) {
+			r = r + l.toRTF(inplan) + s;
+			if (deadline != null) {
+				r = r + deadline.toGMTString();
+			}
+			else {
+				r = r + "Infinite";
+			}
+		}
 			
 		if (r.length()>=s.length()) r = r.substring(0,r.length()-s.length());	
 		
