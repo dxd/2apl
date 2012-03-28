@@ -15,6 +15,7 @@ public class PGrule extends Rule
 	private Query head;
 	private Query guard;
 	private PlanSeq body;
+	private long	duration;
 	
 	/**
 	 * Constructs a PG-rule.
@@ -28,6 +29,22 @@ public class PGrule extends Rule
 		this.head = head;
 		this.guard = guard;
 		this.body = body;
+		this.duration = 0L;
+	}
+	
+	/**
+	 * Constructs a PG-rule.
+	 * 
+	 * @param head the head
+	 * @param guard the guard
+	 * @param body the body
+	 */
+	public PGrule(Query head, Query guard, PlanSeq body, String duration)
+	{
+		this.head = head;
+		this.guard = guard;
+		this.body = body;
+		this.duration = Long.parseLong(duration);
 	}
 	
 	/**
@@ -60,6 +77,11 @@ public class PGrule extends Rule
 		return body;
 	}
 	
+	public long getDuration()
+	{
+		return duration;
+	}
+	
 	/**
 	 * Converts this object to a string.
 	 * 
@@ -67,7 +89,7 @@ public class PGrule extends Rule
 	 */
 	public String toString()
 	{
-		return ((head instanceof True)?"":head+" ") + "<- " + guard + " | " + body;
+		return ((head instanceof True)?"":head+" ") + "<- " + guard + " | " + body + " : " + duration;
 	}
 	
 	/**
@@ -77,7 +99,7 @@ public class PGrule extends Rule
 	 */
 	public String pp()
 	{
-		return ((head instanceof True)?"":head+" ")+" <- "+guard+(body.oneliner()?" | "+body:" |\n\t"+body.pp(1));
+		return ((head instanceof True)?"":head+" ")+" <- "+guard+(body.oneliner()?" | "+body:" |\n\t"+body.pp(1)) + " : " + duration;
 	}
 	
 	/**
@@ -120,6 +142,7 @@ public class PGrule extends Rule
 				?	body.toRTF()
 				:	"\\par\n\\tab"+body.toRTF(1)
 				)
+		+ " : " + duration
 		;
 	}
 	

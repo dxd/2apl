@@ -710,10 +710,15 @@ void PGrulebase(PGrulebase pgrules) :
 }
 
 PGrule PGrule() :
-{Query head; Query guard; PlanSeq body;}
+{Query head; Query guard; PlanSeq body; String time;}
 {
+    LOOKAHEAD(head = Query() <LEFTARROW> guard = Query() <VERT> body = PlanSeq() <COLON> time = AnyName())
+	head = Query() <LEFTARROW> guard = Query() <VERT> body = PlanSeq() <COLON> time = AnyName()
+	{return new PGrule(head,guard,body,time);}
+|
 	head = Query() <LEFTARROW> guard = Query() <VERT> body = PlanSeq()
 	{return new PGrule(head,guard,body);}
+
 |	<LEFTARROW> guard = Query() <VERT> body = PlanSeq()
 	{return new PGrule(new True(),guard,body);}
 }
