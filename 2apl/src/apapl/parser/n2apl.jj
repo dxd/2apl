@@ -99,6 +99,7 @@ TOKEN:
 |	<PRRULEHEAD:	("PR-rules:")> : DEFAULT
 |	<PCRULEHEAD:	("PC-rules:")> : DEFAULT
 |	<PLANHEAD:		("Plans:")> : DEFAULT
+|	<SANCTIONHEAD:	("Sanctions:")> : DEFAULT
 }
 
 // Logic operators
@@ -204,6 +205,7 @@ void Base(APLModule m, LinkedList<File> files) :
 |	<GPRULEHEAD> PGrulebase(m.getPGrulebase())
 |	<PRRULEHEAD> PRrulebase(m.getPRrulebase())
 |	<PCRULEHEAD> PCrulebase(m.getPCrulebase())
+|	<SANCTIONHEAD> Sanctionbase(m.getSanctionbase())
 }
 
 String AnyName() :
@@ -298,6 +300,19 @@ void Planbase(Planbase plans, APLModule m) :
 {
 	p = PlanSeq() {plans.addPlan(p);} 
 	(<COMMA> p = PlanSeq() {plans.addPlan(p);})*
+}
+
+void Sanctionbase(Sanctionbase sanctions) :
+{
+	Literal l;
+	Sanction s = new Sanction();
+	
+}
+{
+    
+	l = Literal() {s.addLiteral(l); } 
+	(<COMMA> l = Literal() {s.addLiteral(l);})*
+	{sanctions.add(s);}
 }
 
 PlanSeq PlanSeq() :

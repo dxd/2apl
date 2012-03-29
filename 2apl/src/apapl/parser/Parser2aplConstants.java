@@ -35,107 +35,109 @@ public interface Parser2aplConstants {
   /** RegularExpression Id. */
   int PLANHEAD = 25;
   /** RegularExpression Id. */
-  int AND = 26;
+  int SANCTIONHEAD = 26;
   /** RegularExpression Id. */
-  int OR = 27;
+  int AND = 27;
   /** RegularExpression Id. */
-  int NOT = 28;
+  int OR = 28;
   /** RegularExpression Id. */
-  int TRUE = 29;
+  int NOT = 29;
   /** RegularExpression Id. */
-  int IF = 30;
+  int TRUE = 30;
   /** RegularExpression Id. */
-  int THEN = 31;
+  int IF = 31;
   /** RegularExpression Id. */
-  int ELSE = 32;
+  int THEN = 32;
   /** RegularExpression Id. */
-  int WHILE = 33;
+  int ELSE = 33;
   /** RegularExpression Id. */
-  int DO = 34;
+  int WHILE = 34;
   /** RegularExpression Id. */
-  int SELECT = 35;
+  int DO = 35;
   /** RegularExpression Id. */
-  int MARKER_BEGIN = 36;
+  int SELECT = 36;
   /** RegularExpression Id. */
-  int MARKER_END = 37;
+  int MARKER_BEGIN = 37;
   /** RegularExpression Id. */
-  int TESTAND = 38;
+  int MARKER_END = 38;
   /** RegularExpression Id. */
-  int SKIPPLAN = 39;
+  int TESTAND = 39;
   /** RegularExpression Id. */
-  int SEND = 40;
+  int SKIPPLAN = 40;
   /** RegularExpression Id. */
-  int PRINT = 41;
+  int SEND = 41;
   /** RegularExpression Id. */
-  int CREATE = 42;
+  int PRINT = 42;
   /** RegularExpression Id. */
-  int CLONE = 43;
+  int CREATE = 43;
   /** RegularExpression Id. */
-  int RELEASE = 44;
+  int CLONE = 44;
   /** RegularExpression Id. */
-  int EXECUTE = 45;
+  int RELEASE = 45;
   /** RegularExpression Id. */
-  int UPDATEBB = 46;
+  int EXECUTE = 46;
   /** RegularExpression Id. */
-  int GOALACTION = 47;
+  int UPDATEBB = 47;
   /** RegularExpression Id. */
-  int COMMA = 48;
+  int GOALACTION = 48;
   /** RegularExpression Id. */
-  int B = 49;
+  int COMMA = 49;
   /** RegularExpression Id. */
-  int G = 50;
+  int B = 50;
   /** RegularExpression Id. */
-  int GE = 51;
+  int G = 51;
   /** RegularExpression Id. */
-  int P = 52;
+  int GE = 52;
   /** RegularExpression Id. */
-  int AT = 53;
+  int P = 53;
   /** RegularExpression Id. */
-  int SLASHJADE = 54;
+  int AT = 54;
   /** RegularExpression Id. */
-  int UNDERSCORE = 55;
+  int SLASHJADE = 55;
   /** RegularExpression Id. */
-  int LBRACE = 56;
+  int UNDERSCORE = 56;
   /** RegularExpression Id. */
-  int RBRACE = 57;
+  int LBRACE = 57;
   /** RegularExpression Id. */
-  int DOTCOMMA = 58;
+  int RBRACE = 58;
   /** RegularExpression Id. */
-  int LISTL = 59;
+  int DOTCOMMA = 59;
   /** RegularExpression Id. */
-  int LISTR = 60;
+  int LISTL = 60;
   /** RegularExpression Id. */
-  int ACCL = 61;
+  int LISTR = 61;
   /** RegularExpression Id. */
-  int ACCR = 62;
+  int ACCL = 62;
   /** RegularExpression Id. */
-  int LEFTARROW = 63;
+  int ACCR = 63;
   /** RegularExpression Id. */
-  int DOT = 64;
+  int LEFTARROW = 64;
   /** RegularExpression Id. */
-  int IMPL = 65;
+  int DOT = 65;
   /** RegularExpression Id. */
-  int RELATIONAL = 66;
+  int IMPL = 66;
   /** RegularExpression Id. */
-  int SIGN = 67;
+  int RELATIONAL = 67;
   /** RegularExpression Id. */
-  int COLON = 68;
+  int SIGN = 68;
   /** RegularExpression Id. */
-  int IDENT = 69;
+  int COLON = 69;
   /** RegularExpression Id. */
-  int VARNAME = 70;
+  int IDENT = 70;
   /** RegularExpression Id. */
-  int NUM = 71;
+  int VARNAME = 71;
   /** RegularExpression Id. */
-  int NUMNAME = 72;
+  int NUM = 72;
   /** RegularExpression Id. */
-  int NAMEDOT = 73;
+  int NUMNAME = 73;
   /** RegularExpression Id. */
-  int VERT = 74;
+  int NAMEDOT = 74;
   /** RegularExpression Id. */
-  int QUOTE = 75;
+  int VERT = 75;
   /** RegularExpression Id. */
-  int QUOTE1 = 76;
+  int QUOTE = 76;
+  /** RegularExpression Id. */
+  int QUOTE1 = 77;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -176,6 +178,7 @@ public interface Parser2aplConstants {
     "\"PR-rules:\"",
     "\"PC-rules:\"",
     "\"Plans:\"",
+    "\"Sanctions:\"",
     "\"and\"",
     "\"or\"",
     "\"not\"",

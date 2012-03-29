@@ -30,6 +30,7 @@ import apapl.program.PGrulebase;
 import apapl.program.PRrule;
 import apapl.program.PRrulebase;
 import apapl.program.Planbase;
+import apapl.program.Sanctionbase;
 
 /**
  * The implementation of a 2APL module. A 2APL module has a mental state
@@ -99,6 +100,7 @@ public class APLModule {
     private PRrulebase prrules;
     private PCrulebase pcrules;
     private Planbase plans;
+    private Sanctionbase sanctions;
 
     // Denoting whether currently performing an external action
     private boolean inEnvironment = false;
@@ -117,6 +119,7 @@ public class APLModule {
         this.pcrules = new PCrulebase();
         this.prrules = new PRrulebase();
         this.plans = new Planbase();
+        this.sanctions = new Sanctionbase();
         this.envs = new HashMap<String, EnvironmentInterfaceStandard>();
         this.delib = new Deliberation();
         this.stoppingCond = null;
@@ -171,6 +174,7 @@ public class APLModule {
         this.prrules = prrules.clone();
         this.pcrules = pcrules.clone();
         this.plans = plans.clone();
+        this.sanctions = sanctions.clone();
         this.inEnvironment = inEnvironment;
         this.setLogger(new Logger());
     }
@@ -454,6 +458,15 @@ public class APLModule {
      */
     public PCrulebase getPCrulebase() {
         return pcrules;
+    }
+    
+    /**
+     * Returns the PC-rules of the module.
+     * 
+     * @return the PC-rules base
+     */
+    public Sanctionbase getSanctionbase() {
+        return sanctions;
     }
 
     /**
