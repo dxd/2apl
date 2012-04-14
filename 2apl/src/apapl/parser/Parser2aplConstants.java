@@ -113,31 +113,33 @@ public interface Parser2aplConstants {
   /** RegularExpression Id. */
   int LEFTARROW = 64;
   /** RegularExpression Id. */
-  int DOT = 65;
+  int RIGHTARROW = 65;
   /** RegularExpression Id. */
-  int IMPL = 66;
+  int DOT = 66;
   /** RegularExpression Id. */
-  int RELATIONAL = 67;
+  int IMPL = 67;
   /** RegularExpression Id. */
-  int SIGN = 68;
+  int RELATIONAL = 68;
   /** RegularExpression Id. */
-  int COLON = 69;
+  int SIGN = 69;
   /** RegularExpression Id. */
-  int IDENT = 70;
+  int COLON = 70;
   /** RegularExpression Id. */
-  int VARNAME = 71;
+  int IDENT = 71;
   /** RegularExpression Id. */
-  int NUM = 72;
+  int VARNAME = 72;
   /** RegularExpression Id. */
-  int NUMNAME = 73;
+  int NUM = 73;
   /** RegularExpression Id. */
-  int NAMEDOT = 74;
+  int NUMNAME = 74;
   /** RegularExpression Id. */
-  int VERT = 75;
+  int NAMEDOT = 75;
   /** RegularExpression Id. */
-  int QUOTE = 76;
+  int VERT = 76;
   /** RegularExpression Id. */
-  int QUOTE1 = 77;
+  int QUOTE = 77;
+  /** RegularExpression Id. */
+  int QUOTE1 = 78;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -217,6 +219,7 @@ public interface Parser2aplConstants {
     "\"{\"",
     "\"}\"",
     "\"<-\"",
+    "\"->\"",
     "\".\"",
     "\":-\"",
     "<RELATIONAL>",

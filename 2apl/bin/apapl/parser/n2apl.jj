@@ -166,6 +166,7 @@ TOKEN :
 |	<ACCL:			("{")>
 |	<ACCR:			("}")>
 |	<LEFTARROW:		"<-">
+|   <RIGHTARROW:	"->">
 |	<DOT:			".">
 |	<IMPL:			":-">
 |	<RELATIONAL:	("<" | ">" | "=" | "=<" | ">=") >
@@ -304,15 +305,20 @@ void Planbase(Planbase plans, APLModule m) :
 
 void Sanctionbase(Sanctionbase sanctions) :
 {
-	Literal l;
-	Sanction s = new Sanction();
-	
+	Sanction s;
 }
 {
     
-	l = Literal() {s.addLiteral(l); } 
-	(<COMMA> l = Literal() {s.addLiteral(l);})*
-	{sanctions.add(s);}
+	s = Sanction() {sanctions.add(s);} 
+	(<COMMA> s = Sanction() {sanctions.add(s);})*
+}
+
+Sanction Sanction() :
+{    Literal l;
+	Sanction s = new Sanction();
+	String priority;}{    l = Literal() {s.addLiteral(l);}
+	(<RIGHTARROW> priority = AnyName() {s.addPriority(priority);})?
+	{return s;}
 }
 
 PlanSeq PlanSeq() :
@@ -838,10 +844,11 @@ Literal LiteralBody(boolean sign) :
 }
 
 Goal LiteralBodyDeadline(boolean sign) :
-{String time; Goal g = new Goal(); Literal l;}
+{String time; Goal g = new Goal(); Literal l; String priority;}
 {
 	l = LiteralBody(sign) {g.addLiteral(l);}
 	(<COLON> time = AnyName() {g.addDeadline(time);})?
+	(<RIGHTARROW> priority = AnyName() {g.addPriority(priority);})?
 	{return g;}
 }
 

@@ -24,6 +24,7 @@ public class Goal implements Iterable<Literal>
 {
 	private LinkedList<Literal> goal;
 	private Date				deadline;
+	private byte				priority;
 	
 	/**
 	 * Constructs a new empty goal.
@@ -42,6 +43,7 @@ public class Goal implements Iterable<Literal>
 	{
 		this.goal = goal;
 		this.deadline = null;
+		this.priority = 1;
 	}
 	
 	/**
@@ -63,6 +65,16 @@ public class Goal implements Iterable<Literal>
 	{
 		Long t = Long.valueOf(time);
 		deadline = new Date(System.currentTimeMillis() + t);
+	}
+	
+	/**
+	 * Adds a Literal to this goal. Used for construction only.
+	 * 
+	 * @param l the literal to add
+	 */
+	public void addPriority(String p)
+	{
+		priority = Byte.parseByte(p);
 	}
 	
 	/**
