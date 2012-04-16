@@ -37,109 +37,113 @@ public interface Parser2aplConstants {
   /** RegularExpression Id. */
   int SANCTIONHEAD = 26;
   /** RegularExpression Id. */
-  int AND = 27;
+  int OHEAD = 27;
   /** RegularExpression Id. */
-  int OR = 28;
+  int PHEAD = 28;
   /** RegularExpression Id. */
-  int NOT = 29;
+  int AND = 29;
   /** RegularExpression Id. */
-  int TRUE = 30;
+  int OR = 30;
   /** RegularExpression Id. */
-  int IF = 31;
+  int NOT = 31;
   /** RegularExpression Id. */
-  int THEN = 32;
+  int TRUE = 32;
   /** RegularExpression Id. */
-  int ELSE = 33;
+  int IF = 33;
   /** RegularExpression Id. */
-  int WHILE = 34;
+  int THEN = 34;
   /** RegularExpression Id. */
-  int DO = 35;
+  int ELSE = 35;
   /** RegularExpression Id. */
-  int SELECT = 36;
+  int WHILE = 36;
   /** RegularExpression Id. */
-  int MARKER_BEGIN = 37;
+  int DO = 37;
   /** RegularExpression Id. */
-  int MARKER_END = 38;
+  int SELECT = 38;
   /** RegularExpression Id. */
-  int TESTAND = 39;
+  int MARKER_BEGIN = 39;
   /** RegularExpression Id. */
-  int SKIPPLAN = 40;
+  int MARKER_END = 40;
   /** RegularExpression Id. */
-  int SEND = 41;
+  int TESTAND = 41;
   /** RegularExpression Id. */
-  int PRINT = 42;
+  int SKIPPLAN = 42;
   /** RegularExpression Id. */
-  int CREATE = 43;
+  int SEND = 43;
   /** RegularExpression Id. */
-  int CLONE = 44;
+  int PRINT = 44;
   /** RegularExpression Id. */
-  int RELEASE = 45;
+  int CREATE = 45;
   /** RegularExpression Id. */
-  int EXECUTE = 46;
+  int CLONE = 46;
   /** RegularExpression Id. */
-  int UPDATEBB = 47;
+  int RELEASE = 47;
   /** RegularExpression Id. */
-  int GOALACTION = 48;
+  int EXECUTE = 48;
   /** RegularExpression Id. */
-  int COMMA = 49;
+  int UPDATEBB = 49;
   /** RegularExpression Id. */
-  int B = 50;
+  int GOALACTION = 50;
   /** RegularExpression Id. */
-  int G = 51;
+  int COMMA = 51;
   /** RegularExpression Id. */
-  int GE = 52;
+  int B = 52;
   /** RegularExpression Id. */
-  int P = 53;
+  int G = 53;
   /** RegularExpression Id. */
-  int AT = 54;
+  int GE = 54;
   /** RegularExpression Id. */
-  int SLASHJADE = 55;
+  int P = 55;
   /** RegularExpression Id. */
-  int UNDERSCORE = 56;
+  int AT = 56;
   /** RegularExpression Id. */
-  int LBRACE = 57;
+  int SLASHJADE = 57;
   /** RegularExpression Id. */
-  int RBRACE = 58;
+  int UNDERSCORE = 58;
   /** RegularExpression Id. */
-  int DOTCOMMA = 59;
+  int LBRACE = 59;
   /** RegularExpression Id. */
-  int LISTL = 60;
+  int RBRACE = 60;
   /** RegularExpression Id. */
-  int LISTR = 61;
+  int DOTCOMMA = 61;
   /** RegularExpression Id. */
-  int ACCL = 62;
+  int LISTL = 62;
   /** RegularExpression Id. */
-  int ACCR = 63;
+  int LISTR = 63;
   /** RegularExpression Id. */
-  int LEFTARROW = 64;
+  int ACCL = 64;
   /** RegularExpression Id. */
-  int RIGHTARROW = 65;
+  int ACCR = 65;
   /** RegularExpression Id. */
-  int DOT = 66;
+  int LEFTARROW = 66;
   /** RegularExpression Id. */
-  int IMPL = 67;
+  int RIGHTARROW = 67;
   /** RegularExpression Id. */
-  int RELATIONAL = 68;
+  int DOT = 68;
   /** RegularExpression Id. */
-  int SIGN = 69;
+  int IMPL = 69;
   /** RegularExpression Id. */
-  int COLON = 70;
+  int RELATIONAL = 70;
   /** RegularExpression Id. */
-  int IDENT = 71;
+  int SIGN = 71;
   /** RegularExpression Id. */
-  int VARNAME = 72;
+  int COLON = 72;
   /** RegularExpression Id. */
-  int NUM = 73;
+  int IDENT = 73;
   /** RegularExpression Id. */
-  int NUMNAME = 74;
+  int VARNAME = 74;
   /** RegularExpression Id. */
-  int NAMEDOT = 75;
+  int NUM = 75;
   /** RegularExpression Id. */
-  int VERT = 76;
+  int NUMNAME = 76;
   /** RegularExpression Id. */
-  int QUOTE = 77;
+  int NAMEDOT = 77;
   /** RegularExpression Id. */
-  int QUOTE1 = 78;
+  int VERT = 78;
+  /** RegularExpression Id. */
+  int QUOTE = 79;
+  /** RegularExpression Id. */
+  int QUOTE1 = 80;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -181,6 +185,8 @@ public interface Parser2aplConstants {
     "\"PC-rules:\"",
     "\"Plans:\"",
     "\"Sanctions:\"",
+    "\"Obligations:\"",
+    "\"Prohibitions:\"",
     "\"and\"",
     "\"or\"",
     "\"not\"",
