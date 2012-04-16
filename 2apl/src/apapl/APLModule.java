@@ -10,6 +10,7 @@ import eis.EnvironmentInterfaceStandard;
 
 import apapl.data.APLFunction;
 import apapl.data.APLIdent;
+import apapl.data.Goal;
 import apapl.data.Term;
 import apapl.data.Test;
 import apapl.deliberation.Deliberation;
@@ -31,6 +32,7 @@ import apapl.program.PRrule;
 import apapl.program.PRrulebase;
 import apapl.program.Pbase;
 import apapl.program.Planbase;
+import apapl.program.Rule;
 import apapl.program.Sanctionbase;
 
 /**
@@ -735,6 +737,15 @@ public class APLModule {
 		
 		return logger;
 		
+	}
+
+	public Goalbase getObligations() {
+		Goalbase copy = new Goalbase();
+		for (Goal goal : goals) {
+			if (goal.isObligation())
+			copy.assertGoal(goal);
+		}
+		return copy;
 	}
 	
 }

@@ -342,4 +342,8 @@ public class Goal implements Iterable<Literal>
 	{
 		for (Literal l : goal) l.unvar();
 	}
+
+	public boolean isObligation() {
+		return this.sanction != null;
+	}
 }

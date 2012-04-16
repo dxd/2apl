@@ -51,7 +51,7 @@ public class ModuleViewer extends Viewer
 		goal  = new RTFFrame("Goalbase",rtf);
 		plans = new RTFFrame("Planbase",rtf);
 		
-		sanctions = new RTFFrame("Sanctios",rtf);
+		sanctions = new RTFFrame("Sanctions",rtf);
 		obligations  = new RTFFrame("Obligations",rtf);
 		prohibitions = new RTFFrame("Prohibitions",rtf);
 		
@@ -185,7 +185,7 @@ public class ModuleViewer extends Viewer
 					goal.update(module.getGoalbase().toRTF());
 					plans.update(module.getPlanbase().toRTF());
 					sanctions.update(module.getSanctionbase().toRTF());
-					obligations.update(module.getGoalbase().toRTF());
+					obligations.update(module.getObligations().toRTF());
 					prohibitions.update(module.getPbase().toRTF());
 				} else
 				{
@@ -193,7 +193,7 @@ public class ModuleViewer extends Viewer
 					goal.update(module.getGoalbase().toString());
 					plans.update(module.getPlanbase().toString());
 					sanctions.update(module.getSanctionbase().toString());
-					obligations.update(module.getGoalbase().toString());
+					obligations.update(module.getObligations().toString());
 					prohibitions.update(module.getPbase().toString());
 				}
 			}
