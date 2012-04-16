@@ -1,22 +1,5 @@
 package apapl.data;
 
-import apapl.SolutionIterator;
-import apapl.UnboundedVarException;
-import apapl.Prolog;
-import apapl.Parser;
-import apapl.program.Beliefbase;
-import apapl.program.Base;
-
-import java.util.LinkedList;
-import java.util.ArrayList;
-import apapl.SubstList;
-
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Collections;
-import java.util.Iterator;
-
 public class Sanction {
 	
 	private Literal sanction;

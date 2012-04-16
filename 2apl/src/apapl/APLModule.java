@@ -29,6 +29,7 @@ import apapl.program.PGrule;
 import apapl.program.PGrulebase;
 import apapl.program.PRrule;
 import apapl.program.PRrulebase;
+import apapl.program.Pbase;
 import apapl.program.Planbase;
 import apapl.program.Sanctionbase;
 
@@ -101,6 +102,7 @@ public class APLModule {
     private PCrulebase pcrules;
     private Planbase plans;
     private Sanctionbase sanctions;
+    private Pbase prohibitions;
 
     // Denoting whether currently performing an external action
     private boolean inEnvironment = false;
@@ -120,6 +122,7 @@ public class APLModule {
         this.prrules = new PRrulebase();
         this.plans = new Planbase();
         this.sanctions = new Sanctionbase();
+        this.prohibitions = new Pbase();
         this.envs = new HashMap<String, EnvironmentInterfaceStandard>();
         this.delib = new Deliberation();
         this.stoppingCond = null;
@@ -175,6 +178,7 @@ public class APLModule {
         this.pcrules = pcrules.clone();
         this.plans = plans.clone();
         this.sanctions = sanctions.clone();
+        this.prohibitions = prohibitions.clone();
         this.inEnvironment = inEnvironment;
         this.setLogger(new Logger());
     }
@@ -460,14 +464,16 @@ public class APLModule {
         return pcrules;
     }
     
-    /**
-     * Returns the PC-rules of the module.
-     * 
-     * @return the PC-rules base
-     */
+
     public Sanctionbase getSanctionbase() {
         return sanctions;
     }
+    
+
+    public Pbase getPbase() {
+        return prohibitions;
+    }
+
 
     /**
      * Checks the module and generates warnings if any. Checks, for instance,

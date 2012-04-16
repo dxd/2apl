@@ -25,6 +25,7 @@ public class Goal implements Iterable<Literal>
 	private LinkedList<Literal> goal;
 	private Date				deadline;
 	private byte				priority;
+	private Sanction			sanction;
 	
 	/**
 	 * Constructs a new empty goal.
@@ -44,6 +45,7 @@ public class Goal implements Iterable<Literal>
 		this.goal = goal;
 		this.deadline = null;
 		this.priority = 1;
+		this.sanction = null;
 	}
 	
 	/**
@@ -75,6 +77,11 @@ public class Goal implements Iterable<Literal>
 	public void addPriority(String p)
 	{
 		priority = Byte.parseByte(p);
+	}
+	
+	public void linkSanction(Sanction sanction)
+	{
+		this.sanction = sanction;
 	}
 	
 	/**
