@@ -102,4 +102,9 @@ public class Sanctionbase extends Base implements Iterable<Sanction>{
 	public ArrayList<Sanction> getSanctionbase() {
 		return sb;
 	}
+
+	public boolean isEmpty() {
+		
+		return sb.isEmpty();
+	}
 }

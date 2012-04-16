@@ -338,6 +338,9 @@ public class Parser
 		||		s.startsWith("belief-update")
 		||		s.startsWith("belief update")
 		||		s.startsWith("include")
+		||		s.startsWith("sanctions")
+		||		s.startsWith("obligations")
+		||		s.startsWith("prohibitions")
 		||		s.startsWith("end");
 	}
 }

@@ -22,10 +22,11 @@ public class ModuleViewer extends Viewer
 	
 	private static String selectedTab = null;
 	
-	private JSplitPane belief_goal, overview;
+	private JSplitPane belief_goal, overview, norms, po;
 	private JTabbedPane tabPane = this;
 	private boolean rtf = false;
 	private RTFFrame belief, goal, plans;
+	private RTFFrame sanctions, obligations, prohibitions;
 	private APLModule module;
 	
 	private final int dividerSize = 2;
@@ -50,6 +51,10 @@ public class ModuleViewer extends Viewer
 		goal  = new RTFFrame("Goalbase",rtf);
 		plans = new RTFFrame("Planbase",rtf);
 		
+		sanctions = new RTFFrame("Sanctios",rtf);
+		obligations  = new RTFFrame("Obligations",rtf);
+		prohibitions = new RTFFrame("Prohibitions",rtf);
+		
 		history = new StateHistory();
 		tracer = new StateTracer(history);
 	
@@ -58,6 +63,10 @@ public class ModuleViewer extends Viewer
 		belief_goal = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,belief,goal);
 		belief_goal.setDividerLocation(divs[0]);
 		belief_goal.setResizeWeight(divs[0]);
+		
+		po = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,prohibitions,obligations);
+		po.setDividerLocation(divs[0]);
+		po.setResizeWeight(divs[0]);
 				
 		overview = new JSplitPane(JSplitPane.VERTICAL_SPLIT,belief_goal,plans);
 		overview.setDividerSize(dividerSize);
@@ -65,8 +74,15 @@ public class ModuleViewer extends Viewer
 		overview.setResizeWeight(divs[2]);
 		useSH(gui.useSH());
 		
+		norms = new JSplitPane(JSplitPane.VERTICAL_SPLIT,po,sanctions);
+		norms.setDividerSize(dividerSize);
+		norms.setDividerLocation(divs[2]);
+		norms.setResizeWeight(divs[2]);
+		useSH(gui.useSH());
+		
 		LinkedList<String> warnings = module.check();
 		tabPane.add("Overview", overview);
+		tabPane.add("Norms", norms);
 		logState(null);
 		update();
 			
@@ -102,6 +118,9 @@ public class ModuleViewer extends Viewer
 		belief.setRTF(useSH);
 		goal.setRTF(useSH);
 		plans.setRTF(useSH);
+		sanctions.setRTF(useSH);
+		obligations.setRTF(useSH);
+		prohibitions.setRTF(useSH);
 	}
 	
 	private JComponent makeRuleViewer(Rulebase<? extends Rule> base)
@@ -165,11 +184,17 @@ public class ModuleViewer extends Viewer
 					belief.update(module.getBeliefbase().toRTF());
 					goal.update(module.getGoalbase().toRTF());
 					plans.update(module.getPlanbase().toRTF());
+					sanctions.update(module.getSanctionbase().toRTF());
+					obligations.update(module.getGoalbase().toRTF());
+					prohibitions.update(module.getPbase().toRTF());
 				} else
 				{
 					belief.update(module.getBeliefbase().toString());
 					goal.update(module.getGoalbase().toString());
 					plans.update(module.getPlanbase().toString());
+					sanctions.update(module.getSanctionbase().toString());
+					obligations.update(module.getGoalbase().toString());
+					prohibitions.update(module.getPbase().toString());
 				}
 			}
 		}
