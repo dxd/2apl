@@ -344,6 +344,19 @@ public class Goal implements Iterable<Literal>
 	}
 
 	public boolean isObligation() {
-		return this.sanction != null;
+		return sanction != null;
+	}
+
+	public Byte getPriority() {
+		if (sanction == null)
+				return priority;
+		else
+			return 1; //TODO set priorities for obligations
+		
+	}
+
+	public Date getDeadline() {
+		
+		return this.deadline;
 	}
 }

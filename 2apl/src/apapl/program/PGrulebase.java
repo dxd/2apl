@@ -5,11 +5,14 @@ import apapl.Parser;
 import apapl.plans.PlanSeq;
 import apapl.program.PGrule;
 import apapl.data.Goal;
+import apapl.data.Prohibition;
 import apapl.data.Term;
 import apapl.data.Query;
 import apapl.program.Rule;
 import apapl.data.True;
 import java.util.ArrayList;
+import java.util.Date;
+
 import apapl.SubstList;
 import javax.swing.JComponent;
 import javax.swing.JTextArea;
@@ -25,19 +28,21 @@ public class PGrulebase extends Rulebase<PGrule>
 	/**
 	 * Equal to 
 	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,false)}
+	 * @param prohibitions 
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Pbase prohibitions, BeliefUpdates bu)
 	{
-		return generatePlans(goalbase,beliefbase,planbase,false);
+		return generatePlans(goalbase,beliefbase,planbase,prohibitions,bu,false);
 	}
 	
 	/**
-	 * Equal to 
+	 * NEVER CALLED
+	 * Equal to
 	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,true)}
 	 */
 	public ArrayList<PlanSeq> generatePlan(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase)
 	{
-		return generatePlans(goalbase,beliefbase,planbase,true);
+		return generatePlans(goalbase,beliefbase,planbase,null,null,true);
 	}
 	
 	/**
@@ -50,10 +55,11 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * @param goalbase goalbase that is needed to select a rule
 	 * @param beliefbase beliefbase that is needed to select a rule
 	 * @param planbase planbase that is needed to check whether a rule may be selected
+	 * @param prohibitions 
 	 * @param onlyone if true, only one plan will be generated
 	 * @return an list containing one or more plans that can be generate with the PG rules
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, boolean onlyone)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Pbase prohibitions, BeliefUpdates bu, boolean onlyone)
 	{
 		ArrayList<PlanSeq> plans = new ArrayList<PlanSeq>();
 				
@@ -64,13 +70,16 @@ public class PGrulebase extends Rulebase<PGrule>
 		  { SubstList<Term> theta = new SubstList<Term>();
 				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase);
 				if (p!=null)
-				{ plans.add(p);
-				  planbase.addPlan(p);
+				{ 
+					if (passNorms(pgrule.clone(),pgrule,theta,beliefbase,planbase,prohibitions,bu,null))
+						break;
+				    plans.add(p);
+				    planbase.addPlan(p);
 					if (onlyone) return plans;
 				}
 			}
 			// if it is not a reactive rule, try to match the head with the goals
-			else for (Goal goal : goalbase)
+			else for (Goal goal : goalbase.sorted())
 			{ boolean ruleApplied = false;
 			  ArrayList<SubstList<Term>> substs;
 				PGrule variant = pgrule.getVariant(goal.getVariables());
@@ -82,7 +91,9 @@ public class PGrulebase extends Rulebase<PGrule>
 				for (SubstList<Term> theta : substs)
 				{ PlanSeq p = tryRule(variant,pgrule,theta,beliefbase,planbase);
 					if (p!=null)
-					{ ruleApplied = true;
+					{ if (passNorms(variant,pgrule,theta,beliefbase,planbase,prohibitions,bu, goal))
+						break;
+					  ruleApplied = true;
 					  plans.add(p);
 					  planbase.addPlan(p);
 					  if (onlyone) return plans;
@@ -96,6 +107,37 @@ public class PGrulebase extends Rulebase<PGrule>
 		return plans;
 	}
 			
+	private boolean passNorms(PGrule variant, PGrule pgrule, SubstList<Term> theta, Beliefbase beliefbase, Planbase planbase, Pbase prohibitions, BeliefUpdates bu, Goal goal) {
+		variant.applySubstitution(theta);
+		Query goalquery = variant.getHead();
+		Query beliefquery = variant.getGuard();
+		SubstList<Term> goaltheta = clone(theta);
+		
+		if (goal != null)
+		{
+			ArrayList<Prohibition> hpp = prohibitions.getHigher(goal.getPriority());
+			
+			if (hpp != null)
+			{
+				for (Prohibition p : hpp)
+				{
+					if (p.existIn(bu))
+						return false;
+				}
+			}
+			
+			Date deadline = goal.getDeadline();
+			if (deadline == null)
+				return true;
+			
+			Date date = new Date();
+			if (pgrule.getDuration() + date.getTime() > deadline.getTime())
+				return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Tries to apply a PG-rule given substitution theta.
 	 * 

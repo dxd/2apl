@@ -16,6 +16,9 @@ import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import apapl.SubstList;
+
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Collections;
 import java.util.Iterator;
@@ -38,6 +41,7 @@ public class Goalbase extends Base implements Iterable<Goal>
 	public Goalbase()
 	{		
 	}
+	
 	
 	/**
 	 * Constructs a new goal base using given list of goals
@@ -291,6 +295,16 @@ public class Goalbase extends Base implements Iterable<Goal>
 	
 	public void setLogger(Logger logger) {
 		this.logger = logger;
+	}
+
+	public ArrayList<Goal> sorted() {
+		ArrayList<Goal> copy = clone().gb;
+		Collections.sort(copy, new Comparator<Goal>(){
+	           public int compare (Goal g1, Goal g2){
+	               return g1.getPriority().compareTo(g2.getPriority());
+	           }
+	       });
+		return copy;
 	}
 	
 }
