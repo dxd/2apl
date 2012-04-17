@@ -1,5 +1,7 @@
 package apapl.data;
 
+import apapl.plans.Plan;
+import apapl.program.BeliefUpdate;
 import apapl.program.BeliefUpdates;
 import apapl.program.PGrule;
 
@@ -85,8 +87,24 @@ public class Prohibition {
 	}
 
 
-	public boolean existIn(PGrule variant, BeliefUpdates bu) {
-		// TODO Auto-generated method stub
+	public boolean existIn(PGrule pgrule, BeliefUpdates bu) {
+
+        for (BeliefUpdate b : bu.getRules())
+        {
+        	if (b.getPost().contains(this.sanction))
+        	{
+        		for (Plan p : pgrule.getBody().getPlans())
+        		{
+        			//TODO!!!!
+        			String plan = p.toString().toLowerCase();
+        			String action = b.getAct().toString().toLowerCase();
+        			if (plan.contains(action))
+        			{
+        				return true;
+        			}
+        		}
+        	}
+        }
 		return false;
 	}
 

@@ -1,4 +1,4 @@
-package apapl.program;
+ package apapl.program;
 
 import apapl.Logger;
 import apapl.SolutionIterator;
