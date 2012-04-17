@@ -113,7 +113,13 @@ public class Pbase extends Base implements Iterable<Prohibition>{
 	}
 
 	public ArrayList<Prohibition> getHigher(Byte priority) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		ArrayList<Prohibition> prohibitions = new ArrayList<Prohibition>();
+		for (Prohibition p : sb)
+		{
+			if (p.getPriority() < priority)
+				prohibitions.add(p);
+		}
+		return prohibitions;
 	}
 }

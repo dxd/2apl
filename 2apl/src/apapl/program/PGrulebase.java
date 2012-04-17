@@ -71,7 +71,7 @@ public class PGrulebase extends Rulebase<PGrule>
 				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase);
 				if (p!=null)
 				{ 
-					if (passNorms(pgrule.clone(),pgrule,theta,beliefbase,planbase,prohibitions,bu,null))
+					if (passNorms(pgrule.clone(),pgrule,theta,prohibitions,bu,null))
 						break;
 				    plans.add(p);
 				    planbase.addPlan(p);
@@ -91,7 +91,7 @@ public class PGrulebase extends Rulebase<PGrule>
 				for (SubstList<Term> theta : substs)
 				{ PlanSeq p = tryRule(variant,pgrule,theta,beliefbase,planbase);
 					if (p!=null)
-					{ if (passNorms(variant,pgrule,theta,beliefbase,planbase,prohibitions,bu, goal))
+					{ if (passNorms(variant,pgrule,theta,prohibitions,bu, goal))
 						break;
 					  ruleApplied = true;
 					  plans.add(p);
@@ -107,11 +107,8 @@ public class PGrulebase extends Rulebase<PGrule>
 		return plans;
 	}
 			
-	private boolean passNorms(PGrule variant, PGrule pgrule, SubstList<Term> theta, Beliefbase beliefbase, Planbase planbase, Pbase prohibitions, BeliefUpdates bu, Goal goal) {
+	private boolean passNorms(PGrule variant, PGrule pgrule, SubstList<Term> theta, Pbase prohibitions, BeliefUpdates bu, Goal goal) {
 		variant.applySubstitution(theta);
-		Query goalquery = variant.getHead();
-		Query beliefquery = variant.getGuard();
-		SubstList<Term> goaltheta = clone(theta);
 		
 		if (goal != null)
 		{
@@ -121,7 +118,7 @@ public class PGrulebase extends Rulebase<PGrule>
 			{
 				for (Prohibition p : hpp)
 				{
-					if (p.existIn(bu))
+					if (p.existIn(variant, bu))
 						return false;
 				}
 			}

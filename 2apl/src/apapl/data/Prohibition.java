@@ -1,6 +1,7 @@
 package apapl.data;
 
 import apapl.program.BeliefUpdates;
+import apapl.program.PGrule;
 
 public class Prohibition {
 	
@@ -84,9 +85,21 @@ public class Prohibition {
 	}
 
 
-	public boolean existIn(BeliefUpdates bu) {
+	public boolean existIn(PGrule variant, BeliefUpdates bu) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+
+	public Literal getSanction() {
+
+		return sanction;
+	}
+
+
+	public void setPriority(byte priority) {
+
+		this.priority = priority;
 	}
 	
 	

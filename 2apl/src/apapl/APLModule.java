@@ -11,6 +11,8 @@ import eis.EnvironmentInterfaceStandard;
 import apapl.data.APLFunction;
 import apapl.data.APLIdent;
 import apapl.data.Goal;
+import apapl.data.Prohibition;
+import apapl.data.Sanction;
 import apapl.data.Term;
 import apapl.data.Test;
 import apapl.deliberation.Deliberation;
@@ -746,6 +748,32 @@ public class APLModule {
 			copy.assertGoal(goal);
 		}
 		return copy;
+	}
+	
+	public void assignPriorities()
+	{
+		for (Goal g : goals)
+		{
+			if (g.isObligation())
+			{
+				for (Sanction s : sanctions)
+				{
+					if (s.getSanction().equals(g.getSanction()))
+						g.setPriority(s.getPriority());
+				}
+			}
+		}
+		
+		for (Prohibition p : prohibitions)
+		{
+
+				for (Sanction s : sanctions)
+				{
+					if (s.getSanction().equals(p.getSanction()))
+						p.setPriority(s.getPriority());
+				}
+
+		}
 	}
 	
 }

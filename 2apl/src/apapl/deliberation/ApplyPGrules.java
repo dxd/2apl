@@ -21,6 +21,7 @@ public class ApplyPGrules implements DeliberationStep
 	{
 	    ApplyPGrulesResult result;
 	
+	    module.assignPriorities(); //TODO move somewhere
 		Goalbase goalbase = module.getGoalbase();
 		Beliefbase beliefbase = module.getBeliefbase();
 		PGrulebase pgrules = module.getPGrulebase();

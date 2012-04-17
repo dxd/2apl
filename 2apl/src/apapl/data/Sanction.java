@@ -76,6 +76,16 @@ public class Sanction {
 		
 		return r;
 	}
+
+	public Literal getSanction() {
+
+		return this.sanction;
+	}
+
+	public byte getPriority() {
+		
+		return priority;
+	}
 	
 	
 

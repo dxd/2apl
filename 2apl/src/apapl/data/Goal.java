@@ -359,4 +359,14 @@ public class Goal implements Iterable<Literal>
 		
 		return this.deadline;
 	}
+
+	public Literal getSanction() {
+
+		return sanction;
+	}
+
+	public void setPriority(byte priority) {
+
+		this.priority = priority;
+	}
 }
