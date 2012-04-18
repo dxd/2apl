@@ -91,17 +91,20 @@ public class Prohibition {
 
         for (BeliefUpdate b : bu.getRules())
         {
-        	if (b.getPost().contains(this.sanction))
+        	for (Literal l : b.getPost())
         	{
-        		for (Plan p : pgrule.getBody().getPlans())
+        		if (l == this.sanction)
         		{
-        			//TODO!!!!
-        			String plan = p.toString().toLowerCase();
-        			String action = b.getAct().toString().toLowerCase();
-        			if (plan.contains(action))
-        			{
-        				return true;
-        			}
+        			for (Plan p : pgrule.getBody().getPlans())
+            		{
+            			//TODO!!!!
+            			String plan = p.toString().toLowerCase();
+            			String action = b.getAct().toString().toLowerCase();
+            			if (plan.contains(action))
+            			{
+            				return true;
+            			}
+            		}
         		}
         	}
         }
