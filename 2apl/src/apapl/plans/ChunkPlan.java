@@ -36,6 +36,7 @@ public class ChunkPlan extends Plan implements ParentPlan
     {
         PlanSeq r = new PlanSeq();
         for (Plan p : plans) r.addLast(p);
+        r.setAtomic();
         return r;
     }
     
@@ -82,30 +83,29 @@ public class ChunkPlan extends Plan implements ParentPlan
     throws ActivationGoalAchievedException, ModuleDeactivatedException
     {
         PlanResult lastResult = null;
-        List<PlanResult> results = new ArrayList<PlanResult>();
         
         Goalbase gb = module.getGoalbase();
         Beliefbase bb = module.getBeliefbase();
         
-        while (lastResult == null || lastResult.succeeded()) {
+        if (plans.size()<=0) {
             if (!testActivationGoal(gb,bb)) 
                 throw new ActivationGoalAchievedException();
             try {
                 Plan plan = plans.getFirst();
                 lastResult = plan.execute(module);
-                results.add(lastResult);
             }
             catch (NoSuchElementException e) {
                 parent.removeFirst();
                 parent.applySubstitution(theta);
                 
-                return new PlanResult(this, PlanResult.SUCCEEDED, "Atomic Plan Fully Executed:\n" + planResultsToString(results));
+                return new PlanResult(this, PlanResult.SUCCEEDED, "Atomic Plan Fully Executed:\n" + lastResult);
             }           
         }
         
         // Plan executed only partially.
         parent.applySubstitution(theta);
-        return new PlanResult(this, lastResult.getOutcome(), "Atomic Plan Failed:\n" + planResultsToString(results));
+        return new PlanResult(this, lastResult.getOutcome(), "Atomic Plan Failed:\n" + lastResult);
+       
     }
     
     /**

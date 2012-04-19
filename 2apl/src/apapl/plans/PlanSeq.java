@@ -28,6 +28,8 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	private Date executionStart;
 	private long duration;
 	
+	private boolean isAtomic = false;
+	
 	/**
 	 * Constructs a sequence of plans.
 	 */
@@ -541,5 +543,9 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	public void setExecStart() {
 		if (this.executionStart == null)
 			this.executionStart = new Date();
+	}
+
+	public void setAtomic() {
+		this.isAtomic = true;
 	}
 }

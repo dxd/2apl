@@ -105,6 +105,7 @@ public class APLModule {
     private PRrulebase prrules;
     private PCrulebase pcrules;
     private Planbase plans;
+    private Planbase atomicplans;
     private Sanctionbase sanctions;
     private Prohibitionbase prohibitions;
 
@@ -125,6 +126,7 @@ public class APLModule {
         this.pcrules = new PCrulebase();
         this.prrules = new PRrulebase();
         this.plans = new Planbase();
+        this.atomicplans = new Planbase();
         this.sanctions = new Sanctionbase();
         this.prohibitions = new Prohibitionbase();
         this.envs = new HashMap<String, EnvironmentInterfaceStandard>();
@@ -181,6 +183,7 @@ public class APLModule {
         this.prrules = prrules.clone();
         this.pcrules = pcrules.clone();
         this.plans = plans.clone();
+        this.atomicplans = atomicplans.clone();
         this.sanctions = sanctions.clone();
         this.prohibitions = prohibitions.clone();
         this.inEnvironment = inEnvironment;
@@ -440,6 +443,10 @@ public class APLModule {
     public Planbase getPlanbase() {
         return plans;
     }
+    
+    public Planbase getAtomicPlanbase() {
+        return atomicplans;
+    }
 
     /**
      * Returns the PG-rules of the module.
@@ -492,6 +499,13 @@ public class APLModule {
             ps.checkVars(warnings);
 
         for (PlanSeq ps : plans)
+            for (Plan p : ps)
+                p.checkPlan(warnings, this);
+        
+        for (PlanSeq ps : atomicplans)
+            ps.checkVars(warnings);
+
+        for (PlanSeq ps : atomicplans)
             for (Plan p : ps)
                 p.checkPlan(warnings, this);
 

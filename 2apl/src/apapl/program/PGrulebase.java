@@ -2,6 +2,8 @@ package apapl.program;
 
 import apapl.APLModule;
 import apapl.Parser;
+import apapl.plans.ChunkPlan;
+import apapl.plans.Plan;
 import apapl.plans.PlanSeq;
 import apapl.program.PGrule;
 import apapl.data.Goal;
@@ -27,22 +29,23 @@ public class PGrulebase extends Rulebase<PGrule>
 	
 	/**
 	 * Equal to 
-	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,false)}
+	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,atomicplans,false)}
+	 * @param atomicplans 
 	 * @param prohibitions 
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Prohibitionbase prohibitions, BeliefUpdates bu)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Planbase atomicplans, Prohibitionbase prohibitions, BeliefUpdates bu)
 	{
-		return generatePlans(goalbase,beliefbase,planbase,prohibitions,bu,false);
+		return generatePlans(goalbase,beliefbase,planbase,atomicplans,prohibitions,bu,false);
 	}
 	
 	/**
 	 * NEVER CALLED
 	 * Equal to
-	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,true)}
+	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,atomicplans,true)}
 	 */
 	public ArrayList<PlanSeq> generatePlan(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase)
 	{
-		return generatePlans(goalbase,beliefbase,planbase,null,null,true);
+		return generatePlans(goalbase,beliefbase,planbase,null,null,null,true);
 	}
 	
 	/**
@@ -59,7 +62,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * @param onlyone if true, only one plan will be generated
 	 * @return an list containing one or more plans that can be generate with the PG rules
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Prohibitionbase prohibitions, BeliefUpdates bu, boolean onlyone)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Planbase atomicplans, Prohibitionbase prohibitions, BeliefUpdates bu, boolean onlyone)
 	{
 		ArrayList<PlanSeq> plans = new ArrayList<PlanSeq>();
 				
@@ -71,9 +74,20 @@ public class PGrulebase extends Rulebase<PGrule>
 				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase,null);
 				if (p!=null)
 				{ 
-					
-				    plans.add(p);
+					plans.add(p);
+					Object atomic = p.getPlans().getFirst();
+					if (atomic instanceof ChunkPlan)
+					{
+						atomic = (ChunkPlan) atomic;
+						((ChunkPlan) atomic).toPlanSeq();
+						atomicplans.addPlan((PlanSeq) atomic);
+					}
+					else
+					{
+				    
 				    planbase.addPlan(p);
+					
+					}
 					if (onlyone) return plans;
 				}
 			}
@@ -93,7 +107,23 @@ public class PGrulebase extends Rulebase<PGrule>
 					{ 
 					  ruleApplied = true;
 					  plans.add(p);
-					  planbase.addPlan(p);
+					  
+					  
+					  Object atomic = p.getPlans().getFirst();
+						if (atomic instanceof ChunkPlan)
+						{
+							atomic = (ChunkPlan) atomic;
+							((ChunkPlan) atomic).toPlanSeq();
+							atomicplans.addPlan((PlanSeq) atomic);
+						}
+						else
+						{
+					    
+					    planbase.addPlan(p);
+						
+						}
+					  
+					  
 					  if (onlyone) return plans;
 						break;
 					}
