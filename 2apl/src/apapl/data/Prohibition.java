@@ -1,6 +1,7 @@
 package apapl.data;
 
 import apapl.plans.Plan;
+import apapl.plans.PlanSeq;
 import apapl.program.BeliefUpdate;
 import apapl.program.BeliefUpdates;
 import apapl.program.PGrule;
@@ -87,7 +88,7 @@ public class Prohibition {
 	}
 
 
-	public boolean existIn(PGrule pgrule, BeliefUpdates bu) {
+	public boolean existIn(PlanSeq ps, BeliefUpdates bu) {
 
         for (BeliefUpdate b : bu.getRules())
         {
@@ -95,11 +96,11 @@ public class Prohibition {
         	{
         		if (l == this.sanction)
         		{
-        			for (Plan p : pgrule.getBody().getPlans())
+        			for (Plan p : ps.getPlans())
             		{
             			//TODO!!!!
-            			String plan = p.toString().toLowerCase();
-            			String action = b.getAct().toString().toLowerCase();
+            			String plan = p.toString().toLowerCase().trim();
+            			String action = b.getAct().toString().toLowerCase().trim();
             			if (plan.contains(action))
             			{
             				return true;

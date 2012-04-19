@@ -24,6 +24,10 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	private int id;
 	private static int id_counter = 0;
 	
+	private Date deadline;
+	private Date executionStart;
+	private long duration;
+	
 	/**
 	 * Constructs a sequence of plans.
 	 */
@@ -241,7 +245,10 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 		{	return false;
 		}
 		else 
-		{	Plan p = plans.getFirst();
+		{	
+
+			
+			Plan p = plans.getFirst();
 			PlanResult r = p.execute(module);
 			
 			if (r.failed()) {
@@ -504,5 +511,35 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 			else newPlans.addLast(p);
 		}
 		plans = newPlans;
+	}
+	
+	public void setDeadline(Date deadline2)
+	{
+		this.deadline = deadline2;
+	}
+	
+	public Date getDeadline()
+	{
+		return this.deadline;
+	}
+
+	public long getDuration() {
+
+		return duration;
+	}
+
+	public void setDuration(Long duration2) {
+
+		duration = duration2;
+	}
+
+	public Date getExecStarted() {
+
+		return this.executionStart;
+	}
+
+	public void setExecStart() {
+		if (this.executionStart == null)
+			this.executionStart = new Date();
 	}
 }

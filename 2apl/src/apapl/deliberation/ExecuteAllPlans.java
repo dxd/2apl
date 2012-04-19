@@ -29,7 +29,10 @@ public class ExecuteAllPlans implements DeliberationStep
 		{	// If the goal is still a goal of the module, execute the first plan of
 			// this sequence. Otherwise, remove the plan sequence.
 			if (ps.testActivationGoal(gb,bb))
-			{	LinkedList<Plan> plans = ps.getPlans();
+			{	
+				ps.setExecStart();
+				
+				LinkedList<Plan> plans = ps.getPlans();
 			
 				PlanResult r = null;
 

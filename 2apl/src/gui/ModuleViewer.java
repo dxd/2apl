@@ -186,7 +186,7 @@ public class ModuleViewer extends Viewer
 					plans.update(module.getPlanbase().toRTF());
 					sanctions.update(module.getSanctionbase().toRTF());
 					obligations.update(module.getObligations().toRTF());
-					prohibitions.update(module.getPbase().toRTF());
+					prohibitions.update(module.getProhibitionbase().toRTF());
 				} else
 				{
 					belief.update(module.getBeliefbase().toString());
@@ -194,7 +194,7 @@ public class ModuleViewer extends Viewer
 					plans.update(module.getPlanbase().toString());
 					sanctions.update(module.getSanctionbase().toString());
 					obligations.update(module.getObligations().toString());
-					prohibitions.update(module.getPbase().toString());
+					prohibitions.update(module.getProhibitionbase().toString());
 				}
 			}
 		}

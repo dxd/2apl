@@ -78,7 +78,7 @@ public class Parser2apl implements Parser2aplConstants {
       break;
     case PHEAD:
       jj_consume_token(PHEAD);
-      Pbase(m.getPbase());
+      Prohibitionbase(m.getProhibitionbase());
       break;
     default:
       jj_la1[1] = jj_gen;
@@ -346,7 +346,7 @@ public class Parser2apl implements Parser2aplConstants {
     }
   }
 
-  final public void Pbase(Pbase prohibitions) throws ParseException {
+  final public void Prohibitionbase(Prohibitionbase prohibitions) throws ParseException {
         Prohibition p;
     p = Prohibition();
                            prohibitions.add(p);

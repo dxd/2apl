@@ -30,7 +30,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * {@link apapl.program.PGrulebase#generatePlans(goalbase,beliefbase,planbase,false)}
 	 * @param prohibitions 
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Pbase prohibitions, BeliefUpdates bu)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Prohibitionbase prohibitions, BeliefUpdates bu)
 	{
 		return generatePlans(goalbase,beliefbase,planbase,prohibitions,bu,false);
 	}
@@ -59,7 +59,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * @param onlyone if true, only one plan will be generated
 	 * @return an list containing one or more plans that can be generate with the PG rules
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Pbase prohibitions, BeliefUpdates bu, boolean onlyone)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Prohibitionbase prohibitions, BeliefUpdates bu, boolean onlyone)
 	{
 		ArrayList<PlanSeq> plans = new ArrayList<PlanSeq>();
 				
@@ -68,11 +68,10 @@ public class PGrulebase extends Rulebase<PGrule>
 		{ // if it is a reactive rule, try to match the guard with the beliefs
 		  if (pgrule.getHead() instanceof True)
 		  { SubstList<Term> theta = new SubstList<Term>();
-				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase);
+				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase,null);
 				if (p!=null)
 				{ 
-					if (passNorms(pgrule.clone(),pgrule,theta,prohibitions,bu,null))
-						break;
+					
 				    plans.add(p);
 				    planbase.addPlan(p);
 					if (onlyone) return plans;
@@ -89,10 +88,9 @@ public class PGrulebase extends Rulebase<PGrule>
 				// it with the guard of the rule and check if the module is not already
 				// working on a plan for the same goal
 				for (SubstList<Term> theta : substs)
-				{ PlanSeq p = tryRule(variant,pgrule,theta,beliefbase,planbase);
+				{ PlanSeq p = tryRule(variant,pgrule,theta,beliefbase,planbase,goal);
 					if (p!=null)
-					{ if (passNorms(variant,pgrule,theta,prohibitions,bu, goal))
-						break;
+					{ 
 					  ruleApplied = true;
 					  plans.add(p);
 					  planbase.addPlan(p);
@@ -107,34 +105,7 @@ public class PGrulebase extends Rulebase<PGrule>
 		return plans;
 	}
 			
-	private boolean passNorms(PGrule variant, PGrule pgrule, SubstList<Term> theta, Pbase prohibitions, BeliefUpdates bu, Goal goal) {
-		variant.applySubstitution(theta);
-		
-		if (goal != null)
-		{
-			ArrayList<Prohibition> hpp = prohibitions.getHigher(goal.getPriority());
-			
-			if (hpp != null)
-			{
-				for (Prohibition p : hpp)
-				{
-					if (p.existIn(variant, bu))
-						return false;
-				}
-			}
-			
-			Date deadline = goal.getDeadline();
-			if (deadline == null)
-				return true;
-			
-			Date date = new Date();
-			if (pgrule.getDuration() + date.getTime() > deadline.getTime())
-				return false;
-		}
-
-		return true;
-	}
-
+	
 	/**
 	 * Tries to apply a PG-rule given substitution theta.
 	 * 
@@ -145,7 +116,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * @return the body of the rule with theta applied to it or null if this rule 
 	 *   cannot be applied
 	 */
-	private PlanSeq tryRule(PGrule variant, PGrule pgrule, SubstList<Term> theta, Beliefbase beliefs, Planbase planbase)
+	private PlanSeq tryRule(PGrule variant, PGrule pgrule, SubstList<Term> theta, Beliefbase beliefs, Planbase planbase, Goal goal)
 	{
 		variant.applySubstitution(theta);
 		Query goalquery = variant.getHead();
@@ -161,6 +132,11 @@ public class PGrulebase extends Rulebase<PGrule>
 			p.setActivationGoal(goaltheta);
 			p.setActivationSubstitution(theta);
 
+			p.setDuration(pgrule.getDuration());
+			if (goal != null)
+			{
+				p.setDeadline(goal.getDeadline());
+			}
 			// For the special case we are dealing with a reactive rule (head is True)
 			// it should not be the case that the module is working on an instance of
 			// the same rule

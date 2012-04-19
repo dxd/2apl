@@ -32,7 +32,7 @@ import apapl.program.PGrule;
 import apapl.program.PGrulebase;
 import apapl.program.PRrule;
 import apapl.program.PRrulebase;
-import apapl.program.Pbase;
+import apapl.program.Prohibitionbase;
 import apapl.program.Planbase;
 import apapl.program.Rule;
 import apapl.program.Sanctionbase;
@@ -106,7 +106,7 @@ public class APLModule {
     private PCrulebase pcrules;
     private Planbase plans;
     private Sanctionbase sanctions;
-    private Pbase prohibitions;
+    private Prohibitionbase prohibitions;
 
     // Denoting whether currently performing an external action
     private boolean inEnvironment = false;
@@ -126,7 +126,7 @@ public class APLModule {
         this.prrules = new PRrulebase();
         this.plans = new Planbase();
         this.sanctions = new Sanctionbase();
-        this.prohibitions = new Pbase();
+        this.prohibitions = new Prohibitionbase();
         this.envs = new HashMap<String, EnvironmentInterfaceStandard>();
         this.delib = new Deliberation();
         this.stoppingCond = null;
@@ -474,7 +474,7 @@ public class APLModule {
     }
     
 
-    public Pbase getPbase() {
+    public Prohibitionbase getProhibitionbase() {
         return prohibitions;
     }
 

@@ -25,7 +25,7 @@ public class Goal implements Iterable<Literal>
 	private LinkedList<Literal> goal;
 	private Date				deadline;
 	private byte				priority;
-	private Literal				sanction;
+	private ArrayList<Literal>	sanction;
 	
 	/**
 	 * Constructs a new empty goal.
@@ -45,7 +45,7 @@ public class Goal implements Iterable<Literal>
 		this.goal = goal;
 		this.deadline = null;
 		this.priority = 1;
-		this.sanction = null;
+		this.sanction = new ArrayList<Literal>();
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class Goal implements Iterable<Literal>
 	
 	public void addSanction(Literal sanction)
 	{
-		this.sanction = sanction;
+		this.sanction.add(sanction);
 	}
 	
 	/**
@@ -344,15 +344,13 @@ public class Goal implements Iterable<Literal>
 	}
 
 	public boolean isObligation() {
-		return sanction != null;
+		return sanction.size() == 0;
 	}
 
 	public Byte getPriority() {
-		if (sanction == null)
-				return priority;
-		else
-			return 1; //TODO set priorities for obligations
-		
+
+		return priority;
+
 	}
 
 	public Date getDeadline() {
@@ -360,7 +358,7 @@ public class Goal implements Iterable<Literal>
 		return this.deadline;
 	}
 
-	public Literal getSanction() {
+	public ArrayList<Literal> getSanction() {
 
 		return sanction;
 	}

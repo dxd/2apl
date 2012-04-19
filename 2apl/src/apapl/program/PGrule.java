@@ -77,7 +77,7 @@ public class PGrule extends Rule
 		return body;
 	}
 	
-	public long getDuration()
+	public Long getDuration()
 	{
 		return duration;
 	}

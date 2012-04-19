@@ -22,20 +22,20 @@ import java.util.Enumeration;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class Pbase extends Base implements Iterable<Prohibition>{
+public class Prohibitionbase extends Base implements Iterable<Prohibition>{
 	
 	private ArrayList<Prohibition> sb = new ArrayList<Prohibition>();
 	/**
 	 * Constructs a new goal base.
 	 */
-	public Pbase()
+	public Prohibitionbase()
 	{		
 	}
 	
 	/**
 	 * Constructs a new goal base using given list of goals
 	 */
-	public Pbase(ArrayList<Prohibition> sb)
+	public Prohibitionbase(ArrayList<Prohibition> sb)
 	{		
 		this.sb = new ArrayList<Prohibition>(sb);
 	}
@@ -90,9 +90,9 @@ public class Pbase extends Base implements Iterable<Prohibition>{
 	/**
 	 * @return clone of the goalbase
 	 */
-	public Pbase clone()
+	public Prohibitionbase clone()
 	{
-		Pbase sb = new Pbase(this.getPbase());
+		Prohibitionbase sb = new Prohibitionbase(this.getPbase());
 		return sb;
 	}
 	
