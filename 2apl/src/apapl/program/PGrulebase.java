@@ -166,6 +166,7 @@ public class PGrulebase extends Rulebase<PGrule>
 			if (goal != null)
 			{
 				p.setDeadline(goal.getDeadline());
+				p.setPriority(goal.getPriority());
 			}
 			// For the special case we are dealing with a reactive rule (head is True)
 			// it should not be the case that the module is working on an instance of

@@ -29,6 +29,10 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	private long duration;
 	
 	private boolean isAtomic = false;
+
+	private byte priority;
+	
+	private boolean scheduled = false;
 	
 	/**
 	 * Constructs a sequence of plans.
@@ -535,17 +539,35 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 		duration = duration2;
 	}
 
-	public Date getExecStarted() {
+	public Date getExecStart() {
 
 		return this.executionStart;
 	}
 
-	public void setExecStart() {
-		if (this.executionStart == null)
-			this.executionStart = new Date();
+	public void setExecStart(Date date) {
+		this.executionStart = date;
 	}
 
 	public void setAtomic() {
 		this.isAtomic = true;
+	}
+
+	public Byte getPriority() {
+
+		return this.priority;
+	}
+
+	public void setPriority(Byte priority) {
+		
+		this.priority = priority;
+	}
+
+	public boolean isScheduled() {
+
+		return this.scheduled;
+	}
+
+	public void setScheduled(boolean b) {
+		this.scheduled = b;
 	}
 }

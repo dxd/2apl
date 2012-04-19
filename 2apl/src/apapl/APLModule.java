@@ -36,6 +36,7 @@ import apapl.program.Prohibitionbase;
 import apapl.program.Planbase;
 import apapl.program.Rule;
 import apapl.program.Sanctionbase;
+import apapl.program.Schedule;
 
 /**
  * The implementation of a 2APL module. A 2APL module has a mental state
@@ -108,6 +109,8 @@ public class APLModule {
     private Planbase atomicplans;
     private Sanctionbase sanctions;
     private Prohibitionbase prohibitions;
+    
+    private Schedule schedule;
 
     // Denoting whether currently performing an external action
     private boolean inEnvironment = false;
@@ -133,6 +136,7 @@ public class APLModule {
         this.delib = new Deliberation();
         this.stoppingCond = null;
         this.setLogger(new Logger());
+        this.schedule = new Schedule();
     }
 
     /**
@@ -188,6 +192,7 @@ public class APLModule {
         this.prohibitions = prohibitions.clone();
         this.inEnvironment = inEnvironment;
         this.setLogger(new Logger());
+        this.schedule = schedule.clone();
     }
 
     /**
@@ -483,6 +488,10 @@ public class APLModule {
 
     public Prohibitionbase getProhibitionbase() {
         return prohibitions;
+    }
+    
+    public Schedule getSchedule() {
+        return schedule;
     }
 
 

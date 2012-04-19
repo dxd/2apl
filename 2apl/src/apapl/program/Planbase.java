@@ -2,6 +2,7 @@ package apapl.program;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import apapl.Prolog;
 import apapl.SolutionIterator;
 import apapl.SubstList;
 import apapl.data.APLIdent;
+import apapl.data.Goal;
 import apapl.data.GoalCompare;
 import apapl.data.Literal;
 import apapl.data.OrQuery;
@@ -292,4 +294,25 @@ public class Planbase extends Base implements Iterable<PlanSeq>
         SolutionIterator solutions = prolog.doTest(query);
         return solutions;
     }
+
+	public void sortPlans() {
+		
+		List<PlanSeq> copy = clone().plans;
+		Collections.sort(copy, new Comparator<PlanSeq>(){
+	           public int compare (PlanSeq p1, PlanSeq p2){
+	               return p1.getPriority().compareTo(p2.getPriority());
+	           }
+	       });
+		this.plans = copy;
+	}
+
+	public void sortPlansDeadline() {
+		List<PlanSeq> copy = clone().plans;
+		Collections.sort(copy, new Comparator<PlanSeq>(){
+	           public int compare (PlanSeq p1, PlanSeq p2){
+	               return p1.getDeadline().compareTo(p2.getDeadline());
+	           }
+	       });
+		this.plans = copy;
+	}
 }
