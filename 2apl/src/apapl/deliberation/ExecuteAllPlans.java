@@ -25,12 +25,14 @@ public class ExecuteAllPlans implements DeliberationStep
 		Beliefbase bb = module.getBeliefbase();
 
 		ArrayList<PlanSeq> toRemove = new ArrayList<PlanSeq>();
-		for (PlanSeq ps : planbase) 
+		
+		LinkedList<PlanSeq> schedule = module.getSchedule().getSchedule();
+		
+		for (PlanSeq ps : schedule) 
 		{	// If the goal is still a goal of the module, execute the first plan of
 			// this sequence. Otherwise, remove the plan sequence.
 			if (ps.testActivationGoal(gb,bb))
 			{	
-				ps.setExecStart();
 				
 				LinkedList<Plan> plans = ps.getPlans();
 			
@@ -76,7 +78,11 @@ public class ExecuteAllPlans implements DeliberationStep
 		}
 
 		// Remove empty plans and plans of which the goal is achieved
-		for (PlanSeq ps : toRemove) planbase.removePlan(ps);
+		for (PlanSeq ps : toRemove) 
+		{
+			planbase.removePlan(ps);
+			module.getSchedule().remove(ps);
+		}
 
 		return( result );
 	}

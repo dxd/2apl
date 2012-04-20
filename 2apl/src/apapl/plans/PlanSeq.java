@@ -570,4 +570,5 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	public void setScheduled(boolean b) {
 		this.scheduled = b;
 	}
+	
 }
