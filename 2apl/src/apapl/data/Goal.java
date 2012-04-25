@@ -25,7 +25,7 @@ public class Goal implements Iterable<Literal>
 	private LinkedList<Literal> goal;
 	private Date				deadline;
 	private byte				priority;
-	private ArrayList<Literal>	sanction;
+	private ArrayList<Literal>	sanctions;
 	
 	/**
 	 * Constructs a new empty goal.
@@ -33,6 +33,9 @@ public class Goal implements Iterable<Literal>
 	public Goal()
 	{
 		goal = new LinkedList<Literal>();
+		this.deadline = new Date (Long.MAX_VALUE);
+		this.priority = 1;
+		this.sanctions = new ArrayList<Literal>();
 	}
 	
 	/**
@@ -43,9 +46,9 @@ public class Goal implements Iterable<Literal>
 	public Goal(LinkedList<Literal> goal)
 	{
 		this.goal = goal;
-		this.deadline = null;
+		this.deadline = new Date (Long.MAX_VALUE);
 		this.priority = 1;
-		this.sanction = new ArrayList<Literal>();
+		this.sanctions = new ArrayList<Literal>();
 	}
 	
 	/**
@@ -81,7 +84,7 @@ public class Goal implements Iterable<Literal>
 	
 	public void addSanction(Literal sanction)
 	{
-		this.sanction.add(sanction);
+		this.sanctions.add(sanction);
 	}
 	
 	/**
@@ -209,7 +212,7 @@ public class Goal implements Iterable<Literal>
 	{
 		String r = "";
 		for (Literal l : goal) r = r + l.toString(inplan);
-		if (deadline != null) {
+		if (deadline.getTime() < Long.MAX_VALUE) {
 			r = r + " : " + deadline.toGMTString();
 		}
 		else {
@@ -232,7 +235,7 @@ public class Goal implements Iterable<Literal>
 		String s = "\\cf1  and \\cf0 ";
 		for (Literal l : goal) {
 			r = r + l.toRTF(inplan) + s;
-			if (deadline != null) {
+			if (deadline.getTime() < Long.MAX_VALUE) {
 				r = r + deadline.toGMTString();
 			}
 			else {
@@ -344,7 +347,7 @@ public class Goal implements Iterable<Literal>
 	}
 
 	public boolean isObligation() {
-		return sanction.size() == 0;
+		return sanctions.size() == 0;
 	}
 
 	public Byte getPriority() {
@@ -360,7 +363,7 @@ public class Goal implements Iterable<Literal>
 
 	public ArrayList<Literal> getSanction() {
 
-		return sanction;
+		return sanctions;
 	}
 
 	public void setPriority(byte priority) {

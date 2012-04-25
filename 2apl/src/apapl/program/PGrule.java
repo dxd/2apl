@@ -29,7 +29,7 @@ public class PGrule extends Rule
 		this.head = head;
 		this.guard = guard;
 		this.body = body;
-		this.duration = 0L;
+		this.duration = 0;
 	}
 	
 	/**
