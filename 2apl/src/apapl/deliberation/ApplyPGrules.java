@@ -25,13 +25,18 @@ public class ApplyPGrules implements DeliberationStep
 		Goalbase goalbase = module.getGoalbase();
 		Beliefbase beliefbase = module.getBeliefbase();
 		PGrulebase pgrules = module.getPGrulebase();
-		Planbase planbase = module.getPlanbase();
-		Planbase atomicplans = module.getAtomicPlanbase();
+		Planbase plans = new Planbase();
+		Planbase atomicplans = new Planbase();
 		Prohibitionbase prohibitions = module.getProhibitionbase();
 		BeliefUpdates bu = module.getBeliefUpdates();
+		
+		Schedule schedule = module.getSchedule();
 			
-		ArrayList<PlanSeq> ps = pgrules.generatePlans(goalbase,beliefbase,planbase,atomicplans,prohibitions,bu);
+		ArrayList<PlanSeq> ps = pgrules.generatePlans(goalbase,beliefbase,plans,atomicplans,prohibitions,bu);
 			
+		schedule.addNewPlans(plans.);
+		schedule.addNewAtomicPlans(atomicplans);
+		
 	    return( new ApplyPGrulesResult( ps ) );
 	}
 	

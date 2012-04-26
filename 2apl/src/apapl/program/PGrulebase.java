@@ -74,17 +74,18 @@ public class PGrulebase extends Rulebase<PGrule>
 				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase,null);
 				if (p!=null)
 				{ 
-					plans.add(p);
+					//plans.add(p);
 					Object atomic = p.getPlans().getFirst();
 					if (atomic instanceof ChunkPlan)
 					{
 						atomic = (ChunkPlan) atomic;
 						((ChunkPlan) atomic).toPlanSeq();
 						atomicplans.addPlan((PlanSeq) atomic);
+						plans.add((PlanSeq)atomic);
 					}
 					else
 					{
-				    
+					plans.add(p);
 				    planbase.addPlan(p);
 					
 					}
@@ -106,7 +107,7 @@ public class PGrulebase extends Rulebase<PGrule>
 					if (p!=null)
 					{ 
 					  ruleApplied = true;
-					  plans.add(p);
+					  //plans.add(p);
 					  
 					  
 					  Object atomic = p.getPlans().getFirst();
@@ -115,12 +116,13 @@ public class PGrulebase extends Rulebase<PGrule>
 							atomic = (ChunkPlan) atomic;
 							((ChunkPlan) atomic).toPlanSeq();
 							atomicplans.addPlan((PlanSeq) atomic);
+							plans.add((PlanSeq)atomic);
 						}
 						else
 						{
 					    
 					    planbase.addPlan(p);
-						
+					    plans.add(p);
 						}
 					  
 					  
