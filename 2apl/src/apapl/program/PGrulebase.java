@@ -35,7 +35,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 */
 	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Planbase atomicplans, Prohibitionbase prohibitions, BeliefUpdates bu)
 	{
-		return generatePlans(goalbase,beliefbase,planbase,atomicplans,prohibitions,bu,false);
+		return generatePlans(goalbase,beliefbase,planbase,prohibitions,bu,false);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 */
 	public ArrayList<PlanSeq> generatePlan(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase)
 	{
-		return generatePlans(goalbase,beliefbase,planbase,null,null,null,true);
+		return generatePlans(goalbase,beliefbase,planbase,null,null,true);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * @param onlyone if true, only one plan will be generated
 	 * @return an list containing one or more plans that can be generate with the PG rules
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Planbase atomicplans, Prohibitionbase prohibitions, BeliefUpdates bu, boolean onlyone)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Prohibitionbase prohibitions, BeliefUpdates bu, boolean onlyone)
 	{
 		ArrayList<PlanSeq> plans = new ArrayList<PlanSeq>();
 				
@@ -80,7 +80,7 @@ public class PGrulebase extends Rulebase<PGrule>
 					{
 						atomic = (ChunkPlan) atomic;
 						((ChunkPlan) atomic).toPlanSeq();
-						atomicplans.addPlan((PlanSeq) atomic);
+						//atomicplans.addPlan((PlanSeq) atomic);
 						plans.add((PlanSeq)atomic);
 					}
 					else
@@ -115,7 +115,7 @@ public class PGrulebase extends Rulebase<PGrule>
 						{
 							atomic = (ChunkPlan) atomic;
 							((ChunkPlan) atomic).toPlanSeq();
-							atomicplans.addPlan((PlanSeq) atomic);
+							//atomicplans.addPlan((PlanSeq) atomic);
 							plans.add((PlanSeq)atomic);
 						}
 						else

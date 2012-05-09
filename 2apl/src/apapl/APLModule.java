@@ -801,5 +801,14 @@ public class APLModule {
 
 		}
 	}
+
+	public void setNewAtomic() {
+		for (PlanSeq p : plans) {
+			if (p.isAtomic()) {
+				this.atomic = p;
+				return;
+			}
+		}
+	}
 	
 }

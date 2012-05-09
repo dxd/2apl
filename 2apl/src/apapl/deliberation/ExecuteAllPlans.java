@@ -33,6 +33,8 @@ public class ExecuteAllPlans implements DeliberationStep
 			// this sequence. Otherwise, remove the plan sequence.
 			if (ps.testActivationGoal(gb,bb))
 			{	
+				if (ps.isAtomic() && module.getAtomic() != ps)
+					continue;
 				
 				LinkedList<Plan> plans = ps.getPlans();
 			
