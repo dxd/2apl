@@ -315,4 +315,9 @@ public class Planbase extends Base implements Iterable<PlanSeq>
 	       });
 		this.plans = copy;
 	}
+
+
+	public void removePlans() {
+		plans.clear();
+	}
 }

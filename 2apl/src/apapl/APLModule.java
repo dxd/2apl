@@ -110,7 +110,7 @@ public class APLModule {
     private Sanctionbase sanctions;
     private Prohibitionbase prohibitions;
     
-    private Schedule schedule;
+    private PlanSeq atomic = null;
 
     // Denoting whether currently performing an external action
     private boolean inEnvironment = false;
@@ -136,7 +136,6 @@ public class APLModule {
         this.delib = new Deliberation();
         this.stoppingCond = null;
         this.setLogger(new Logger());
-        this.schedule = new Schedule();
     }
 
     /**
@@ -192,7 +191,7 @@ public class APLModule {
         this.prohibitions = prohibitions.clone();
         this.inEnvironment = inEnvironment;
         this.setLogger(new Logger());
-        this.schedule = schedule.clone();
+        
     }
 
     /**
@@ -490,8 +489,12 @@ public class APLModule {
         return prohibitions;
     }
     
-    public Schedule getSchedule() {
-        return schedule;
+    public PlanSeq getAtomic() {
+        return atomic;
+    }
+    
+    public void setAtomic(PlanSeq atomic){
+    	this.atomic = atomic;
     }
 
 

@@ -30,12 +30,11 @@ public class ApplyPGrules implements DeliberationStep
 		Prohibitionbase prohibitions = module.getProhibitionbase();
 		BeliefUpdates bu = module.getBeliefUpdates();
 		
-		Schedule schedule = module.getSchedule();
+		
 			
 		ArrayList<PlanSeq> ps = pgrules.generatePlans(goalbase,beliefbase,plans,atomicplans,prohibitions,bu);
 			
-		schedule.addNewPlans(plans.);
-		schedule.addNewAtomicPlans(atomicplans);
+		
 		
 	    return( new ApplyPGrulesResult( ps ) );
 	}

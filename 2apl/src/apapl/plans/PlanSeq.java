@@ -545,7 +545,10 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	}
 
 	public void setExecStart(Date date) {
-		this.executionStart = date;
+		if (date == null)
+			this.executionStart = new Date();
+		else
+			this.executionStart = date;
 	}
 
 	public void setAtomic() {
@@ -569,6 +572,20 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 
 	public void setScheduled(boolean b) {
 		this.scheduled = b;
+	}
+
+	/**
+	 * @return the isAtomic
+	 */
+	public boolean isAtomic() {
+		return isAtomic;
+	}
+
+	/**
+	 * @param isAtomic the isAtomic to set
+	 */
+	public void setAtomic(boolean isAtomic) {
+		this.isAtomic = isAtomic;
 	}
 	
 }

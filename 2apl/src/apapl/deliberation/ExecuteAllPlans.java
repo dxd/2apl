@@ -26,9 +26,9 @@ public class ExecuteAllPlans implements DeliberationStep
 
 		ArrayList<PlanSeq> toRemove = new ArrayList<PlanSeq>();
 		
-		LinkedList<PlanSeq> schedule = module.getSchedule().getSchedule();
+	
 		
-		for (PlanSeq ps : schedule) 
+		for (PlanSeq ps : planbase) 
 		{	// If the goal is still a goal of the module, execute the first plan of
 			// this sequence. Otherwise, remove the plan sequence.
 			if (ps.testActivationGoal(gb,bb))
@@ -81,7 +81,7 @@ public class ExecuteAllPlans implements DeliberationStep
 		for (PlanSeq ps : toRemove) 
 		{
 			planbase.removePlan(ps);
-			module.getSchedule().remove(ps);
+			//module.getSchedule().remove(ps);
 		}
 
 		return( result );
