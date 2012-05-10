@@ -29,6 +29,6 @@
 	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib/sun-util.jar"/>
 	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib/jini-ext.jar"/>
 	<classpathentry kind="lib" path="/Users/dxd/Downloads/apache-river-2.2.0/lib-ext/jsk-policy.jar"/>
-	<classpathentry kind="lib" path="/Users/dxd/Downloads/2APL-JavaSpace/2OPL.jar"/>
+	<classpathentry kind="lib" path="lib/2OPL.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

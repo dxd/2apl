@@ -78,7 +78,7 @@ public class SchedulePlans implements DeliberationStep {
 					ps.setExecStart(ne);
 				}
 				
-				boolean pass = false;
+				boolean pass = true;
 
 				if (!violatesProhibitions(ps, prohibitions, bu))
 					for (PlanSeq p1 : tempAtomic) {

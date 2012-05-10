@@ -33,7 +33,7 @@ public class PGrulebase extends Rulebase<PGrule>
 	 * @param atomicplans 
 	 * @param prohibitions 
 	 */
-	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Planbase atomicplans, Prohibitionbase prohibitions, BeliefUpdates bu)
+	public ArrayList<PlanSeq> generatePlans(Goalbase goalbase, Beliefbase beliefbase, Planbase planbase, Prohibitionbase prohibitions, BeliefUpdates bu)
 	{
 		return generatePlans(goalbase,beliefbase,planbase,prohibitions,bu,false);
 	}
@@ -74,7 +74,7 @@ public class PGrulebase extends Rulebase<PGrule>
 				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase,null);
 				if (p!=null)
 				{ 
-					//plans.add(p);
+					plans.add(p);
 					Object atomic = p.getPlans().getFirst();
 					if (atomic instanceof ChunkPlan)
 					{
@@ -107,7 +107,7 @@ public class PGrulebase extends Rulebase<PGrule>
 					if (p!=null)
 					{ 
 					  ruleApplied = true;
-					  //plans.add(p);
+					  plans.add(p);
 					  
 					  
 					  Object atomic = p.getPlans().getFirst();
