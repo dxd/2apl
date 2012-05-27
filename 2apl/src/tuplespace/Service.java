@@ -23,7 +23,7 @@ public class Service {
 	public void addBomb(Point p) throws RemoteException, TransactionException{
 		Tuple t = new Tuple("bomb", p);
 		try {
-			Tuple r = (Tuple) space.readIfExists(t,null,0);
+			Tuple r = (Tuple) space.readIfExists(t,null,110);
 			if (r == null) {
 				space.write(t,null,Lease.FOREVER);
 				System.out.print("bomb");
@@ -54,7 +54,7 @@ public class Service {
 		Tuple t = new Tuple("bomb", p);
 		Tuple r = null;
 		try {
-			r = (Tuple) space.takeIfExists(t,null,0);
+			r = (Tuple) space.takeIfExists(t,null,100);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,7 +79,7 @@ public class Service {
 	
 	public void writePosition(String name, Point p) throws RemoteException, TransactionException, UnusableEntryException, InterruptedException{
 		Tuple old = new Tuple(name);
-		Tuple read = (Tuple) space.takeIfExists(old, null, 0);
+		Tuple read = (Tuple) space.takeIfExists(old, null, 110);
 		if ( read != null) {
 			System.out.print(name);
 			System.out.print(" removed   ");
@@ -92,7 +92,8 @@ public class Service {
 			System.out.print(name);
 			System.out.print(" added at  ");
 			System.out.println(p.toString());
-
+			
+			space.write(t,null, Lease.FOREVER); //TODO
 	}
 	
 	public void initialize() throws RemoteException, UnusableEntryException, TransactionException, InterruptedException {

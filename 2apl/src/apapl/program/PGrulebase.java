@@ -4,6 +4,7 @@ import apapl.APLModule;
 import apapl.Parser;
 import apapl.plans.ChunkPlan;
 import apapl.plans.Plan;
+import apapl.plans.PlanResult;
 import apapl.plans.PlanSeq;
 import apapl.program.PGrule;
 import apapl.data.Goal;
@@ -14,6 +15,7 @@ import apapl.program.Rule;
 import apapl.data.True;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 
 import apapl.SubstList;
 import javax.swing.JComponent;
@@ -74,26 +76,32 @@ public class PGrulebase extends Rulebase<PGrule>
 				PlanSeq p = tryRule(pgrule.clone(),pgrule,theta,beliefbase,planbase,null);
 				if (p!=null)
 				{ 
-					plans.add(p);
-					Object atomic = p.getPlans().getFirst();
-					if (atomic instanceof ChunkPlan)
-					{
-						atomic = (ChunkPlan) atomic;
-						((ChunkPlan) atomic).toPlanSeq();
-						//atomicplans.addPlan((PlanSeq) atomic);
-						plans.add((PlanSeq)atomic);
-					}
-					else
-					{
-					plans.add(p);
-				    planbase.addPlan(p);
-					
-					}
+					//plans.add(p);
+					/* LinkedList<Plan> pls = p.getPlans();
+
+						if (pls.size() > 0)
+						{ 
+							Plan pl = pls.getFirst();
+							if (pl instanceof ChunkPlan)
+							{
+								PlanSeq pl1 = ((ChunkPlan) pl).toPlanSeq();
+								planbase.addPlan(pl1);
+								plans.add(pl1);
+							}
+							else
+							{
+						    
+						    planbase.addPlan(p);
+						    plans.add(p);
+							}
+						}*/
+						plans.add(p);
+						planbase.addPlan(p);
 					if (onlyone) return plans;
 				}
 			}
 			// if it is not a reactive rule, try to match the head with the goals
-			else for (Goal goal : goalbase.sorted())
+			else for (Goal goal : goalbase)
 			{ boolean ruleApplied = false;
 			  ArrayList<SubstList<Term>> substs;
 				PGrule variant = pgrule.getVariant(goal.getVariables());
@@ -107,25 +115,33 @@ public class PGrulebase extends Rulebase<PGrule>
 					if (p!=null)
 					{ 
 					  ruleApplied = true;
+					  //plans.add(p);
+					  
+					  /*LinkedList<Plan> pls = p.getPlans();
+
+						if (pls.size() > 0)
+						{ 
+							Plan pl = pls.getFirst();
+							
+							if (pl.getParent() instanceof ChunkPlan)
+							{
+								PlanSeq pl1 = ((ChunkPlan) pl.getParent()).toPlanSeq();
+								planbase.addPlan(pl1);
+								plans.add(pl1);
+							}
+							else
+							{
+						    
+						    planbase.addPlan(p);
+						    plans.add(p);
+							}
+						}*/
+	
+					  //Object atomic = p.getPlans().getFirst();
+						
+					  
 					  plans.add(p);
-					  
-					  
-					  Object atomic = p.getPlans().getFirst();
-						if (atomic instanceof ChunkPlan)
-						{
-							atomic = (ChunkPlan) atomic;
-							((ChunkPlan) atomic).toPlanSeq();
-							//atomicplans.addPlan((PlanSeq) atomic);
-							plans.add((PlanSeq)atomic);
-						}
-						else
-						{
-					    
-					    planbase.addPlan(p);
-					    plans.add(p);
-						}
-					  
-					  
+					  planbase.addPlan(p);
 					  if (onlyone) return plans;
 						break;
 					}

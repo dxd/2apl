@@ -49,7 +49,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			ll = new LookupLocator("jini://192.168.0.3:4160"); 
+			ll = new LookupLocator("jini://localhost:4160"); 
 		} catch (MalformedURLException e) { 
 			e.printStackTrace(); 
 		} 
