@@ -1,7 +1,7 @@
 import java.util.Date;
 import java.util.Timer;
 
-public class Client {
+public class Start {
 	
 
 	private static Date startTime;
@@ -10,7 +10,7 @@ public class Client {
 	private static Timer timer;
 	
 	private static JSpace jspace;
-	private static HttpRequests request;
+	private static Synchronization synchro;
 	
 	public static void main(String[] args) {
 		
@@ -19,7 +19,7 @@ public class Client {
 		if (jspace.error())
 			return;
 		
-		request = new HttpRequests(jspace);
+		synchro = new Synchronization(jspace);
 		initiate();
 
 	}
@@ -29,7 +29,7 @@ public class Client {
 		startTime = new Date();
 		
 	    timer = new Timer();
-	    timer.schedule(new GameStep(request),0, gamePace);
+	    timer.schedule(new GameStep(synchro),0, gamePace);
 	    
 	  }
 }

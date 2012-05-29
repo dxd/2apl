@@ -24,11 +24,11 @@ import com.google.gson.stream.JsonToken;
 
 
 
-public class HttpRequests {
+public class Synchronization {
 
 	private static JSpace jspace;
     
-	public HttpRequests(JSpace jspace) {
+	public Synchronization(JSpace jspace) {
 		this.jspace = jspace;
 	}
     	//post
