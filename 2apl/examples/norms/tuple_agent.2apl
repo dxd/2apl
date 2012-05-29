@@ -1,0 +1,97 @@
+BeliefUpdates:
+  { true } RemoveObj(Name,X,Y) { not object(Name,position(X,Y)) }
+  { true } AddObj(tuple(Name,Pos,_)) { object(Name,Pos) }
+  { position(X,Y) and health(H) } UpdateStatus(NewX,NewY,NewHealth) { not position(X,Y), position(NewX,NewY), not health(H), health(NewHealth) }
+  { clock(Old) } UpdateClock(New) { not clock(Old), clock(New) }
+  { true } AddProhibition(State,Sanction) { prohibited(State,Sanction) }
+
+Beliefs:   
+  raise(X,NewX):- NewX is X + 1.
+  lower(X,NewX):- NewX is X - 1.
+  health(100).
+  position(1,1).
+  clock(0).
+  
+Plans:
+  updateStatus()
+
+Goals:
+  clean(plastic)
+ 
+
+PG-rules:
+clean(GarbageType) <- object(GarbageType,position(X,Y)) | {
+    moveTo(X,Y);
+    cleanse(GarbageType)
+}
+
+clean(GarbageType) <- not object(GarbageType,_) | {
+   @space(readIfExists(object(GarbageType,null),0),R);
+   B(R=[actionresult(Result)]);
+   if B(Result = null) then {
+     readClock()
+   } else {
+     AddObj(Result)
+   }
+}
+
+at(X,Y) <- true | {
+    moveTo(X,Y); 
+    dropgoal(at(X,Y))
+}
+
+PC-rules:
+cleanse(GarbageType) <- object(GarbageType,position(X,Y)) and position(X,Y) | {
+    RemoveObj(GarbageType,X,Y);
+    @space(takeIfExists(object(GarbageType,position(X,Y)),0),_)
+} 
+
+///////////// Moving
+moveTo(X,Y) <- position(X2,Y2) and X2 < X and raise(X2,NewX) | { 
+    updatePos(NewX,Y2); moveTo(X,Y)
+}
+moveTo(X,Y) <- position(X2,Y2) and X2 > X and lower(X2,NewX) | { 
+    updatePos(NewX,Y2); moveTo(X,Y)
+}
+moveTo(X,Y) <- position(X2,Y2) and Y2 < Y and raise(Y2,NewY) | { 
+    updatePos(X2,NewY); moveTo(X,Y)
+}
+moveTo(X,Y) <- position(X2,Y2) and Y2 > Y and lower(Y2,NewY) | { 
+    updatePos(X2,NewY); moveTo(X,Y)
+}
+moveTo(X,Y) <- position(X,Y) | { skip }
+
+updatePos(NewX,NewY) <- position(X,Y) | {
+    [B(health(Health));
+    UpdateStatus(NewX,NewY,Health);
+    @space(take(status(position(X,Y),Health),0),_);
+    @space(write(status(position(NewX,NewY),Health),-1),_)]
+} 
+
+readClock() <- true |{
+    @space(clock(),R);
+    B(R=[actionresult(Result)]);
+    UpdateClock(Result)
+}
+
+updateStatus() <- true |{
+    [@space(read(status(null,null),0),R); 
+    B(R=[actionresult(tuple(Me,position(X,Y),H))]);
+    UpdateStatus(X,Y,H)]
+}
+
+event(obligation(Goals,Deadline,Sanction),space) <- true | {
+    adoptGoals(Goals)
+}
+
+event(prohibition(State,Sanction),space) <- true | {
+    AddProhibition(State,Sanction)
+}
+
+event(changed(status),space) <- true |{ updateStatus() }
+
+adoptGoals([at(X,Y,_)|T]) <- true | {
+    adopta(at(X,Y));
+    adoptGoals(T)
+}
+adoptGoals([]) <- true | { skip }
