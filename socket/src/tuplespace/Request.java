@@ -25,9 +25,45 @@ public class Request implements Entry {
 
 	}
 
+	public Request(Integer clock) {
+		this.clock = clock;
+	}
+
 	@Override
 	public String toString() {
 		return "Request [id=" + id + ", cell=" + cell + ", time=" + time
 				+ ", clock=" + clock + "]";
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Cell getCell() {
+		return cell;
+	}
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
+	}
+
+	public Date getTime() {
+		return time;
+	}
+
+	public void setTime(Date time) {
+		this.time = time;
+	}
+
+	public Integer getClock() {
+		return clock;
+	}
+
+	public void setClock(Integer clock) {
+		this.clock = clock;
 	}
 }

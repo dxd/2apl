@@ -2,13 +2,13 @@ package dataTS;
 
 import tuplespace.Cell;
 
-public class Agent {
+public class AgentPoints {
 	
 	private int id;
 	private Cell cell;
 	private int points;
 	
-	public Agent(int id, Integer points) {
+	public AgentPoints(int id, Integer points) {
 		this.id = id;
 		this.points = points;
 	}

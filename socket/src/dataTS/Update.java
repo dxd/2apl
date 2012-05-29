@@ -5,15 +5,20 @@ import java.util.ArrayList;
 import dataJSon.Status;
 
 import tuplespace.ActionRequest;
+import tuplespace.Cargo;
 import tuplespace.Points;
 import tuplespace.Position;
+import tuplespace.Request;
 
 public class Update {
 	
 	private ArrayList<Location> locations;
 	private ArrayList<ActionRequest> actionRead;
 	private ArrayList<ActionRequest> actionInv;
-	private ArrayList<Agent> agents;
+	private ArrayList<AgentPoints> agentPoints;
+	private ArrayList<Cargo> cargos;
+	private ArrayList<Request> requests;
+	
 	private Status status;
 
 
@@ -83,21 +88,59 @@ public class Update {
 	}
 
 	public void Points(ArrayList<Points> points) {
-		agents = new ArrayList<Agent>();
+		agentPoints = new ArrayList<AgentPoints>();
 		
 		for (Points p : points)
 		{
 			int id = status.getPlayerId(p.agent);
-			agents.add(new Agent(id,p.value));
+			agentPoints.add(new AgentPoints(id,p.value));
 		}
 	}
 
-	public ArrayList<Agent> getAgents() {
-		return agents;
+	public ArrayList<AgentPoints> getAgents() {
+		return agentPoints;
 	}
 
-	public void setAgents(ArrayList<Agent> agents) {
-		this.agents = agents;
+	public void setAgents(ArrayList<AgentPoints> agentPoints) {
+		this.agentPoints = agentPoints;
+	}
+
+	public void Cargos(ArrayList<Cargo> cargosts) {
+		cargos = new ArrayList<Cargo>();
+		
+		for (Cargo c : cargosts)
+		{
+			if (c.getId() == null)
+				cargos.add(c);
+		}
+		
+	}
+
+	public void Requests(ArrayList<Request> requeststs) {
+		requests = new ArrayList<Request>();
+		
+		for (Request r : requeststs)
+		{
+			if (r.getId() == null)
+				requests.add(r);
+		}
+		
+	}
+
+	public ArrayList<Cargo> getCargos() {
+		return cargos;
+	}
+
+	public void setCargos(ArrayList<Cargo> cargos) {
+		this.cargos = cargos;
+	}
+
+	public ArrayList<Request> getRequests() {
+		return requests;
+	}
+
+	public void setRequests(ArrayList<Request> requests) {
+		this.requests = requests;
 	}
 
 }

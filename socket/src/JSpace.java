@@ -12,9 +12,11 @@ import dataJSon.Status;
 import dataTS.Update;
 
 import tuplespace.ActionRequest;
+import tuplespace.Cargo;
 import tuplespace.Cell;
 import tuplespace.Points;
 import tuplespace.Position;
+import tuplespace.Request;
 import tuplespace.Time;
 import tuplespace.Tuple;
 
@@ -131,14 +133,30 @@ public class JSpace {
 		
 		ArrayList<Position> positions = readLocations(clock);
 		ArrayList<Points> points = readPoints(clock);
-		//readRequests();
-		//readCargos();
+		ArrayList<Request> requests = readRequests(clock);
+		ArrayList<Cargo> cargos = readCargos(clock);
 		ArrayList<ActionRequest> ar = readReadingRequests(clock);
 		
 		update.Positions(positions);
 		update.Points(points);
+		update.Cargos(cargos);
+		update.Requests(requests);
 		update.ActionRequests(ar);
 		return update;
+	}
+
+	private ArrayList<Cargo> readCargos(int clock) {
+		Cargo cargo = new Cargo(clock);
+		ArrayList<Cargo> cargos = new ArrayList<Cargo>();
+		getAll(cargo, cargos);
+		return cargos;
+	}
+
+	private ArrayList<Request> readRequests(int clock) {
+		Request request = new Request(clock);
+		ArrayList<Request> requests = new ArrayList<Request>();
+		getAll(request, requests);
+		return requests;
 	}
 
 	private ArrayList<Points> readPoints(int clock) {

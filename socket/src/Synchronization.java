@@ -197,17 +197,64 @@ public class Synchronization {
 	private void push() {
 		postLocations();
 		postPoints();
+		postCargos();
+		postRequests();
 		getReadings();
-
-		
 	}
-	private void postPoints() {
-		for (dataTS.Agent a : update.getAgents())
+	
+	private void postRequests() {
+		for (tuplespace.Request r : update.getRequests())
 		{
-			updatePoints(a.getId(), a.getPoints());
+			LatLng latlng = Game.gridToLocation(r.getCell());
+			updateRequests(latlng);
 		}
 		
 	}
+	private void updateRequests(LatLng loc) {
+		Generic gen = new Generic();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
+		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
+		
+		String url = "/game/" + gameId + "/request";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, gen);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private void postCargos() {
+		for (tuplespace.Cargo c : update.getCargos())
+		{
+			LatLng latlng = Game.gridToLocation(c.getCell());
+			dropCargos(latlng);
+		}
+		
+	}
+	private void dropCargos(LatLng loc) {
+		Generic gen = new Generic();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
+		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
+		
+		String url = "/game/" + gameId + "/dropCargo";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, gen);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private void postPoints() {
+		for (dataTS.AgentPoints a : update.getAgents())
+		{
+			updatePoints(a.getId(), a.getPoints());
+		}
+	}
+	
 	private void updatePoints(int id, int points) {
 		Generic gen = new Generic();
 		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
