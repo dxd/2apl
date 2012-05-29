@@ -13,7 +13,7 @@ public class Position implements Entry {
 	//public Long latitude;
 	public Cell cell = null;
 	public Date time = null;
-	public int clock;
+	public Integer clock;
 	
 	public Position() {
 
@@ -26,7 +26,7 @@ public class Position implements Entry {
 		this.time = time;
 	}
 
-	public Position(String agent2) {
+	public Position(String agent) {
 		this.agent = agent;
 	}
 

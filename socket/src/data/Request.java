@@ -1,4 +1,4 @@
-package JSon;
+package data;
 
 public class Request {
 

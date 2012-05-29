@@ -5,6 +5,9 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import data.Status;
+import data.Update;
+
 import tuplespace.Position;
 import tuplespace.Time;
 import tuplespace.Tuple;
@@ -41,10 +44,10 @@ public class JSpace {
 	ArrayList<Position> positions;
 	
 	public JSpace(){
-		Init();
+		init();
 	}
 	
-	public void Init() {
+	public void init() {
 		
     System.setSecurityManager(new RMISecurityManager());
 		
@@ -115,90 +118,24 @@ public class JSpace {
 		
 	}
 
-	public void read() {
-		
-		 // do something with the space
-	    Tuple t1 = new Tuple("robot1");
-	    Tuple t0 = new Tuple("robot0");
-	    long i = 100;
-	    try {
-			//Lease l = space.write(t, null, i);
-	    	//space.write(t1,null, Lease.FOREVER);
-			Tuple read = (Tuple) space.readIfExists(t1, null, i);
-			if (read != null)
-				System.out.println(read.toString());
-			else 
-				System.out.println("not found");
-			
-			Tuple read0 = (Tuple) space.readIfExists(t0, null, i);
-			if (read0 != null)
-				System.out.println(read0.toString());
-			
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (TransactionException e) {
-			e.printStackTrace();
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void readLocation(String agent) {
-
-	    Position position;
-	    ArrayList<Position> positions = new ArrayList<Position>();
-	    
-	    try {
-			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
-			leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
-			Transaction txn = trans.transaction;
-			Entry template = space.snapshot(new Position(agent));
-			try {
-				while ((position = (Position) space.take(template, txn, 200)) != null){
-					System.out.println("Position found " + position);
-					positions.add(position);
-				}
-			} catch (UnusableEntryException e) {
-				e.printStackTrace();
-			} catch (TransactionException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			try {
-				txn.abort();
-			} catch (UnknownTransactionException e) {
-				e.printStackTrace();
-			} catch (CannotAbortException e) {
-				e.printStackTrace();
-			}
-			try {
-				leaseRenewalManager.cancel(trans.lease);
-			} catch (UnknownLeaseException e) {
-				e.printStackTrace();
-			}
-			
-		} catch (LeaseDeniedException e1) {
-			e1.printStackTrace();
-		} catch (RemoteException e1) {
-			e1.printStackTrace();
-		}
-	    
-	
-	}
-
 	public boolean error() {
 		
 		return space == null;
 	}
 
-	public void readAll(int clock) {
+	public Update readAll(int clock) {
 		
 		readLocations(clock);
 		//readRequests();
 		//readCargos();
 		//readReadingRequests(clock);
+		Update update = new Update(positions);
+		return update;
+	}
+
+	private Update createUpdates() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private void readReadingRequests(int clock) {
@@ -219,6 +156,8 @@ public class JSpace {
 				while ((position = (Position) space.take(template, txn, 200)) != null){
 					System.out.println("Position found " + position);
 					positions.add(position);
+					txn.abort();
+					leaseRenewalManager.cancel(trans.lease);
 				}
 			} catch (UnusableEntryException e) {
 				e.printStackTrace();
@@ -226,16 +165,6 @@ public class JSpace {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-			try {
-				txn.abort();
-			} catch (UnknownTransactionException e) {
-				e.printStackTrace();
-			} catch (CannotAbortException e) {
-				e.printStackTrace();
-			}
-			try {
-				leaseRenewalManager.cancel(trans.lease);
 			} catch (UnknownLeaseException e) {
 				e.printStackTrace();
 			}
@@ -248,7 +177,7 @@ public class JSpace {
 		
 	}
 
-	public void writeAll(int clock) {
+	public void writeAll(int clock, Status status) {
 		
 		writeTime(clock);
 		//writeReadings(clock);

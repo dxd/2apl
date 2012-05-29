@@ -27,6 +27,6 @@ public class GameStep extends TimerTask
 	    	synchro.run(clock);
 			//synchro.getStatus(ruby);
 			//jspace.read();
-			System.out.println(clock);
+			System.out.println("Clock: " + clock);
 	    }
   }

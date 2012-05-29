@@ -16,11 +16,12 @@ import java.nio.Buffer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
-import JSon.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonToken;
+
+import data.*;
 
 
 
@@ -31,6 +32,10 @@ public class Synchronization {
 	private JSpace jspace;
 
 	private int clock;
+
+	private Status status;
+
+	private Update update;
     
 	public Synchronization(JSpace jspace) {
 		this.jspace = jspace;
@@ -124,7 +129,7 @@ public class Synchronization {
     		//BufferedReader reader = new BufferedReader(new FileReader("/Users/dxd/git/Git/socket/src/status.json"));
     		
     		    Gson gson = new GsonBuilder().create();
-    		    Status status = gson.fromJson(reader, Status.class);
+    		    status = gson.fromJson(reader, Status.class);
     		    System.out.println(status.getRequests().toString());
     		    reader.close();
     		    return status;
@@ -137,10 +142,10 @@ public class Synchronization {
 	}
 	public void run(int clock) {
 		
-		jspace.readAll(clock-1);
+		update = jspace.readAll(clock-1);
 		pull();
 		push();
-		jspace.writeAll(clock);
+		jspace.writeAll(clock, status);
 		
 	}
 	private void push() {

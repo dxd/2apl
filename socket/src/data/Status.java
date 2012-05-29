@@ -1,4 +1,4 @@
-package JSon;
+package data;
 
 import java.util.ArrayList;
 import java.util.List;
