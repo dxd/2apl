@@ -7,6 +7,7 @@ import net.jini.core.entry.Entry;
 
 public class Points implements Entry {
 	
+	public Integer id;
 	public String agent;
 	public Date time;
 	public int clock;

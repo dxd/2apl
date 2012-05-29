@@ -9,6 +9,7 @@ import net.jini.core.entry.Entry;
 public class Reading implements Entry {
 	
 	public String agent;
+	public Integer id;
 	//public Long longitude;
 	//public Long latitude;
 	public Cell cell;
