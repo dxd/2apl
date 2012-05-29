@@ -17,11 +17,12 @@ public class Position implements Entry {
 
 	}
 	
-	public Position(String agent, Cell cell, int clock, Date time) {
+	public Position(Integer id, String agent, Cell cell, int clock) {
+		this.id = id;
 		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = time;
+		this.time = new Date();
 	}
 
 	public Position(String agent) {
@@ -30,6 +31,12 @@ public class Position implements Entry {
 
 	public Position(int clock) {
 		this.clock = clock;
+	}
+
+	@Override
+	public String toString() {
+		return "Position [agent=" + agent + ", id=" + id + ", cell=" + cell
+				+ ", time=" + time + ", clock=" + clock + "]";
 	}
 		
 }

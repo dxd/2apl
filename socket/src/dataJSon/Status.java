@@ -3,6 +3,8 @@ package dataJSon;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.javadocmd.simplelatlng.LatLng;
+
 public class Status {
 	
 	private List<Request> request = new ArrayList<Request>();
@@ -64,12 +66,27 @@ public class Status {
 		}
 		return 0;
 	}
+	
+	public String getPlayerName(int id) {
+		for (Player p : player)
+		{
+			if (p.getId() == id)
+				return p.getName();
+		}
+		return null;
+	}
 
 	@Override
 	public String toString() {
 		return "Status [request=" + request + ", location=" + location
 				+ ", reading=" + reading + ", cargo=" + cargo + ", player="
 				+ player + "]";
+	}
+
+	public void addReading(ReadingResponse r, LatLng latlng, int id) {
+		
+		reading.add(new Reading((float) latlng.getLatitude(), (float) latlng.getLongitude(), id, Float.valueOf(r.getReading())));
+		
 	}
 
 

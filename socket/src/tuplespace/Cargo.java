@@ -10,7 +10,7 @@ public class Cargo implements Entry {
 	
 	public Cell cell;
 	public Date time;
-	public int clock;
+	public Integer clock;
 	
 	public Cargo() {
 

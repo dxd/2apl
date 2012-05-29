@@ -64,4 +64,20 @@ public class Update {
 		
 	}
 
+	public ArrayList<ActionRequest> getActionRead() {
+		return actionRead;
+	}
+
+	public void setActionRead(ArrayList<ActionRequest> actionRead) {
+		this.actionRead = actionRead;
+	}
+
+	public ArrayList<ActionRequest> getActionInv() {
+		return actionInv;
+	}
+
+	public void setActionInv(ArrayList<ActionRequest> actionInv) {
+		this.actionInv = actionInv;
+	}
+
 }

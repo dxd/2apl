@@ -9,6 +9,7 @@ public class ActionRequest implements Entry {
 	public Integer id;
 	public String agent;
 	public String type;
+	public Cell cell;
 	public Integer clock;
 	public Date time;
 	
@@ -58,6 +59,14 @@ public class ActionRequest implements Entry {
 
 	public void setTime(Date time) {
 		this.time = time;
+	}
+
+	public Cell getCell() {
+		return cell;
+	}
+
+	public void setCell(Cell cell) {
+		this.cell = cell;
 	}
 
 }

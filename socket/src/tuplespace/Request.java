@@ -7,19 +7,27 @@ import net.jini.core.entry.Entry;
 
 public class Request implements Entry {
 	
+	public Integer id;
 	public Cell cell;
 	public Date time;
-	public int clock;
+	public Integer clock;
 	
 	public Request() {
 
 	}
 	
-	public Request(Cell cell, int clock, Date time) {
+	public Request(Integer id, Cell cell, int clock) {
 
+		this.id = id;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = time;
+		this.time = new Date();
 
+	}
+
+	@Override
+	public String toString() {
+		return "Request [id=" + id + ", cell=" + cell + ", time=" + time
+				+ ", clock=" + clock + "]";
 	}
 }

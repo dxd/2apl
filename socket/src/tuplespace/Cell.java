@@ -1,6 +1,8 @@
 package tuplespace;
 
-public class Cell {
+import java.io.Serializable;
+
+public class Cell implements Serializable {
 	
 	
 	public int x;
@@ -9,6 +11,11 @@ public class Cell {
 	public Cell(int i, int j) {
 		x = i;
 		y = j;
+	}
+
+	@Override
+	public String toString() {
+		return "Cell [x=" + x + ", y=" + y + "]";
 	}
 
 }

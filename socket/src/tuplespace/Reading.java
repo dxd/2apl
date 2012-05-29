@@ -8,25 +8,31 @@ import net.jini.core.entry.Entry;
 
 public class Reading implements Entry {
 	
-	public String agent;
+
 	public Integer id;
 	//public Long longitude;
 	//public Long latitude;
 	public Cell cell;
 	public Date time;
-	public byte value;
-	public int clock;
+	public Float value;
+	public Integer clock;
 	
 	public Reading() {
 
 	}
 	
-	public Reading(String agent, Cell cell, int clock, Date time, byte value) {
-		this.agent = agent;
+	public Reading(Integer id, Cell cell, int clock, float value) {
+		this.id = id;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = time;
+		this.time = new Date();
 		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return "Reading [id=" + id + ", cell=" + cell + ", time=" + time
+				+ ", value=" + value + ", clock=" + clock + "]";
 	}
 		
 }

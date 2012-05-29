@@ -6,15 +6,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.Buffer;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 //import org.json.JSONTokener;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+
+import tuplespace.ActionRequest;
 
 
 import com.google.gson.Gson;
@@ -84,14 +91,20 @@ public class Synchronization {
         }
 	}
 	
-	public void postLocation(int id, LatLng loc) {
-    	try {
-    		
-    		URL ruby = new URL(server + "/game/" + gameId+ "/postLocation");
-    		
-    		String data = URLEncoder.encode("id", "UTF-8") + "=" + id;
-			data += "&" + URLEncoder.encode("latitude", "UTF-8") + "=" + loc.getLatitude();
-			data += "&" + URLEncoder.encode("longitude", "UTF-8") + "=" + loc.getLongitude();
+	private String buildPostData(ArrayList<SimpleEntry<String, Object>> params) throws UnsupportedEncodingException{
+		
+		String data = "";
+		for (SimpleEntry<String, Object> entry : params)
+		{
+			data += "&" + URLEncoder.encode(entry.getKey().toString(), "UTF-8") + "=" + URLEncoder.encode(entry.getValue().toString(), "UTF-8");
+		}
+		return data;
+		
+	}
+	
+	private void PostRequest(String url, String data, Object result){
+		try {
+			URL ruby = new URL(server + url);
 			
     	    URLConnection conn = ruby.openConnection();
     	    System.out.println(conn.toString());
@@ -103,24 +116,54 @@ public class Synchronization {
 
     	    // Get the response
     	    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-    	    StringBuilder builder = new StringBuilder();
-    	    
-    	    for (String line = null; (line = reader.readLine()) != null;) {
-        	    System.out.println(line);
-    	        builder.append(line).append("\n");
-    	    }
-    	    
-    	    Object obj=JSONValue.parse(builder.toString());
-    	    JSONArray finalResult=(JSONArray)obj;
+    	    Gson gson = new GsonBuilder().create();
+		    result = gson.fromJson(reader, result.getClass());
+		    System.out.println(result.toString());
+		    reader.close();
 
-    	    System.out.println(finalResult.toString());
 
-    	    wr.close();
-    	    reader.close();
     	} catch (Exception e) {
     	
-        }
+        
+		}
 	}
+	
+	public void postLocation(int id, LatLng loc) {
+
+		Generic gen = new Generic();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("id", id));
+		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
+		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
+		
+		String url = "/game/" + gameId + "/postLocation";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, gen);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	public ReadingResponse getReading(int id, LatLng loc) {
+
+		ReadingResponse result = new ReadingResponse();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("id", id));
+		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
+		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
+		
+		String url = "/game/" + gameId + "/getReading";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, result);
+			return result;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	
+}
     	
 	public void getStatus() {
     	//get
@@ -154,12 +197,19 @@ public class Synchronization {
 	private void push() {
 		postLocations();
 		getReadings();
+
 		
 	}
 	private void getReadings() {
-		
-		
+		ArrayList<ReadingResponse> readings = new ArrayList<ReadingResponse>();
+		for (ActionRequest ar : update.getActionRead())
+		{
+			LatLng latlng = Game.gridToLocation(ar.getCell());
+			status.addReading(getReading(ar.getId(), latlng), latlng, ar.getId());
+		}
+
 	}
+
 	private void postLocations() {
 		for (dataTS.Location loc : update.getLocations())
 		{

@@ -5,10 +5,14 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import com.javadocmd.simplelatlng.LatLng;
+
+import dataJSon.Reading;
 import dataJSon.Status;
 import dataTS.Update;
 
 import tuplespace.ActionRequest;
+import tuplespace.Cell;
 import tuplespace.Position;
 import tuplespace.Time;
 import tuplespace.Tuple;
@@ -156,24 +160,22 @@ public class JSpace {
 		
 		try {
 			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
-			leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
+			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
 			Transaction txn = trans.transaction;
 			try {
 				while ((entry = (T) space.take((Entry) template, txn, 200)) != null){
 					System.out.println(entry.toString());
 					result.add(entry);
-					txn.abort();
-					leaseRenewalManager.cancel(trans.lease);
 				}
+				txn.abort();
+				//leaseRenewalManager.cancel(trans.lease);
 			} catch (UnusableEntryException e) {
 				e.printStackTrace();
 			} catch (TransactionException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			} catch (UnknownLeaseException e) {
-				e.printStackTrace();
-			}
+			} 
 			
 		} catch (LeaseDeniedException e1) {
 			e1.printStackTrace();
@@ -192,26 +194,48 @@ public class JSpace {
 	public void writeAll(int clock, Status status) {
 		
 		writeTime(clock);
-		//writeReadings(clock);
-		//writeRequests(clock);
+		writeReadings(clock, status);
+		writeRequests(clock, status);
+		writeLocations(clock, status);
+	}
+
+	private void writeLocations(int clock, Status status) {
+		for (dataJSon.Location l : status.getLocations())
+		{
+			Cell cell = Game.locationToGrid(new LatLng(l.getLatitude(), l.getLongitude()));
+			tuplespace.Position position = new tuplespace.Position(l.getPlayer_id(),status.getPlayerName(l.getPlayer_id()), cell, clock);
+			write(position);
+		}
 		
 	}
 
-	private void writeRequests(int clock) {
-		// TODO Auto-generated method stub
+	private void writeRequests(int clock, Status status) {
+		for (dataJSon.Request r : status.getRequests())
+		{
+			Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
+			tuplespace.Request request = new tuplespace.Request(r.getId(), cell, clock);
+			write(request);
+		}
 		
 	}
 
-	private void writeReadings(int clock) {
-		// TODO Auto-generated method stub
+	private void writeReadings(int clock, Status status) {
+		
+		for (dataJSon.Reading r : status.getReadings())
+		{
+			Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
+			System.out.println(cell.toString());
+			tuplespace.Reading reading = new tuplespace.Reading(r.getId(), cell, clock, r.getValue());
+			write(reading);
+		}
 		
 	}
 
-	private void writeTime(int clock) {
-		Time time = new Time(clock);
-		
+	private void write(Entry data)
+	{
+		System.out.println(data.toString());
 		try {
-			Lease l = space.write(time, null, Lease.FOREVER);
+			Lease l = space.write(data, null, Lease.FOREVER);
 
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -220,6 +244,12 @@ public class JSpace {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void writeTime(int clock) {
+		Time time = new Time(clock);
+		write(time);
+
 		
 	}
 
