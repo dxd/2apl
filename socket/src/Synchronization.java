@@ -1,3 +1,5 @@
+import helperTS.Update;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
@@ -22,6 +24,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 import tuplespace.ActionRequest;
+import tuplespace.Position;
 
 
 import com.google.gson.Gson;
@@ -30,7 +33,6 @@ import com.google.gson.stream.JsonToken;
 import com.javadocmd.simplelatlng.LatLng;
 
 import dataJSon.*;
-import dataTS.Update;
 
 
 
@@ -41,8 +43,6 @@ public class Synchronization {
 	
 	private JSpace jspace;
 
-	private int clock;
-
 	private Status status;
 
 	private Update update;
@@ -50,47 +50,16 @@ public class Synchronization {
 	public Synchronization(JSpace jspace) {
 		this.jspace = jspace;
 	}
-    	//post
-	public void postJoin() {
-    	try {
-    		
-    		URL ruby = new URL(server + "/game/" + gameId+ "/join");
-    		
-    		String data = "";
-    		//dataJSon += 	URLEncoder.encode("layer_id", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8");
-			data += "&" + URLEncoder.encode("email", "UTF-8") + "=" + URLEncoder.encode("robot1", "UTF-8");
-			data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode("R1", "UTF-8");
-			data += "&" + URLEncoder.encode("team", "UTF-8") + "=" + URLEncoder.encode("truck", "UTF-8"); 
-			
-    	    URLConnection conn = ruby.openConnection();
-    	    System.out.println(conn.toString());
-    	    System.out.println(data);
-    	    conn.setDoOutput(true);
-    	    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-    	    wr.write(data);
-    	    wr.flush();
-
-    	    // Get the response
-    	    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-    	    StringBuilder builder = new StringBuilder();
-
-    	    for (String line = null; (line = reader.readLine()) != null;) {
-        	    System.out.println(line);
-    	        builder.append(line).append("\n");
-    	    }
-    	    
-    	    Object obj=JSONValue.parse(builder.toString());
-    	    JSONArray finalResult=(JSONArray)obj;
-
-    	    	System.out.println(finalResult.toString());
-
-    	    wr.close();
-    	    reader.close();
-    	} catch (Exception e) {
-    	
-        }
-	}
 	
+	private void initialize() {
+		
+		postJoin("email", "robot1", "runner");
+		postJoin("email", "robot2", "truck");
+		postJoin("email", "robot3", "controller");
+		postLocation(10, new LatLng(50,-1));
+		getReading(6, new LatLng(50.005,-1.005));
+		
+	}
 	private String buildPostData(ArrayList<SimpleEntry<String, Object>> params) throws UnsupportedEncodingException{
 		
 		String data = "";
@@ -188,6 +157,10 @@ public class Synchronization {
 		
 		pull();
 		update = new Update(status);
+    	if (clock == 1)
+    	{
+    		initialize();
+    	}
 		jspace.readAll(update, clock-1);
 		
 		push();
@@ -249,7 +222,7 @@ public class Synchronization {
 		
 	}
 	private void postPoints() {
-		for (dataTS.AgentPoints a : update.getAgents())
+		for (helperTS.AgentPoints a : update.getAgents())
 		{
 			updatePoints(a.getId(), a.getPoints());
 		}
@@ -271,7 +244,6 @@ public class Synchronization {
 		
 	}
 	private void getReadings() {
-		ArrayList<ReadingResponse> readings = new ArrayList<ReadingResponse>();
 		for (ActionRequest ar : update.getActionRead())
 		{
 			LatLng latlng = Game.gridToLocation(ar.getCell());
@@ -281,7 +253,7 @@ public class Synchronization {
 	}
 
 	private void postLocations() {
-		for (dataTS.Location loc : update.getLocations())
+		for (Position loc : update.getLocations())
 		{
 			LatLng latlng = Game.gridToLocation(loc.getCell());
 			postLocation(loc.getId(), latlng);
@@ -290,6 +262,25 @@ public class Synchronization {
 	}
 	private void pull() {
 		getStatus();
+	}
+	
+	public JoinResponse postJoin(String string, String string2, String string3) {
+		JoinResponse response = new JoinResponse();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("email", string));
+		params.add(new SimpleEntry<String, Object>("name", string2));
+		params.add(new SimpleEntry<String, Object>("team", string3));
+		
+		String url = "/game/" + gameId + "/join";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, response);
+			status.addPlayer(response, string2);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return response;
+		
 	}
 }
 

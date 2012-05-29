@@ -24,12 +24,11 @@ public class GameStep extends TimerTask
 	    {
 	    	clock++;
 
-			//synchro.postJoin(ruby);
-			synchro.postLocation(10, new LatLng(50,-1));
-			synchro.getReading(6, new LatLng(50.005,-1.005));
+			
 	    	synchro.run(clock);
-			//synchro.getStatus(ruby);
-			//jspace.read();
 			System.out.println("Clock: " + clock);
 	    }
+
+
+		
   }

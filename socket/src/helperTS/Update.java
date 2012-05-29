@@ -67,8 +67,7 @@ public class Update {
 			if (a.type == "investigate")
 				actionInv.add(a);
 		}
-		
-		
+
 	}
 
 	public ArrayList<ActionRequest> getActionRead() {

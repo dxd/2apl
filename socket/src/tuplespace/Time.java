@@ -16,5 +16,9 @@ public class Time implements Entry {
 		this.clock = clock;
 		this.time = new Date();
 	}
+	@Override
+	public String toString() {
+		return "Time [clock=" + clock + ", time=" + time + "]";
+	}
 	
 }

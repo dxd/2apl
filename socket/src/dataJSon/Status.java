@@ -89,6 +89,12 @@ public class Status {
 		
 	}
 
+	public void addPlayer(JoinResponse r, String name) {
+		
+		player.add(new Player(r.getUser_id(), name, r.getTeam_name()));
+		
+	}
+
 
 
 

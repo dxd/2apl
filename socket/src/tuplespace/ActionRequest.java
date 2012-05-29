@@ -21,14 +21,6 @@ public class ActionRequest implements Entry {
 		this.clock = clock;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	public String getAgent() {
 		return agent;
 	}
@@ -67,6 +59,14 @@ public class ActionRequest implements Entry {
 
 	public void setCell(Cell cell) {
 		this.cell = cell;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

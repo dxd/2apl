@@ -1,4 +1,6 @@
 
+import helperTS.Update;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.RMISecurityManager;
@@ -9,7 +11,6 @@ import com.javadocmd.simplelatlng.LatLng;
 
 import dataJSon.Reading;
 import dataJSon.Status;
-import dataTS.Update;
 
 import tuplespace.ActionRequest;
 import tuplespace.Cargo;
@@ -219,7 +220,17 @@ public class JSpace {
 		writeTime(clock);
 		writeReadings(clock, status);
 		writeRequests(clock, status);
+		writeCargos(clock, status);
 		writeLocations(clock, status);
+	}
+
+	private void writeCargos(int clock, Status status) {
+		for (dataJSon.Cargo c : status.getCargos())
+		{
+			Cell cell = Game.locationToGrid(new LatLng(c.getLatitude(), c.getLongitude()));
+			tuplespace.Cargo cargo = new tuplespace.Cargo(c.getId(), cell, clock);
+			write(cargo);
+		}
 	}
 
 	private void writeLocations(int clock, Status status) {
@@ -264,7 +275,7 @@ public class JSpace {
 			e.printStackTrace();
 		} catch (TransactionException e) {
 			e.printStackTrace();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

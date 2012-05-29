@@ -19,11 +19,12 @@ public class Cargo implements Entry {
 	public Cargo(Integer clock) {
 		this.clock = clock;
 	}
-	public Cargo(Cell cell, int clock, Date time) {
-
+	public Cargo(int id, Cell cell, int clock) {
+		
+		this.id = id;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = time;
+		this.time = new Date();
 
 	}
 	public Integer getId() {

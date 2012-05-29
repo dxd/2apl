@@ -7,6 +7,11 @@ public class Player {
 	private int points_cache;
 	private String team;
 	
+	public Player(int id, String name, String team) {
+		this.id = id;
+		this.name = name;
+		this.team = team;
+	}
 	public int getId() {
 		return id;
 	}
