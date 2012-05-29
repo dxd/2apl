@@ -5,9 +5,10 @@ import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import data.Status;
-import data.Update;
+import dataJSon.Status;
+import dataTS.Update;
 
+import tuplespace.ActionRequest;
 import tuplespace.Position;
 import tuplespace.Time;
 import tuplespace.Tuple;
@@ -35,11 +36,11 @@ import net.jini.space.JavaSpace;
 
 public class JSpace {
 	
-	JavaSpace space = null;
+	static JavaSpace space = null;
 	ServiceRegistrar sr = null;
 	static ServiceDiscoveryManager sdm;
-	private TransactionManager transManager;
-	private LeaseRenewalManager leaseRenewalManager;
+	private static TransactionManager transManager;
+	private static LeaseRenewalManager leaseRenewalManager;
 	
 	ArrayList<Position> positions;
 	
@@ -123,13 +124,14 @@ public class JSpace {
 		return space == null;
 	}
 
-	public Update readAll(int clock) {
+	public Update readAll(Update update, int clock) {
 		
-		readLocations(clock);
+		ArrayList<Position> positions = readLocations(clock);
 		//readRequests();
 		//readCargos();
-		//readReadingRequests(clock);
-		Update update = new Update(positions);
+		ArrayList<ActionRequest> ar = readReadingRequests(clock);
+		update.Positions(positions);
+		update.ActionRequests(ar);
 		return update;
 	}
 
@@ -138,24 +140,28 @@ public class JSpace {
 		return null;
 	}
 
-	private void readReadingRequests(int clock) {
-		// TODO Auto-generated method stub
+	private ArrayList<ActionRequest> readReadingRequests(int clock) {
+		
+		ActionRequest template = new ActionRequest(clock);
+		ArrayList<ActionRequest> ar = new ArrayList<ActionRequest>();
+		getAll(template, ar);
+		return ar;
 		
 	}
 
-	private void readLocations(int clock) {
-		Position position;
-		positions = new ArrayList<Position>();
-	    
+
+	private static <T> void getAll(Object template, ArrayList<T> result) {
+
+		T entry;
+		
 		try {
 			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
 			leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
 			Transaction txn = trans.transaction;
-			Entry template = space.snapshot(new Position(clock));
 			try {
-				while ((position = (Position) space.take(template, txn, 200)) != null){
-					System.out.println("Position found " + position);
-					positions.add(position);
+				while ((entry = (T) space.take((Entry) template, txn, 200)) != null){
+					System.out.println(entry.toString());
+					result.add(entry);
 					txn.abort();
 					leaseRenewalManager.cancel(trans.lease);
 				}
@@ -174,7 +180,13 @@ public class JSpace {
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		}
-		
+	}
+
+	private ArrayList<Position> readLocations(int clock) {
+		Position position = new Position(clock);
+		positions = new ArrayList<Position>();
+		getAll(position, positions);
+		return positions;
 	}
 
 	public void writeAll(int clock, Status status) {

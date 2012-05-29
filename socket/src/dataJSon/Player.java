@@ -31,5 +31,10 @@ public class Player {
 	public void setTeam(String team) {
 		this.team = team;
 	}
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", name=" + name + ", points_cache="
+				+ points_cache + ", team=" + team + "]";
+	}
 
 }

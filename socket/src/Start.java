@@ -31,5 +31,7 @@ public class Start {
 	    timer = new Timer();
 	    timer.schedule(new GameStep(synchro),0, gamePace);
 	    
+	    Game.initiateGrid();
+	    
 	  }
 }

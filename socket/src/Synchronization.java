@@ -20,14 +20,17 @@ import org.json.simple.JSONValue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonToken;
+import com.javadocmd.simplelatlng.LatLng;
 
-import data.*;
+import dataJSon.*;
+import dataTS.Update;
 
 
 
 public class Synchronization {
 
-	private static String ruby = "http://albinoni.cs.nott.ac.uk:49992";
+	private static String server = "http://albinoni.cs.nott.ac.uk:49992";
+	private static int gameId = 3;
 	
 	private JSpace jspace;
 
@@ -41,13 +44,13 @@ public class Synchronization {
 		this.jspace = jspace;
 	}
     	//post
-	public void postJoin(String s) {
+	public void postJoin() {
     	try {
     		
-    		URL ruby = new URL(s + "/game/3/join");
+    		URL ruby = new URL(server + "/game/" + gameId+ "/join");
     		
     		String data = "";
-    		//data += 	URLEncoder.encode("layer_id", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8");
+    		//dataJSon += 	URLEncoder.encode("layer_id", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8");
 			data += "&" + URLEncoder.encode("email", "UTF-8") + "=" + URLEncoder.encode("robot1", "UTF-8");
 			data += "&" + URLEncoder.encode("name", "UTF-8") + "=" + URLEncoder.encode("R1", "UTF-8");
 			data += "&" + URLEncoder.encode("team", "UTF-8") + "=" + URLEncoder.encode("truck", "UTF-8"); 
@@ -81,14 +84,14 @@ public class Synchronization {
         }
 	}
 	
-	public void postLocation(String s) {
+	public void postLocation(int id, LatLng loc) {
     	try {
     		
-    		URL ruby = new URL(s + "/game/3/postLocation");
+    		URL ruby = new URL(server + "/game/" + gameId+ "/postLocation");
     		
-    		String data = URLEncoder.encode("id", "UTF-8") + "=" + URLEncoder.encode("10", "UTF-8");
-			data += "&" + URLEncoder.encode("latitude", "UTF-8") + "=" + URLEncoder.encode("52.9546228", "UTF-8");
-			data += "&" + URLEncoder.encode("longitude", "UTF-8") + "=" + URLEncoder.encode("-1.1867573", "UTF-8");
+    		String data = URLEncoder.encode("id", "UTF-8") + "=" + id;
+			data += "&" + URLEncoder.encode("latitude", "UTF-8") + "=" + loc.getLatitude();
+			data += "&" + URLEncoder.encode("longitude", "UTF-8") + "=" + loc.getLongitude();
 			
     	    URLConnection conn = ruby.openConnection();
     	    System.out.println(conn.toString());
@@ -119,42 +122,54 @@ public class Synchronization {
         }
 	}
     	
-	public Status getStatus(String s) {
+	public void getStatus() {
     	//get
     	try {
 
-    		URL ruby = new URL(s + "/game/3/status.json"); 
+    		URL ruby = new URL(server + "/game/" + gameId+ "/status.json"); 
     		
     		Reader reader = new InputStreamReader(ruby.openStream());
     		//BufferedReader reader = new BufferedReader(new FileReader("/Users/dxd/git/Git/socket/src/status.json"));
     		
     		    Gson gson = new GsonBuilder().create();
     		    status = gson.fromJson(reader, Status.class);
-    		    System.out.println(status.getRequests().toString());
+    		    System.out.println(status.toString());
     		    reader.close();
-    		    return status;
     		
     	} catch (MalformedURLException e) {
     	} catch (IOException e) {
     	}
-		return null;
  
 	}
 	public void run(int clock) {
 		
-		update = jspace.readAll(clock-1);
 		pull();
+		update = new Update(status);
+		jspace.readAll(update, clock-1);
+		
 		push();
 		jspace.writeAll(clock, status);
 		
 	}
 	private void push() {
-		// TODO Auto-generated method stub
+		postLocations();
+		getReadings();
+		
+	}
+	private void getReadings() {
+		
+		
+	}
+	private void postLocations() {
+		for (dataTS.Location loc : update.getLocations())
+		{
+			LatLng latlng = Game.gridToLocation(loc.getCell());
+			postLocation(loc.getId(), latlng);
+		}
 		
 	}
 	private void pull() {
-		// TODO Auto-generated method stub
-		
+		getStatus();
 	}
 }
 

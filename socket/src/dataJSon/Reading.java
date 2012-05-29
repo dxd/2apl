@@ -38,5 +38,11 @@ public class Reading {
 	public void setValue(float value) {
 		this.value = value;
 	}
+	@Override
+	public String toString() {
+		return "Reading [id=" + id + ", longitude=" + longitude + ", latitude="
+				+ latitude + ", player_id=" + player_id + ", value=" + value
+				+ "]";
+	}
 
 }

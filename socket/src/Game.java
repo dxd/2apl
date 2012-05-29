@@ -5,62 +5,74 @@ import tuplespace.Cell;
 import com.javadocmd.simplelatlng.*;
 
 import static java.lang.Math.*;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
  
-public class Game {
+public final class Game {
 	
-	private LatLng start;
-	private double kmX = 0.400;
-	private double kmY = 0.400;
+	private static LatLng start = new LatLng(52.954441, -1.18994);
+	private static double kmX = 0.500;
+	private static double kmY = 0.500;
 	
+	private static int gridX = 20;
+	private static int gridY = 20;
 	
+	private static LatLng[][] grid;
+	private static double width;
+	private static double height;
 	
-	private static int gridX = 10;
-	private static int gridY = 10;
+	private static double earthRadius = 6378;
 	
-	private LatLng[][] grid;
-	private double width;
-	private double height;
-	
-	public Game(LatLng start, double metersX, double metersY){
-		
-		this.start = start;
-		this.kmX = metersX;
-		this.kmY = metersY;
-		
-		initiateGrid();
-		
-		
-	}
-
 	 
-	 
-	private void initiateGrid() {
+	public static void initiateGrid() {
 		
 		width = kmX / gridX;
 		height = kmY / gridY;
+		grid = new LatLng[gridX][gridY];
 		grid[0][0] = start;
 		
 		for (int i = 0; i < gridX; i++) {
 			for (int j = 0; j < gridY; j++) {
-				if (i == 0 && j == 0) continue;
+				
+				if (i == 0 && j == 0) 
+					continue;
 				double dx = width*i;
 				double dy = height*j;
-				int r_earth = 6378; //TODO adjust for latitude
+				double range = sqrt(dx*dx + dy*dy);
 				
-				double latitude  = start.getLatitude()  + (dy / r_earth) * (180 / PI);
-				double longitude = start.getLongitude() - (dx / r_earth) * (180 / PI) / cos(start.getLatitude() * 180/PI);
-				
-				grid[i][j] = new LatLng(latitude, longitude);
+								
+				grid[i][j] = calcDerivedPos(start, range, 135);
+				System.out.println(i + " " + j + " " + grid[i][j]);
 			}
 		}
-		
-		
 	}
 	
-	public Cell locationToGrid(LatLng loc){
+	public static LatLng calcDerivedPos(LatLng source, double range, double bearing)
+	{
+	    double latA = source.getLatitude() * (PI/180);
+	    double lonA = source.getLongitude() * (PI/180);
+	    double angularDistance = range / earthRadius;
+	    double trueCourse = bearing * (PI/180);
+
+	    double lat = Math.asin(
+	        Math.sin(latA) * Math.cos(angularDistance) + 
+	        Math.cos(latA) * Math.sin(angularDistance) * Math.cos(trueCourse));
+
+	    double dlon = Math.atan2(
+	        Math.sin(trueCourse) * Math.sin(angularDistance) * Math.cos(latA), 
+	        Math.cos(angularDistance) - Math.sin(latA) * Math.sin(lat));
+
+	    double lon = ((lonA + dlon + Math.PI) % (PI*2)) - Math.PI;
+
+	    return new LatLng(
+	        lat * (180 / PI), 
+	        lon * (180 / PI));
+	}
+
+	
+	public static Cell locationToGrid(LatLng loc){
 		
 		for (int i = 0; i < gridX; i++) {
 			for (int j = 0; j < gridY; j++) {
@@ -82,17 +94,21 @@ public class Game {
 		
 	}
 	
-	public LatLng gridToLocation(Cell cell){
+	public static LatLng gridToLocation(Cell cell){
 		
 		double dx = width/2;
 		double dy = height/2;
-		int r_earth = 6378; //TODO adjust for latitude
-		
-		double latitude  = grid[cell.x][cell.y].getLatitude()  + (dy / r_earth) * (180 / PI);
-		double longitude = grid[cell.x][cell.y].getLongitude() - (dx / r_earth) * (180 / PI) / cos(grid[cell.x][cell.y].getLatitude() * 180/PI);
-		
-		return new LatLng(latitude, longitude);
+		double range = sqrt(dx*dx + dy*dy);
+	
+		return calcDerivedPos(grid[cell.x][cell.y], range, 135);
 		
 	}
+	
+	public static LatLng locToCentre(LatLng loc)
+	{
+		return gridToLocation(locationToGrid(loc));
+	}
+	
+	
 
 }

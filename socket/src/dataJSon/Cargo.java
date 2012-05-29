@@ -45,5 +45,11 @@ public class Cargo {
 	public void setExposed(boolean exposed) {
 		this.exposed = exposed;
 	}
+	@Override
+	public String toString() {
+		return "Cargo [id=" + id + ", longitude=" + longitude + ", latitude="
+				+ latitude + ", player_id=" + player_id + ", radius=" + radius
+				+ ", exposed=" + exposed + "]";
+	}
 
 }

@@ -24,6 +24,11 @@ public class Location {
 	public void setLatitude(float latitude) {
 		this.latitude = latitude;
 	}
+	@Override
+	public String toString() {
+		return "Location [player_id=" + player_id + ", longitude=" + longitude
+				+ ", latitude=" + latitude + "]";
+	}
 	
 	
 }

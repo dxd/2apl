@@ -65,6 +65,13 @@ public class Status {
 		return 0;
 	}
 
+	@Override
+	public String toString() {
+		return "Status [request=" + request + ", location=" + location
+				+ ", reading=" + reading + ", cargo=" + cargo + ", player="
+				+ player + "]";
+	}
+
 
 
 
