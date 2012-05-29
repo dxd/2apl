@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import dataJSon.Status;
 
 import tuplespace.ActionRequest;
+import tuplespace.Points;
 import tuplespace.Position;
 
 public class Update {
@@ -12,6 +13,7 @@ public class Update {
 	private ArrayList<Location> locations;
 	private ArrayList<ActionRequest> actionRead;
 	private ArrayList<ActionRequest> actionInv;
+	private ArrayList<Agent> agents;
 	private Status status;
 
 
@@ -78,6 +80,24 @@ public class Update {
 
 	public void setActionInv(ArrayList<ActionRequest> actionInv) {
 		this.actionInv = actionInv;
+	}
+
+	public void Points(ArrayList<Points> points) {
+		agents = new ArrayList<Agent>();
+		
+		for (Points p : points)
+		{
+			int id = status.getPlayerId(p.agent);
+			agents.add(new Agent(id,p.value));
+		}
+	}
+
+	public ArrayList<Agent> getAgents() {
+		return agents;
+	}
+
+	public void setAgents(ArrayList<Agent> agents) {
+		this.agents = agents;
 	}
 
 }

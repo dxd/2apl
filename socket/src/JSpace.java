@@ -13,6 +13,7 @@ import dataTS.Update;
 
 import tuplespace.ActionRequest;
 import tuplespace.Cell;
+import tuplespace.Points;
 import tuplespace.Position;
 import tuplespace.Time;
 import tuplespace.Tuple;
@@ -45,9 +46,7 @@ public class JSpace {
 	static ServiceDiscoveryManager sdm;
 	private static TransactionManager transManager;
 	private static LeaseRenewalManager leaseRenewalManager;
-	
-	ArrayList<Position> positions;
-	
+
 	public JSpace(){
 		init();
 	}
@@ -131,17 +130,23 @@ public class JSpace {
 	public Update readAll(Update update, int clock) {
 		
 		ArrayList<Position> positions = readLocations(clock);
+		ArrayList<Points> points = readPoints(clock);
 		//readRequests();
 		//readCargos();
 		ArrayList<ActionRequest> ar = readReadingRequests(clock);
+		
 		update.Positions(positions);
+		update.Points(points);
 		update.ActionRequests(ar);
 		return update;
 	}
 
-	private Update createUpdates() {
-		// TODO Auto-generated method stub
-		return null;
+	private ArrayList<Points> readPoints(int clock) {
+
+		Points point = new Points(clock);
+		ArrayList<Points> points = new ArrayList<Points>();
+		getAll(point, points);
+		return points;
 	}
 
 	private ArrayList<ActionRequest> readReadingRequests(int clock) {
@@ -186,7 +191,7 @@ public class JSpace {
 
 	private ArrayList<Position> readLocations(int clock) {
 		Position position = new Position(clock);
-		positions = new ArrayList<Position>();
+		ArrayList<Position> positions = new ArrayList<Position>();
 		getAll(position, positions);
 		return positions;
 	}

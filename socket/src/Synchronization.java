@@ -196,8 +196,31 @@ public class Synchronization {
 	}
 	private void push() {
 		postLocations();
+		postPoints();
 		getReadings();
 
+		
+	}
+	private void postPoints() {
+		for (dataTS.Agent a : update.getAgents())
+		{
+			updatePoints(a.getId(), a.getPoints());
+		}
+		
+	}
+	private void updatePoints(int id, int points) {
+		Generic gen = new Generic();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("id", id));
+		params.add(new SimpleEntry<String, Object>("points", points));
+		
+		String url = "/game/" + gameId + "/updatePoints";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, gen);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	private void getReadings() {
