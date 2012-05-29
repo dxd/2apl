@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 import tuplespace.Position;
+import tuplespace.Time;
 import tuplespace.Tuple;
 
 import net.jini.core.discovery.LookupLocator;
@@ -36,6 +37,8 @@ public class JSpace {
 	static ServiceDiscoveryManager sdm;
 	private TransactionManager transManager;
 	private LeaseRenewalManager leaseRenewalManager;
+	
+	ArrayList<Position> positions;
 	
 	public JSpace(){
 		Init();
@@ -188,6 +191,95 @@ public class JSpace {
 	public boolean error() {
 		
 		return space == null;
+	}
+
+	public void readAll(int clock) {
+		
+		readLocations(clock);
+		//readRequests();
+		//readCargos();
+		//readReadingRequests(clock);
+	}
+
+	private void readReadingRequests(int clock) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void readLocations(int clock) {
+		Position position;
+		positions = new ArrayList<Position>();
+	    
+		try {
+			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
+			leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
+			Transaction txn = trans.transaction;
+			Entry template = space.snapshot(new Position(clock));
+			try {
+				while ((position = (Position) space.take(template, txn, 200)) != null){
+					System.out.println("Position found " + position);
+					positions.add(position);
+				}
+			} catch (UnusableEntryException e) {
+				e.printStackTrace();
+			} catch (TransactionException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			try {
+				txn.abort();
+			} catch (UnknownTransactionException e) {
+				e.printStackTrace();
+			} catch (CannotAbortException e) {
+				e.printStackTrace();
+			}
+			try {
+				leaseRenewalManager.cancel(trans.lease);
+			} catch (UnknownLeaseException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (LeaseDeniedException e1) {
+			e1.printStackTrace();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+		
+	}
+
+	public void writeAll(int clock) {
+		
+		writeTime(clock);
+		//writeReadings(clock);
+		//writeRequests(clock);
+		
+	}
+
+	private void writeRequests(int clock) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void writeReadings(int clock) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void writeTime(int clock) {
+		Time time = new Time(clock);
+		
+		try {
+			Lease l = space.write(time, null, Lease.FOREVER);
+
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			e.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

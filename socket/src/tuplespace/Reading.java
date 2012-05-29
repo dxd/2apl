@@ -2,6 +2,7 @@ package tuplespace;
 
 import java.awt.Point;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import net.jini.core.entry.Entry;
 
@@ -11,7 +12,7 @@ public class Reading implements Entry {
 	//public Long longitude;
 	//public Long latitude;
 	public Cell cell;
-	public Timestamp time;
+	public Date time;
 	public byte value;
 	public int clock;
 	
@@ -19,7 +20,7 @@ public class Reading implements Entry {
 
 	}
 	
-	public Reading(String agent, Cell cell, int clock, Timestamp time, byte value) {
+	public Reading(String agent, Cell cell, int clock, Date time, byte value) {
 		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;

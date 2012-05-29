@@ -26,7 +26,11 @@ import com.google.gson.stream.JsonToken;
 
 public class Synchronization {
 
-	private static JSpace jspace;
+	private static String ruby = "http://albinoni.cs.nott.ac.uk:49992";
+	
+	private JSpace jspace;
+
+	private int clock;
     
 	public Synchronization(JSpace jspace) {
 		this.jspace = jspace;
@@ -130,6 +134,22 @@ public class Synchronization {
     	}
 		return null;
  
+	}
+	public void run(int clock) {
+		
+		jspace.readAll(clock-1);
+		pull();
+		push();
+		jspace.writeAll(clock);
+		
+	}
+	private void push() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void pull() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 
