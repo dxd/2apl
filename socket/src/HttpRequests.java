@@ -26,9 +26,10 @@ import com.google.gson.stream.JsonToken;
 
 public class HttpRequests {
 
+	private static JSpace jspace;
     
-	public HttpRequests() {
-		
+	public HttpRequests(JSpace jspace) {
+		this.jspace = jspace;
 	}
     	//post
 	public void postJoin(String s) {
@@ -109,7 +110,7 @@ public class HttpRequests {
         }
 	}
     	
-	public void getStatus(String s) {
+	public Status getStatus(String s) {
     	//get
     	try {
 
@@ -122,10 +123,12 @@ public class HttpRequests {
     		    Status status = gson.fromJson(reader, Status.class);
     		    System.out.println(status.getRequests().toString());
     		    reader.close();
+    		    return status;
     		
     	} catch (MalformedURLException e) {
     	} catch (IOException e) {
     	}
+		return null;
  
 	}
 }

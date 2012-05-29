@@ -35,7 +35,6 @@ public class JSpace {
 	ServiceRegistrar sr = null;
 	static ServiceDiscoveryManager sdm;
 	private TransactionManager transManager;
-	private LeaseRenewalService leaseRenewalService;
 	private LeaseRenewalManager leaseRenewalManager;
 	
 	public JSpace(){

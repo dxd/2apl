@@ -1,8 +1,6 @@
 package tuplespace;
 
-import net.jini.core.entry.Entry;
-
-public class Cell implements Entry {
+public class Cell {
 	
 	
 	public int x;

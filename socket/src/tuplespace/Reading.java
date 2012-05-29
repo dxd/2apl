@@ -13,14 +13,16 @@ public class Reading implements Entry {
 	public Cell cell;
 	public Timestamp time;
 	public byte value;
+	public int clock;
 	
 	public Reading() {
 
 	}
 	
-	public Reading(String agent, Cell cell, Timestamp time, byte value) {
+	public Reading(String agent, Cell cell, int clock, Timestamp time, byte value) {
 		this.agent = agent;
 		this.cell = cell;
+		this.clock = clock;
 		this.time = time;
 		this.value = value;
 	}

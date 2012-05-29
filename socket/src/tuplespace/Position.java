@@ -12,14 +12,16 @@ public class Position implements Entry {
 	//public Long latitude;
 	public Cell cell = null;
 	public Timestamp time = null;
+	public int clock;
 	
 	public Position() {
 
 	}
 	
-	public Position(String agent, Cell cell, Timestamp time) {
+	public Position(String agent, Cell cell, int clock, Timestamp time) {
 		this.agent = agent;
 		this.cell = cell;
+		this.clock = clock;
 		this.time = time;
 	}
 

@@ -1,35 +1,35 @@
+import java.util.Date;
+import java.util.Timer;
 
 public class Client {
 	
-	private static String ruby = "http://albinoni.cs.nott.ac.uk:49992";
-	private static HttpRequests request;
+
+	private static Date startTime;
+	private static int gamePace = 1000;
+	
+	private static Timer timer;
+	
 	private static JSpace jspace;
+	private static HttpRequests request;
 	
 	public static void main(String[] args) {
 		
-		request = new HttpRequests();
 		jspace = new JSpace();
 		
 		if (jspace.error())
 			return;
 		
-		//request.postJoin(ruby);
-		//request.postLocation(ruby);
-		request.getStatus(ruby);
-		
-		while (true)
-        {
-            jspace.read();
-            
-            try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        }
-	    
-	   
-		
+		request = new HttpRequests(jspace);
+		initiate();
+
 	}
 
+	public static void initiate() {
+		
+		startTime = new Date();
+		
+	    timer = new Timer();
+	    timer.schedule(new GameStep(request),0, gamePace);
+	    
+	  }
 }
