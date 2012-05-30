@@ -20,9 +20,6 @@ import java.util.Hashtable;
 import java.util.List;
 //import org.json.JSONTokener;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
-
 import tuplespace.ActionRequest;
 import tuplespace.Position;
 
