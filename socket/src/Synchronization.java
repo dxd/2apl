@@ -56,8 +56,8 @@ public class Synchronization {
 		postJoin("email", "robot1", "runner");
 		postJoin("email", "robot2", "truck");
 		postJoin("email", "robot3", "controller");
-		postLocation(10, new LatLng(50,-1));
-		getReading(6, new LatLng(50.005,-1.005));
+		postLocation(10, new LatLng(52.951623,-1.186357));
+		getReading(6, new LatLng(52.951623,-1.186357));
 		
 	}
 	private String buildPostData(ArrayList<SimpleEntry<String, Object>> params) throws UnsupportedEncodingException{
