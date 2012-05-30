@@ -3,10 +3,12 @@ import java.awt.Point;
 import java.net.MalformedURLException;
 import java.rmi.*; 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.*; 
 
 import oopl.DistributedOOPL;
 import oopl.GUI.GUI;
+import tuplespace.*;
  
 
 import apapl.Environment;
@@ -46,6 +48,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
      */
 	public void initialize() throws RemoteException, UnusableEntryException, TimeoutException, InterruptedException { 
 		// Jini stuff
+		System.out.println("test.");  
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
@@ -287,16 +290,17 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
-			Point p = null;
+			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
 				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
 				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
 				int pointY = ((APLNum)point.getParams().get(1)).toInt();
-				p = new Point(pointX,pointY);
+				c = new Cell(pointX,pointY);
 			}
-			Integer health = null; // if health is null (which is ident) it stays also in java null
-			if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
-			return new Tuple(sAgent,p,health); // Create Tuple
+			//Integer health = null; // if health is null (which is ident) it stays also in java null
+			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			System.out.println(call.toString());
+			return new Position(null, sAgent, c, 0); // Create Tuple
 		} else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
 			String name = ((APLIdent)call.getParams().get(0)).getName();
 			Point p = null;
@@ -312,6 +316,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	}
 	
 	public Term entryToTerm(Entry entry){ 
+		
 		if(entry instanceof Tuple){ // in case of tuples return tuple(name,position(2,4),48)
 			Tuple tuple = (Tuple) entry;   // cast to tuple
 			String name = tuple.str;
@@ -323,9 +328,21 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			Term i = new APLIdent("null");
 			if(tuple.i!=null) i = new APLNum(tuple.i);
 			return new APLFunction("tuple", new Term[]{new APLIdent(name),posTerm,i}); // construct result
-		} else {
+			
+		} 
+		/*else if(entry instanceof Position){ // in case of tuples return tuple(name,position(2,4),48)
+			Position tuple = (Position) entry;   // cast to tuple
+			String name = tuple.getAgent();
+			if(name==null)name="null"; 
+			Term posTerm = new APLIdent("null");
+			if(tuple.cell!=null){
+				posTerm = new APLFunction("cell", new Term[]{new APLNum(tuple.cell.x),new APLNum(tuple.cell.y)}); // get position
+			}
+			Term i = new APLIdent("null");
+			if(tuple.i!=null) i = new APLNum(tuple.i);
+			return new APLFunction("tuple", new Term[]{new APLIdent(name),posTerm,i});
 			// TODO: other datatypes
-		}
+		}*/
 		return new APLIdent("null");
 	}
 

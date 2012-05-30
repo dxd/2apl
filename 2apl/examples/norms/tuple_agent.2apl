@@ -27,7 +27,7 @@ clean(GarbageType) <- object(GarbageType,position(X,Y)) | {
 
 clean(GarbageType) <- not object(GarbageType,_) | {
    @space(readIfExists(object(GarbageType,null),0),R);
-   B(R=[actionresult(Result)]);
+   B(R=actionresult(Result));
    if B(Result = null) then {
      readClock()
    } else {
@@ -62,22 +62,22 @@ moveTo(X,Y) <- position(X2,Y2) and Y2 > Y and lower(Y2,NewY) | {
 moveTo(X,Y) <- position(X,Y) | { skip }
 
 updatePos(NewX,NewY) <- position(X,Y) | {
-    [B(health(Health));
+    B(health(Health));
     UpdateStatus(NewX,NewY,Health);
     @space(take(status(position(X,Y),Health),0),_);
-    @space(write(status(position(NewX,NewY),Health),-1),_)]
+    @space(write(status(position(NewX,NewY),Health),-1),_)
 } 
 
 readClock() <- true |{
     @space(clock(),R);
-    B(R=[actionresult(Result)]);
+    B(R=actionresult(Result));
     UpdateClock(Result)
 }
 
 updateStatus() <- true |{
-    [@space(read(status(null,null),0),R); 
-    B(R=[actionresult(tuple(Me,position(X,Y),H))]);
-    UpdateStatus(X,Y,H)]
+    @space(read(status(null,null),0),R); 
+    B(R=actionresult(tuple(Me,position(X,Y),H)));
+    UpdateStatus(X,Y,H)
 }
 
 event(obligation(Goals,Deadline,Sanction),space) <- true | {

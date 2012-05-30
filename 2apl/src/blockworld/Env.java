@@ -47,7 +47,7 @@ import blockworld.lib.ObsVectListener;
 import blockworld.lib.Signal;
 import blockworld.lib.ObsVect;
 
-import tuplespace.*;
+import tuplespace_old.*;
 
 
 
