@@ -33,8 +33,8 @@ public class ExecuteAllPlans implements DeliberationStep
 			// this sequence. Otherwise, remove the plan sequence.
 			if (ps.testActivationGoal(gb,bb))
 			{	
-				if (ps.isAtomic() && module.getAtomic() != ps)
-					continue;
+				/*if (ps.isAtomic() && module.getAtomic() != ps)
+					continue;*/
 				
 				LinkedList<Plan> plans = ps.getPlans();
 			
@@ -47,8 +47,10 @@ public class ExecuteAllPlans implements DeliberationStep
 					// achieved its goal while executing the plan. In such a case an
 					// ActivationGoalAchievedException is thrown.
 					try
-					{	r = p.execute(module);
+					{	
+						r = p.execute(module);
 					
+	
 						// If after execution the plan becomes empty
 						if( ps.isEmpty() ) toRemove.add(ps);
 
@@ -56,7 +58,6 @@ public class ExecuteAllPlans implements DeliberationStep
 						if (r.failed())
 		 				{ module.notifyIEvent(ps.getID());
 						}
-						
 						result.addPlanResult(r);
 					}
 					catch (ActivationGoalAchievedException e) 

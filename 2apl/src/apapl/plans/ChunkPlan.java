@@ -34,6 +34,7 @@ public class ChunkPlan extends Plan implements ParentPlan
     
     public PlanSeq toPlanSeq()
     {
+    	System.out.println("n plantseq");
         PlanSeq r = new PlanSeq();
         for (Plan p : plans) r.addLast(p);
         r.setAtomic();
@@ -83,11 +84,28 @@ public class ChunkPlan extends Plan implements ParentPlan
     throws ActivationGoalAchievedException, ModuleDeactivatedException
     {
         PlanResult lastResult = null;
+        List<PlanResult> results = new ArrayList<PlanResult>();
         
         Goalbase gb = module.getGoalbase();
         Beliefbase bb = module.getBeliefbase();
         
-        if (plans.size()<=0) {
+        while (lastResult == null || lastResult.succeeded()) {
+            if (!testActivationGoal(gb,bb)) 
+                throw new ActivationGoalAchievedException();
+            try {
+                Plan plan = plans.getFirst();
+                lastResult = plan.execute(module);
+                results.add(lastResult);
+            }
+            catch (NoSuchElementException e) {
+                parent.removeFirst();
+                parent.applySubstitution(theta);
+                
+                return new PlanResult(this, PlanResult.SUCCEEDED, "Atomic Plan Fully Executed:\n" + planResultsToString(results));
+            }           
+        }
+        
+        /*if (plans.size()<=0) {
             if (!testActivationGoal(gb,bb)) 
                 throw new ActivationGoalAchievedException();
             try {
@@ -100,11 +118,14 @@ public class ChunkPlan extends Plan implements ParentPlan
                 
                 return new PlanResult(this, PlanResult.SUCCEEDED, "Atomic Plan Fully Executed:\n" + lastResult);
             }           
-        }
+        }*/
         
         // Plan executed only partially.
         parent.applySubstitution(theta);
-        return new PlanResult(this, lastResult.getOutcome(), "Atomic Plan Failed:\n" + lastResult);
+        if (lastResult != null)
+        	return new PlanResult(this, lastResult.getOutcome(), "Atomic Plan Failed:\n" + lastResult);
+        else
+        	return new PlanResult(this, 0);
        
     }
     

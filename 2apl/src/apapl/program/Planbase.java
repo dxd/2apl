@@ -73,11 +73,13 @@ public class Planbase extends Base implements Iterable<PlanSeq>
 	  // Check rule against all plans in the planbase
 		for (PlanSeq ps : plans)
 		{ 
+
 		  // If the plan is not an initial plan (no activationGoal) and the same
 		  // rule has been used, we check if the heads of the rules with
 			// substiutions applied to them are the same. 
 			if( ps.getActivationGoal() != null && rule == ps.getActivationRule() )
 			{ 
+
 			  // Apply substitution to head of both rules
 			  Query g1 = ps.getActivationRule().getHead().clone();
 		    g1.applySubstitution( ps.getActivationGoal() );
@@ -92,11 +94,13 @@ public class Planbase extends Base implements Iterable<PlanSeq>
 			  Collections.sort(lits1,GoalCompare.INSTANCE);
 			  LinkedList<Literal> lits2 = g2.toLiterals();
 			  Collections.sort(lits2,GoalCompare.INSTANCE);
-			
+			  
 			  // Compare them based on string comparison. In the future this should be
 			  // implemented by means of a compare in the Query class.
 				if( lits1.toString().equals(lits2.toString()) )
-			  { return true;
+			  { 
+					
+					return true;
 		  	}
 			}	
 		}
@@ -297,13 +301,13 @@ public class Planbase extends Base implements Iterable<PlanSeq>
 
 	public void sortPlans() {
 		
-		List<PlanSeq> copy = clone().plans;
-		Collections.sort(copy, new Comparator<PlanSeq>(){
+		//List<PlanSeq> copy = clone().plans;
+		Collections.sort(this.plans, new Comparator<PlanSeq>(){
 	           public int compare (PlanSeq p1, PlanSeq p2){
 	               return p1.getPriority().compareTo(p2.getPriority());
 	           }
 	       });
-		this.plans = copy;
+		//this.plans = copy;
 	}
 
 	public void sortPlansDeadline() {

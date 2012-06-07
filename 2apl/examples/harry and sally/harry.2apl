@@ -28,7 +28,7 @@ PG-rules:
     goto( 0, 0 );
 		@blockworld( drop( ), _ );
     Drop( )
-	} : 6000
+	}
 
 PC-rules:
   message( sally, inform, La, On, bombAt( X, Y ) ) <- true |

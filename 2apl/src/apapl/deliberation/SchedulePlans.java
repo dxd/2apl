@@ -31,7 +31,7 @@ public class SchedulePlans implements DeliberationStep {
 
 		schedulePlans(planbase, prohibitions, bu, module.getAtomic());
 		// scheduleAtomicPlans(atomicplans, prohibitions, bu);
-		module.setNewAtomic();
+		//module.setNewAtomic();
 		
 		return new SchedulePlansResult();
 	}
@@ -52,6 +52,7 @@ public class SchedulePlans implements DeliberationStep {
 			ArrayList<PlanSeq> tempAtomic;
 			
 			if (ps.isAtomic()) {
+				
 				if (atomic == ps) {
 					
 					tempAtomic = newAtomic;

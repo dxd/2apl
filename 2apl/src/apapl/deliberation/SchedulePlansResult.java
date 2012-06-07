@@ -53,6 +53,6 @@ public class SchedulePlansResult extends DeliberationResult
 	*/
 	public boolean moduleChanged()
 	{
-		return true; //TODO
+		return false; //TODO
 	}
 }

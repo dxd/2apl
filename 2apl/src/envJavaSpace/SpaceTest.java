@@ -188,7 +188,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		} else if(call[1] == oopl.prolog.strStorage.getInt("notifyAgent")){ // notifyAgent(name,obligation(blabla)).
 			String recipient = oopl.prolog.strStorage.getString(call[4]);
 			APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
-			//System.out.println("Sending event to "+recipient+": "+event);
+			System.out.println("Sending event to "+recipient+": "+event);
 			throwEvent(event, new String[]{recipient});
 			ea.intResult = ar_true;
 		} else if(call[1] == oopl.prolog.strStorage.getInt("clock")){ // Read the clock
@@ -290,6 +290,19 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
+			Point p = null;
+			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
+				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
+				int pointY = ((APLNum)point.getParams().get(1)).toInt();
+				p = new Point(pointX,pointY);
+			}
+			Integer health = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			System.out.println(call.toString());
+			return new Tuple(sAgent,p,health); // Create Tuple
+		}
+/*		else if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
 				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
@@ -301,7 +314,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			System.out.println(call.toString());
 			return new Position(null, sAgent, c, 0); // Create Tuple
-		} else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
+		} */
+		else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
 			String name = ((APLIdent)call.getParams().get(0)).getName();
 			Point p = null;
 			if(call.getParams().get(1) instanceof APLFunction){ // null is APLIdent so 

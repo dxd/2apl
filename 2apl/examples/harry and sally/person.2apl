@@ -20,6 +20,7 @@ PC-rules:
       goto( X, Y )
     }
   }
-
+/*
 Sanctions:
 	something(5) -> 2, something(10) -> 1
+	*/
