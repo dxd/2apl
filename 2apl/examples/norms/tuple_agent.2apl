@@ -16,14 +16,14 @@ Plans:
   updateStatus()
 
 Goals:
-  clean(plastic) : 200
+  clean(plastic)
  
 
 PG-rules:
 clean(GarbageType) <- object(GarbageType,position(X,Y)) | {
     moveTo(X,Y);
     cleanse(GarbageType)
-} : 100
+}
 
 clean(GarbageType) <- not object(GarbageType,_) | {
    @space(readIfExists(object(GarbageType,null),0),R);
@@ -33,12 +33,12 @@ clean(GarbageType) <- not object(GarbageType,_) | {
    } else {
      AddObj(Result)
    }
-} :200
+}
 
 at(X,Y) <- true | {
     moveTo(X,Y); 
     dropgoal(at(X,Y))
-} : 200
+}
 
 PC-rules:
 cleanse(GarbageType) <- object(GarbageType,position(X,Y)) and position(X,Y) | {
@@ -80,18 +80,25 @@ updateStatus() <- true |{
     UpdateStatus(X,Y,H)
 }
 
-event(obligation(Goals,Deadline,Sanction),space) <- true | {
-    adoptGoals(Goals)
+event(obligation(Goal,Deadline,Sanction),space) <- true | {
+   adoptObligation(Goal, Deadline, Sanction)
 }
 
 event(prohibition(State,Sanction),space) <- true | {
-    AddProhibition(State,Sanction)
+    aprohibition(State,Sanction)
 }
 
 event(changed(status),space) <- true |{ updateStatus() }
 
-adoptGoals([at(X,Y,_)|T]) <- true | {
-    adopta(at(X,Y));
-    adoptGoals(T)
+aprohibition([at(X,Y,_)|T], [reduce_health(_)|_]) <- true | {
+    adoptprohibition(at(X,Y) -> reduce_health);
+    aprohibition(T)
 }
-adoptGoals([]) <- true | { skip }
+aprohibition([]) <- true | { skip }
+
+adoptObligation([at(X,Y,_)|T], D, [reduce_health(_)|_]) <- true | {
+    adopta(at(X,Y) :: D -> reduce_health);
+    adoptObligation(T)
+}
+
+adoptObligation([]) <- true | { skip }

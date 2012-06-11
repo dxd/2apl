@@ -22,7 +22,8 @@ garbage(dirt).
 garbage(plastic).
 
 make_plastic(X,Y):-
-   @external(envJavaSpace,write(tuple(plastic,point(X,Y),100),-1),_).
+   @external(envJavaSpace,write(tuple(plastic,point(X,Y),100),-1),_),
+   //@external(envJavaSpace,write(position(agent,cell(X,Y)),-1), _).
 
 notifyAgent(Agent,Event):-
    @external(envJavaSpace,notifyAgent(Agent,Event),_).

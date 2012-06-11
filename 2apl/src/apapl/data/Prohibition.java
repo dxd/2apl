@@ -1,5 +1,9 @@
 package apapl.data;
 
+import java.util.ArrayList;
+
+import apapl.SubstList;
+import apapl.UnboundedVarException;
 import apapl.plans.Plan;
 import apapl.plans.PlanSeq;
 import apapl.program.BeliefUpdate;
@@ -124,6 +128,45 @@ public class Prohibition {
 		this.priority = priority;
 	}
 	
+	public void unvar() throws UnboundedVarException
+	{
+		prohibition.unvar();
+	}
 	
+	/**
+	 * Clones this object.
+	 * 
+	 * @return the clone
+	 */
+	public Prohibition clone()
+	{
+		Prohibition copy = new Prohibition();
+		copy.prohibition = this.prohibition;
+		copy.sanction = this.sanction;
+		copy.priority = this.priority;
+		return copy;
+	}
+	
+	/**
+	 * Applies a substitution to this prohibition.
+	 * 
+	 * @param theta the substitution to apply
+	 */
+	public void applySubstitution(SubstList<Term> theta)
+	{
+		prohibition.applySubstitution(theta);
+	}
+	
+	public void freshVars(ArrayList<String> unfresh, ArrayList<String> own, ArrayList<ArrayList<String>> changes)
+	{
+		prohibition.freshVars(unfresh,own,changes);
+	}
+	
+	public ArrayList<String> getVariables()
+	{
+		ArrayList<String> vars = new ArrayList<String>();
+		vars.addAll(prohibition.getVariables());
+		return vars;
+	}
 
 }

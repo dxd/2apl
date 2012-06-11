@@ -141,8 +141,9 @@ TOKEN :
 |	<CLONE:			("clone")>
 |	<RELEASE:		("release")>
 |	<EXECUTE:		("execute")>
-|	<UPDATEBB:		("updateBB") >
-|	<GOALACTION:	("adopta" | "adoptz" | "dropgoal" | "dropsubgoals" | "dropsupergoals" )>
+|	<UPDATEBB:		("updateBB")>
+|	<GOALACTION:	("adopta" | "adoptz" | "dropgoal" | "dropsubgoals" | "dropsupergoals")>
+|   <PACTION:		("adoptprohibition" | "adopttest")>
 }
 
 <DEFAULT, IN_INCLUDE_SECTION>
@@ -169,11 +170,13 @@ TOKEN :
 |	<ACCR:			("}")>
 |	<LEFTARROW:		"<-">
 |   <RIGHTARROW:	"->">
+|   <DBLRIGHTARROW:	">>">
 |	<DOT:			".">
 |	<IMPL:			":-">
 |	<RELATIONAL:	("<" | ">" | "=" | "=<" | ">=") >
 |	<SIGN:			("+" | "-")>
 |	<COLON:			":">
+|	<DBLCOLON:			"::">
 }
 
 // Identifiers etc.
@@ -294,6 +297,12 @@ Goal Obligation() :
 	g = ObligationBody(true) {return g;}
 }
 
+Prohibition Prohibition() :
+{Prohibition p;}
+{
+	p = ProhibitionBody(true) {return p;}
+}
+
 Query GoalQuery() :
 {Query q;}
 {
@@ -360,17 +369,7 @@ void Prohibitionbase(Prohibitionbase prohibitions) :
 
 }
 
-Prohibition Prohibition() :
-{
-    Literal l;
-	Prohibition p = new Prohibition();
-	Literal sanction;
-}
-{
-    l = Literal() {p.addLiteral(l);}
-	<RIGHTARROW> sanction = Literal() {p.addSanction(sanction);}
-	{return p;}
-}
+
 
 PlanSeq PlanSeq() :
 {PlanSeq p;}
@@ -419,6 +418,8 @@ Plan PlanWithVar() :
 	p = TestAction() {return p;}   
 |	LOOKAHEAD(GoalAction())
 	p = GoalAction() {return p;}
+|	LOOKAHEAD(PAction())
+	p = PAction() {return p;}
 |	LOOKAHEAD(ChunkPlanWithVar())
 	p = ChunkPlanWithVar() {return p;}
 |	af = PlanAtom() {return new AbstractAction(af);}
@@ -453,6 +454,8 @@ Plan Plan() :
 	p = TestAction() {return p;}	 
 |	LOOKAHEAD(GoalAction())
 	p = GoalAction() {return p;}
+|	LOOKAHEAD(PAction())
+	p = PAction() {return p;}
 |	LOOKAHEAD(ChunkPlan())
 	p = ChunkPlan() {return p;}
 |	af = PlanAtom() {return new AbstractAction(af);}
@@ -657,6 +660,17 @@ GoalAction GoalAction() :
 	  g = Goal() 
 	<RBRACE> 
 	{return new GoalAction(moduleId, t.toString(),g);}
+}
+
+PAction PAction() :
+{Prohibition p; Token t; APLIdent moduleId = null; }
+{
+  ( LOOKAHEAD(<IDENT><DOT>) moduleId = ModuleIdent() <DOT> )?		
+	t = <PACTION> 
+	<LBRACE> 
+	  p = Prohibition() 
+	<RBRACE> 
+	{return new PAction(moduleId, t.toString(),p);}
 }
 
 TestAction TestAction() :
@@ -895,11 +909,13 @@ Literal LiteralBody(boolean sign) :
 }
 
 Goal LiteralBodyDeadline(boolean sign) :
-{String time; Goal g = new Goal(); Literal l; String priority;}
+{String time; Goal g = new Goal(); Literal l; String priority; Literal sanction; APLVar vartime;}
 {
 	l = LiteralBody(sign) {g.addLiteral(l);}
 	(<COLON> time = AnyName() {g.addDeadline(time);})?
-	(<RIGHTARROW> priority = AnyName() {g.addPriority(priority);})?
+	(<DBLCOLON> vartime = APLVar() {g.addDeadlineVar(vartime);})?
+	(<DBLRIGHTARROW> priority = AnyName() {g.addPriority(priority);})?
+	(<RIGHTARROW> sanction = Literal() {g.addSanction(sanction);})?
 	{return g;}
 }
 
@@ -910,6 +926,14 @@ Goal ObligationBody(boolean sign) :
 	<COLON> time = AnyName() {g.addDeadline(time);}
 	<RIGHTARROW> sanction = Literal() {g.addSanction(sanction);}
 	{return g;}
+}
+
+Prohibition ProhibitionBody(boolean sign) :
+{Prohibition p = new Prohibition(); Literal l; Literal sanction;}
+{
+	l = LiteralBody(sign) {p.addLiteral(l);}
+	<RIGHTARROW> sanction = Literal() {p.addSanction(sanction);}
+	{return p;}
 }
 
 ArrayList<Literal> Literals() :

@@ -23,6 +23,7 @@ import java.util.Iterator;
 public class Goal implements Iterable<Literal>
 {
 	private LinkedList<Literal> goal;
+	private APLVar				varDeadline;
 	private Date				deadline;
 	private byte				priority;
 	private ArrayList<Literal>	sanctions;
@@ -70,6 +71,11 @@ public class Goal implements Iterable<Literal>
 	{
 		Long t = Long.valueOf(time);
 		deadline = new Date(System.currentTimeMillis() + t);
+	}
+	
+	public void addDeadlineVar(APLVar time)
+	{
+		this.varDeadline = time;
 	}
 	
 	/**

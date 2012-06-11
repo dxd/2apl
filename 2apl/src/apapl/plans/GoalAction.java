@@ -13,7 +13,7 @@ import apapl.SubstList;
 import java.util.ArrayList;
 
 /**
- * An action to update the goal base.
+ * An action to add prohibition.
  */
 public class GoalAction extends ModulePlan
 {
@@ -37,6 +37,7 @@ public class GoalAction extends ModulePlan
 	public PlanResult execute(APLModule module)
 	{
 		APLModule updatedModule;
+		System.out.println(action);
 		
 		if (moduleId != null) {
 			try {
@@ -61,7 +62,7 @@ public class GoalAction extends ModulePlan
 				else {
 					if (action.equals("adopta")) goals.assertGoalHead(g);
 					else if (action.equals("adoptz")) goals.assertGoal(g);
-					parent.removeFirst();
+						parent.removeFirst();
 					r = PlanResult.SUCCEEDED;
 				}
 			}
@@ -84,6 +85,7 @@ public class GoalAction extends ModulePlan
 			parent.removeFirst();
 			r = PlanResult.SUCCEEDED;
 		}
+		
 		return new PlanResult(this, r) ;
 	}
 	
@@ -128,7 +130,7 @@ public class GoalAction extends ModulePlan
 	}
 
 	public APLIdent getPlanDescriptor() {
-		return new APLIdent("goalaction");
+		return new APLIdent("paction");
 	}
 	
 	

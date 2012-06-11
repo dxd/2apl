@@ -85,65 +85,71 @@ public interface Parser2aplConstants {
   /** RegularExpression Id. */
   int GOALACTION = 50;
   /** RegularExpression Id. */
-  int COMMA = 51;
+  int PACTION = 51;
   /** RegularExpression Id. */
-  int B = 52;
+  int COMMA = 52;
   /** RegularExpression Id. */
-  int G = 53;
+  int B = 53;
   /** RegularExpression Id. */
-  int GE = 54;
+  int G = 54;
   /** RegularExpression Id. */
-  int P = 55;
+  int GE = 55;
   /** RegularExpression Id. */
-  int AT = 56;
+  int P = 56;
   /** RegularExpression Id. */
-  int SLASHJADE = 57;
+  int AT = 57;
   /** RegularExpression Id. */
-  int UNDERSCORE = 58;
+  int SLASHJADE = 58;
   /** RegularExpression Id. */
-  int LBRACE = 59;
+  int UNDERSCORE = 59;
   /** RegularExpression Id. */
-  int RBRACE = 60;
+  int LBRACE = 60;
   /** RegularExpression Id. */
-  int DOTCOMMA = 61;
+  int RBRACE = 61;
   /** RegularExpression Id. */
-  int LISTL = 62;
+  int DOTCOMMA = 62;
   /** RegularExpression Id. */
-  int LISTR = 63;
+  int LISTL = 63;
   /** RegularExpression Id. */
-  int ACCL = 64;
+  int LISTR = 64;
   /** RegularExpression Id. */
-  int ACCR = 65;
+  int ACCL = 65;
   /** RegularExpression Id. */
-  int LEFTARROW = 66;
+  int ACCR = 66;
   /** RegularExpression Id. */
-  int RIGHTARROW = 67;
+  int LEFTARROW = 67;
   /** RegularExpression Id. */
-  int DOT = 68;
+  int RIGHTARROW = 68;
   /** RegularExpression Id. */
-  int IMPL = 69;
+  int DBLRIGHTARROW = 69;
   /** RegularExpression Id. */
-  int RELATIONAL = 70;
+  int DOT = 70;
   /** RegularExpression Id. */
-  int SIGN = 71;
+  int IMPL = 71;
   /** RegularExpression Id. */
-  int COLON = 72;
+  int RELATIONAL = 72;
   /** RegularExpression Id. */
-  int IDENT = 73;
+  int SIGN = 73;
   /** RegularExpression Id. */
-  int VARNAME = 74;
+  int COLON = 74;
   /** RegularExpression Id. */
-  int NUM = 75;
+  int DBLCOLON = 75;
   /** RegularExpression Id. */
-  int NUMNAME = 76;
+  int IDENT = 76;
   /** RegularExpression Id. */
-  int NAMEDOT = 77;
+  int VARNAME = 77;
   /** RegularExpression Id. */
-  int VERT = 78;
+  int NUM = 78;
   /** RegularExpression Id. */
-  int QUOTE = 79;
+  int NUMNAME = 79;
   /** RegularExpression Id. */
-  int QUOTE1 = 80;
+  int NAMEDOT = 80;
+  /** RegularExpression Id. */
+  int VERT = 81;
+  /** RegularExpression Id. */
+  int QUOTE = 82;
+  /** RegularExpression Id. */
+  int QUOTE1 = 83;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -209,6 +215,7 @@ public interface Parser2aplConstants {
     "\"execute\"",
     "\"updateBB\"",
     "<GOALACTION>",
+    "<PACTION>",
     "\",\"",
     "\"B\"",
     "\"G\"",
@@ -226,11 +233,13 @@ public interface Parser2aplConstants {
     "\"}\"",
     "\"<-\"",
     "\"->\"",
+    "\">>\"",
     "\".\"",
     "\":-\"",
     "<RELATIONAL>",
     "<SIGN>",
     "\":\"",
+    "\"::\"",
     "<IDENT>",
     "<VARNAME>",
     "<NUM>",

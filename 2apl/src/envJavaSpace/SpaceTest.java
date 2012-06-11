@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 import oopl.DistributedOOPL;
 import oopl.GUI.GUI;
 import tuplespace.*;
+import tuplespace.Prohibition;
  
 
 import apapl.Environment;
@@ -21,6 +22,7 @@ import net.jini.core.discovery.*;
 import net.jini.core.entry.*;
 import net.jini.core.lease.Lease;
 import net.jini.core.lookup.*;  
+import net.jini.core.transaction.TransactionException;
 import net.jini.space.*;
 
 /*
@@ -31,7 +33,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public JavaSpace space; // shared data
 	public int clock = 0;
 	public DistributedOOPL oopl; // norm interpreter
-	public static String TYPE_STATUS="status",TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
+	public static String TYPE_STATUS="status", TYPE_PROHIBITION="prohibition", TYPE_OBLIGATION="obligation",TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
 	public int[] ar_true, ar_null, ar_state_change; // precalculated IntProlog data 
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
 	public APAPLTermConverter converter; // Converts between IntProlog and 2APL
@@ -80,6 +82,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
 			INT_TUPLE =makeStringKnown("tuple"); // Because strings get integers, you need to add them to the engine, so you can precompute constructs.
 			INT_POINT =makeStringKnown("point");
+			//INT_POINT =makeStringKnown("cell");
+			//INT_POINT =makeStringKnown("position");
 			INT_NULL =makeStringKnown("null"); 
 			makeStringKnown("notifyAgent"); 
 			makeStringKnown("clock"); 
@@ -178,8 +182,10 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			try {
 				long lease = get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1);
 				if(lease <= 0) lease = Lease.FOREVER;
-				//System.out.println(createEntry(call)+"  "+lease+"   "+Lease.FOREVER);
-				space.write(createEntry(call), null, lease);
+				
+				Entry e = createEntry(call);
+				space.write(e, null, lease);
+				System.out.println(e+"  "+lease+"   "+Lease.FOREVER);
 				ea.intResult = ar_true;
 			} catch (Exception e) {e.printStackTrace();}
 	    /*
@@ -189,6 +195,16 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			String recipient = oopl.prolog.strStorage.getString(call[4]);
 			APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
 			System.out.println("Sending event to "+recipient+": "+event);
+			try {
+				space.write(createEntry(recipient, event), null, Lease.FOREVER);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransactionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			throwEvent(event, new String[]{recipient});
 			ea.intResult = ar_true;
 		} else if(call[1] == oopl.prolog.strStorage.getInt("clock")){ // Read the clock
@@ -205,7 +221,28 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public Entry createEntry(int[] call){ // e.g.: read(tuple(name,point(2,4),20),0)
 		int type = call[4];
-		if(type == INT_TUPLE){ // I have to make this more accessable 
+		String tuple = oopl.prolog.strStorage.getString(call[4]);
+		//System.out.println(tuple);
+		if (tuple.startsWith("position")) {
+			System.out.println("create entry position ");
+			String name = null;
+			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
+			Cell c = null;
+			if(call[10]!=INT_NULL) c = new Cell(get_number(call,13),get_number(call,16)); 
+			System.out.println(c.toString());
+			
+			return new Position(name,c,1);
+		}
+		else if(tuple == ""){
+			
+		}
+		
+/*		for (int i = 0;  i<call.length; i++){
+			
+			String recipient = oopl.prolog.strStorage.getString(call[i]);
+			System.out.println("create entry test "+ i + recipient);
+		}*/
+		else if(type == INT_TUPLE){ // I have to make this more accessable 
 			String name = null;
 			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
 			Point p = null;
@@ -215,6 +252,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			if(call[c+1]!=INT_NULL) i = get_number(call,c+1);
 			return new Tuple(name,p,i);
 		}
+
 		return null;
 	}
 	
@@ -302,19 +340,45 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			System.out.println(call.toString());
 			return new Tuple(sAgent,p,health); // Create Tuple
 		}
-/*		else if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
-			Cell c = null;
-			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
-				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
-				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
-				int pointY = ((APLNum)point.getParams().get(1)).toInt();
-				c = new Cell(pointX,pointY);
+		else if(call.getName().equals(TYPE_PROHIBITION)){ // Prolog format: status(position(1,4),30) 
+			Prohibition p = null;
+			System.out.println("create entry prohibition "+call.getParams().toString());
+			
+		
+			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
+				//APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				String s1 = call.getParams().get(0).toString();// Get the position
+				String s2 = call.getParams().get(1).toString();
+				p = new Prohibition(sAgent, s1, s2, 1);
 			}
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			System.out.println(call.toString());
-			return new Position(null, sAgent, c, 0); // Create Tuple
-		} */
+			System.out.println(p.toString());
+			return p; // Create Tuple
+		} 
+		else if(call.getName().equals(TYPE_OBLIGATION)){ // Prolog format: status(position(1,4),30) 
+			Obligation o = null;
+			System.out.println("create entry obligation "+call.getParams().toString());
+			
+		
+			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
+				//APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				String s1 = call.getParams().get(0).toString();// Get the position
+				//String s2 = call.getParams().get(1).toString();
+				String s3 = call.getParams().get(2).toString();
+				
+				int deadline = ((APLNum)call.getParams().get(1)).toInt();
+				
+				o = new Obligation(sAgent, s1, s3, deadline, 1);
+				//System.out.println(s2);
+			}
+			//Integer health = null; // if health is null (which is ident) it stays also in java null
+			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			System.out.println(call.toString());
+			System.out.println(o.toString());
+			return o; // Create Tuple
+		} 
 		else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
 			String name = ((APLIdent)call.getParams().get(0)).getName();
 			Point p = null;
