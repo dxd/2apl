@@ -1,11 +1,15 @@
+package game;
 
 import helperTS.Update;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.rmi.MarshalledObject;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import com.javadocmd.simplelatlng.LatLng;
 
@@ -15,10 +19,13 @@ import dataJSon.Status;
 import tuplespace.ActionRequest;
 import tuplespace.Cargo;
 import tuplespace.Cell;
+import tuplespace.MessageHandler;
 import tuplespace.Points;
 import tuplespace.Position;
+import tuplespace.Prohibition;
 import tuplespace.Request;
 import tuplespace.Time;
+import tuplespace.TimeEntry;
 import tuplespace.Tuple;
 
 import net.jini.core.discovery.LookupLocator;
@@ -44,7 +51,7 @@ import net.jini.space.JavaSpace;
 
 public class JSpace {
 	
-	static JavaSpace space = null;
+	public static JavaSpace space = null;
 	ServiceRegistrar sr = null;
 	static ServiceDiscoveryManager sdm;
 	private static TransactionManager transManager;
@@ -188,9 +195,11 @@ public class JSpace {
 			Transaction txn = trans.transaction;
 			try {
 				while ((entry = (T) space.take((Entry) template, txn, 200)) != null){
-					System.out.println(entry.toString());
+					//System.out.println(entry.toString());
 					result.add(entry);
 				}
+				getLatest(result);
+				System.out.println(result.toString());
 				txn.abort();
 				//leaseRenewalManager.cancel(trans.lease);
 			} catch (UnusableEntryException e) {
@@ -208,12 +217,13 @@ public class JSpace {
 		}
 	}
 
-	private ArrayList<Position> readLocations(int clock) {
-		Position position = new Position(clock);
+	public ArrayList<Position> readLocations(Integer clock) {
+		Position position = new Position();
 		ArrayList<Position> positions = new ArrayList<Position>();
 		getAll(position, positions);
 		return positions;
 	}
+
 
 	public void writeAll(int clock, Status status) {
 		
@@ -282,9 +292,35 @@ public class JSpace {
 	
 	private void writeTime(int clock) {
 		Time time = new Time(clock);
-		write(time);
-
-		
+		write(time);	
 	}
 
+	private static <T> void getLatest(ArrayList<T> result) {
+		
+		if (result.size() > 0) {
+		/*Collections.sort(result, new Comparator<T>(){
+			  public int compare(T t1, T t2) {
+				  TimeEntry t3 = (TimeEntry) t1;
+				  TimeEntry t4 = (TimeEntry) t2;
+				  System.out.println(t3.toString());
+				  System.out.println(t4.toString());
+				  
+				
+			    return t3.time.compareTo(t4.time);
+			  }
+			  
+			});*/
+
+		int i = result.size();
+		T t = result.get(i-1);
+		result.clear();
+		result.add(t);
+		}
+	}
+	
+
+
+/*			theManager.renewFor(myReg.getLease(), Lease.FOREVER,
+                30000, new DebugListener());*/
+	
 }

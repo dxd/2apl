@@ -3,7 +3,7 @@ package tuplespace;
 import java.util.Date;
 import net.jini.core.entry.Entry;
 
-public class Position implements Entry {
+public class Position implements TimeEntry {
 	
 	
 	public Integer id = null;
@@ -21,8 +21,19 @@ public class Position implements Entry {
 		this.id = id;
 		this.cell = cell;
 	}
+	public Position(String agent, Cell cell) {
+		this.agent = agent;
+		this.cell = cell;
+		this.time = new Date();
+	}
 	public Position(Integer id, String agent, Cell cell, int clock) {
 		this.id = id;
+		this.agent = agent;
+		this.cell = cell;
+		this.clock = clock;
+		this.time = new Date();
+	}
+	public Position(String agent, Cell cell, int clock) {
 		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;

@@ -1,3 +1,4 @@
+package game;
 import helperTS.Update;
 
 import java.io.BufferedReader;
@@ -14,13 +15,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.Buffer;
+import java.rmi.MarshalledObject;
+import java.rmi.RemoteException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import net.jini.core.transaction.TransactionException;
 //import org.json.JSONTokener;
 
 import tuplespace.ActionRequest;
+import tuplespace.MessageHandler;
 import tuplespace.Position;
 
 
@@ -36,13 +42,13 @@ import dataJSon.*;
 public class Synchronization {
 
 	private static String server = "http://albinoni.cs.nott.ac.uk:49992";
-	private static int gameId = 3;
+	private static int gameId = 6;
 	
-	private JSpace jspace;
+	public JSpace jspace;
 
 	private Status status;
 
-	private Update update;
+	public Update update;
     
 	public Synchronization(JSpace jspace) {
 		this.jspace = jspace;
@@ -50,12 +56,12 @@ public class Synchronization {
 	
 	private void initialize() {
 		
-		postJoin("email", "robot1", "runner");
-		postJoin("email", "robot2", "truck");
-		postJoin("email", "robot3", "controller");
-		postLocation(10, new LatLng(52.951623,-1.186357));
-		getReading(6, new LatLng(52.951623,-1.186357));
-		
+		postJoin("email", "a1", "runner");
+		//postJoin("email", "robot2", "truck");
+		//postJoin("email", "robot3", "controller");
+		//postLocation(13, new LatLng(52.951623,-1.186357));
+		//getReading(6, new LatLng(52.951623,-1.186357));
+		register();
 	}
 	private String buildPostData(ArrayList<SimpleEntry<String, Object>> params) throws UnsupportedEncodingException{
 		
@@ -67,7 +73,7 @@ public class Synchronization {
 		return data;
 		
 	}
-	
+
 	private void PostRequest(String url, String data, Object result){
 		try {
 			URL ruby = new URL(server + url);
@@ -158,10 +164,10 @@ public class Synchronization {
     	{
     		initialize();
     	}
-		jspace.readAll(update, clock-1);
+		//jspace.readAll(update, clock-1);
 		
-		push();
-		jspace.writeAll(clock, status);
+		//push();
+		//jspace.writeAll(clock, status);
 		
 	}
 	private void push() {
@@ -249,7 +255,7 @@ public class Synchronization {
 
 	}
 
-	private void postLocations() {
+	public void postLocations() {
 		for (Position loc : update.getLocations())
 		{
 			LatLng latlng = Game.gridToLocation(loc.getCell());
@@ -278,6 +284,23 @@ public class Synchronization {
 		}
 		return response;
 		
+	}
+	public void register() {
+		try {
+			JSpace.space.notify(new Position(), null,
+			        new MessageHandler(this),
+			        3000000,
+			        new MarshalledObject(new Integer(1)));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 

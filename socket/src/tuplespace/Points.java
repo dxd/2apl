@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.jini.core.entry.Entry;
 
-public class Points implements Entry {
+public class Points implements TimeEntry {
 	
 	public String agent;
 	public Date time;

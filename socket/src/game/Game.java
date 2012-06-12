@@ -1,3 +1,4 @@
+package game;
 import java.sql.Time;
 
 import tuplespace.Cell;
@@ -16,8 +17,8 @@ public final class Game {
 	private static double kmX = 0.500;
 	private static double kmY = 0.500;
 	
-	private static int gridX = 20;
-	private static int gridY = 20;
+	private static int gridX = 30;
+	private static int gridY = 30;
 	
 	private static LatLng[][] grid;
 	private static double width;
@@ -32,18 +33,24 @@ public final class Game {
 		height = kmY / gridY;
 		grid = new LatLng[gridX][gridY];
 		grid[0][0] = start;
+		double diagonal = sqrt(width*width + height*height);
 		
 		for (int i = 0; i < gridX; i++) {
 			for (int j = 0; j < gridY; j++) {
-				
+				LatLng orig;
 				if (i == 0 && j == 0) 
 					continue;
-				double dx = width*i;
-				double dy = height*j;
-				double range = sqrt(dx*dx + dy*dy);
-				
-								
-				grid[i][j] = calcDerivedPos(start, range, 135);
+				if (i == 0) {
+					orig = new LatLng(grid[0][j-1].getLatitude(),start.getLongitude());
+				}
+				else if (j == 0) {
+					orig = new LatLng(start.getLatitude(),grid[i-1][0].getLongitude());
+				}
+				else {
+					orig = new LatLng(grid[i-1][j-1].getLatitude(),grid[i-1][j-1].getLongitude());
+				}
+
+				grid[i][j] = calcDerivedPos(orig, diagonal, 135);
 				System.out.println(i + " " + j + " " + grid[i][j]);
 			}
 		}

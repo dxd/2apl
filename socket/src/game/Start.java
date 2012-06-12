@@ -1,3 +1,4 @@
+package game;
 import java.util.Date;
 import java.util.Timer;
 
@@ -5,7 +6,7 @@ public class Start {
 	
 
 	private static Date startTime;
-	private static int gamePace = 1000;
+	private static int gamePace = 10000;
 	
 	private static Timer timer;
 	
@@ -21,6 +22,7 @@ public class Start {
 		
 		synchro = new Synchronization(jspace);
 		initiate();
+
 
 	}
 

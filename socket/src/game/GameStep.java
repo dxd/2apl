@@ -1,3 +1,4 @@
+package game;
 import java.util.TimerTask;
 
 import com.javadocmd.simplelatlng.LatLng;

@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.jini.core.entry.Entry;
 
-public class Time implements Entry {
+public class Time implements TimeEntry {
 
 	public Integer clock;
 	public Date time;

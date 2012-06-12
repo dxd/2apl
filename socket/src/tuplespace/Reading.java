@@ -6,7 +6,7 @@ import java.util.Date;
 
 import net.jini.core.entry.Entry;
 
-public class Reading implements Entry {
+public class Reading implements TimeEntry {
 	
 
 	public Integer id;

@@ -6,7 +6,7 @@ import com.javadocmd.simplelatlng.LatLng;
 
 import net.jini.core.entry.Entry;
 
-public class Cargo implements Entry {
+public class Cargo implements TimeEntry {
 	
 	public Integer id;
 	public Cell cell;

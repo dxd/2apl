@@ -5,7 +5,7 @@ import java.util.Date;
 
 import net.jini.core.entry.Entry;
 
-public class Request implements Entry {
+public class Request implements TimeEntry {
 	
 	public Integer id;
 	public Cell cell;

@@ -59,9 +59,10 @@ public class Status {
 	}
 
 	public int getPlayerId(String agent) {
+		//System.out.println(player.toString());
 		for (Player p : player)
 		{
-			if (p.getName() == agent)
+			if (p.getName().equals(agent))
 				return p.getId();
 		}
 		return 0;

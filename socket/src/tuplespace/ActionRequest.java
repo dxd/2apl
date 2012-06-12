@@ -4,7 +4,7 @@ import java.util.Date;
 
 import net.jini.core.entry.Entry;
 
-public class ActionRequest implements Entry {
+public class ActionRequest implements TimeEntry {
 	
 	public Integer id;
 	public String agent;
