@@ -2,27 +2,32 @@ Facts:
 norm(
     return_to_start(Thing),
     Thing, // the subject agent
-    ( at(3,3,Thing), not(garbage(Thing)), clock(Now), Deadline is Now+120 ), // precondition
-    obligation([at(1,1,Thing)],Deadline,[reduce_health(Thing)]) // obligation format
+    //(agent(Thing), clock(Now), Deadline is Now+120),
+    ( at(3,3,Thing), agent(Thing), clock(Now), Deadline is Now+120 ), // precondition
+    obligation([at(5,5,Thing)],Deadline,[reduce_100(Thing)]) // obligation format
     ).
 
 norm(
     avoid_eight_five(Thing),
     Thing, // the subject agent
-    ( at(5,5,Thing), not(garbage(Thing))), // precondition
-    prohibition([at(8,5,Thing)],[reduce_health(Thing)]) // prohibition format
+    ( at(5,5,Thing), agent(Thing)), // precondition
+    //(agent(Thing)),
+    prohibition([at(8,5,Thing)],[reduce_200(Thing)]) // prohibition format
     ).
 
+
+agent(a1).
+
 at(X,Y,Object):-
-   @external(envJavaSpace,readIfExists(tuple(null,point(X,Y),null),0),tuple(Object,point(X,Y),_)).
+	agent(Object),
+//    @external(envJavaSpace,read(position(Object,cell(X,Y)),-1),_).
+      @external(envJavaSpace,read(position(Object,null),0),position(Object,cell(X,Y))).
+
 
 time_past(Time):- clock(Now), Now > Time.
 
-garbage(dirt).
-garbage(plastic).
-
 make_plastic(X,Y):-
-   @external(envJavaSpace,write(tuple(plastic,point(X,Y),100),-1),_),
+   @external(envJavaSpace,write(tuple(plastic,point(X,Y),100),-1),_).
    //@external(envJavaSpace,write(position(agent,cell(X,Y)),-1), _).
 
 notifyAgent(Agent,Event):-
@@ -32,9 +37,9 @@ do_sanction([not(H)|T]):- retract(H),do_sanction(T).
 do_sanction([H|T]):- uniqueassertz(H),do_sanction(T).
 do_sanction([]).
 
-do_reduce_health(Agent):- 
+do_reduce_health(Agent,P):- 
    @external(envJavaSpace,takeIfExists(tuple(Agent,null,null),0),tuple(Agent,point(X,Y),Health)),
-   NewHealth is Health - 10,
+   NewHealth is Health - P,
    @external(envJavaSpace,write(tuple(Agent,point(X,Y),NewHealth),-1),_).
 
 listTrue([H|T]):- H, listTrue(T).
@@ -55,7 +60,8 @@ agent_directed(Label,Agent,prohibition(ListA,Sanction)):
 	false]
 
 Sanction rules:
-reduce_health(Agent) and do_reduce_health(Agent) and notifyAgent(Agent,changed(status)) => not reduce_health(Agent).
+reduce_100(Agent) and do_reduce_health(Agent,100) and notifyAgent(Agent,changed(status)) => not reduce_100(Agent).
+reduce_200(Agent) and do_reduce_health(Agent,200) and notifyAgent(Agent,changed(status)) => not reduce_200(Agent).
 
 viol(agent_directed(Label,Agent,prohibition(State,Sanction))), do_sanction(Sanction)  => not viol(agent_directed(Label,Agent,prohibition(State,Sanction))).
 obey(agent_directed(Label,Agent,Deontic)) => not obey(agent_directed(Label,Agent,Deontic)).

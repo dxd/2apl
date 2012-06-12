@@ -912,8 +912,10 @@ Goal LiteralBodyDeadline(boolean sign) :
 {String time; Goal g = new Goal(); Literal l; String priority; Literal sanction; APLVar vartime;}
 {
 	l = LiteralBody(sign) {g.addLiteral(l);}
-	(<COLON> time = AnyName() {g.addDeadline(time);})?
-	(<DBLCOLON> vartime = APLVar() {g.addDeadlineVar(vartime);})?
+	(<COLON> vartime = APLVar() {g.addDeadlineVar(vartime);})?
+	(<DBLCOLON> time = AnyName() {g.addDeadline(time);})?
+	//(<COLON> time = AnyName() {g.addDeadline(time);})?
+	//(<DBLCOLON> vartime = APLVar() {g.addDeadlineVar(vartime);})?
 	(<DBLRIGHTARROW> priority = AnyName() {g.addPriority(priority);})?
 	(<RIGHTARROW> sanction = Literal() {g.addSanction(sanction);})?
 	{return g;}

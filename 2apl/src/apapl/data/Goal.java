@@ -23,7 +23,7 @@ import java.util.Iterator;
 public class Goal implements Iterable<Literal>
 {
 	private LinkedList<Literal> goal;
-	private APLVar				varDeadline;
+	public APLVar				varDeadline;
 	private Date				deadline;
 	private byte				priority;
 	private ArrayList<Literal>	sanctions;
@@ -34,7 +34,7 @@ public class Goal implements Iterable<Literal>
 	public Goal()
 	{
 		goal = new LinkedList<Literal>();
-		this.deadline = new Date (Long.MAX_VALUE);
+		this.deadline = new Date(Long.MAX_VALUE);
 		this.priority = 1;
 		this.sanctions = new ArrayList<Literal>();
 	}
@@ -47,7 +47,7 @@ public class Goal implements Iterable<Literal>
 	public Goal(LinkedList<Literal> goal)
 	{
 		this.goal = goal;
-		this.deadline = new Date (Long.MAX_VALUE);
+		this.deadline = new Date(Long.MAX_VALUE);
 		this.priority = 1;
 		this.sanctions = new ArrayList<Literal>();
 	}
@@ -60,6 +60,7 @@ public class Goal implements Iterable<Literal>
 	public void addLiteral(Literal l)
 	{
 		goal.add(l);
+		//System.out.println("goal lit " + l.toString());
 	}
 	
 	/**
@@ -69,13 +70,22 @@ public class Goal implements Iterable<Literal>
 	 */
 	public void addDeadline(String time)
 	{
-		Long t = Long.valueOf(time);
-		deadline = new Date(System.currentTimeMillis() + t);
+/*		System.out.println("time " + time.toString());
+		this.deadline = new Date();
+		if (time != null)
+			this.deadline.setTime(deadline.getTime() + Long.getLong(time)*1000);*/
+		this.deadline = new Date();
+
+		this.deadline.setTime(deadline.getTime() + 100*1000);
+		System.out.println("deadline " + deadline.toString());
 	}
 	
 	public void addDeadlineVar(APLVar time)
 	{
+		if (time != null) {
+		System.out.println("deadlineVar " + time.toString());
 		this.varDeadline = time;
+		}
 	}
 	
 	/**
@@ -189,6 +199,7 @@ public class Goal implements Iterable<Literal>
 	public void applySubstitution(SubstList<Term> theta)
 	{
 		for (Literal l : goal) l.applySubstitution(theta);
+		//this.varDeadline.applySubstitution(theta);
 	}
 	
 	/**
@@ -350,6 +361,8 @@ public class Goal implements Iterable<Literal>
 	public void unvar() throws UnboundedVarException
 	{
 		for (Literal l : goal) l.unvar();
+		if (varDeadline != null)
+			Term.unvar(varDeadline);
 	}
 
 	public boolean isObligation() {

@@ -1,7 +1,10 @@
 package envJavaSpace;
+import java.awt.Container;
 import java.awt.Point;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.*; 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.*; 
@@ -20,9 +23,15 @@ import aplprolog.prolog.builtins.ExternalTool;
 
 import net.jini.core.discovery.*;
 import net.jini.core.entry.*;
+import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
+import net.jini.core.lease.LeaseDeniedException;
 import net.jini.core.lookup.*;  
+import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
+import net.jini.core.transaction.TransactionFactory;
+import net.jini.core.transaction.server.TransactionManager;
+import net.jini.lookup.ServiceDiscoveryManager;
 import net.jini.space.*;
 
 /*
@@ -30,13 +39,16 @@ import net.jini.space.*;
  * be compatible with my Prolog engine. 
  */
 public class SpaceTest  extends Environment implements ExternalTool{
-	public JavaSpace space; // shared data
+	public static JavaSpace space; // shared data
 	public int clock = 0;
 	public DistributedOOPL oopl; // norm interpreter
-	public static String TYPE_STATUS="status", TYPE_PROHIBITION="prohibition", TYPE_OBLIGATION="obligation",TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
-	public int[] ar_true, ar_null, ar_state_change; // precalculated IntProlog data 
+	public static String TYPE_STATUS="status", TYPE_PROHIBITION="prohibition", TYPE_OBLIGATION="obligation", TYPE_POSITION = "position", TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
+	public int[] ar_true, ar_null, ar_state_change, ar_false; // precalculated IntProlog data 
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
 	public APAPLTermConverter converter; // Converts between IntProlog and 2APL
+	private static TransactionManager transManager;
+	private Object leaseRenewalManager;
+	private ServiceDiscoveryManager sdm;
 	
 	/*
 	 * Just for testing.
@@ -50,7 +62,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
      */
 	public void initialize() throws RemoteException, UnusableEntryException, TimeoutException, InterruptedException { 
 		// Jini stuff
-		System.out.println("test.");  
+		//System.out.println("test.");  
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
@@ -75,7 +87,32 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		if(0 < sms.items.length) { 
 			space = (JavaSpace) sms.items[0].service; 
 			System.out.println("Java Space found.");  
-			
+		
+			ServiceTemplate trans = new ServiceTemplate(null, new Class[] { TransactionManager.class }, null);
+
+			ServiceMatches sms1 = null;
+			try {
+				sms1 = sr.lookup(trans, 10);
+			} catch (RemoteException e) {
+
+				e.printStackTrace();
+			}
+			if(0 < sms1.items.length) {
+			    transManager = (TransactionManager) sms1.items[0].service;
+			    System.out.println("TransactionManager found.");
+			   
+			   
+			} else {
+			    System.out.println("No TransactionManager found.");
+			}
+			try {
+				sdm = new ServiceDiscoveryManager(null,null);
+				leaseRenewalManager = sdm.getLeaseRenewalManager();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			registerOrg();
 			// Starting the normative system:
 			oopl = new DistributedOOPL(); // Create interpreter object
 			GUI g = new GUI(oopl,"SpaceOrg.2opl","OOPL",null,6677); // Make a GUI for the interpreter
@@ -89,6 +126,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			makeStringKnown("clock"); 
 			makeStringKnown("obligation"); 
 			makeStringKnown("prohibition"); 
+			makeStringKnown("position"); 
 			makeStringKnown("read"); 
 			makeStringKnown("readIfExists"); 
 			makeStringKnown("snapshot"); 
@@ -98,12 +136,14 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			registerActions(oopl.prolog); // Register the possible actions on this ExternalTool (such as @external(space,theAction(arg1,arg2),Result).)
 			// Precompute some data: ('true.', 'null.', 'tuple_space_changed.')
 			ar_true = oopl.prolog.mp.parseFact("true.", oopl.prolog.strStorage, false); 
+			ar_false = oopl.prolog.mp.parseFact("false.", oopl.prolog.strStorage, false); 
 			ar_null = oopl.prolog.mp.parseFact("null.", oopl.prolog.strStorage, false);
 			ar_state_change = oopl.prolog.mp.parseFact("tuple_space_changed.", oopl.prolog.strStorage, false);
 			// To create a IntProlog structure out of a string use the above lines (but replace the fact string such as "true.")
 			// Starting the clock 
 			Thread t = new Thread(new ClockTicker(this));
 			t.start(); 
+			
 		} else { 
 			System.out.println("No Java Space found."); 
 		}
@@ -113,7 +153,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * Both used for increasing or just reading the clock. 
 	 */
 	public synchronized int updateClock(int amount){
-		if(amount>0)  oopl.handleEvent(ar_state_change, false); // clock ticked so deadlines can be passed, handleEvent causes the interpreter to check the norms
+		//if(amount>0)  oopl.handleEvent(ar_state_change, false); // clock ticked so deadlines can be passed, handleEvent causes the interpreter to check the norms
 		clock += amount;
 		return clock;
 	}
@@ -162,7 +202,19 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		 */
 		if(call[1] == oopl.prolog.strStorage.getInt("read")){
 			try {
-			ea.intResult = entryToArray(space.read(createEntry(call), null, get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1)));
+				System.out.println("read hack 1");
+				//ea.intResult = ar_true;
+				/*Entry e = space.read(createEntry(call, true), null, Lease.FOREVER);
+				Entry e1 = space.read(createEntry(call, false), null, Lease.FOREVER);
+				if (e != null && e == e1)
+					ea.intResult = ar_true;
+				else
+					ea.intResult = ar_false;*/
+				Entry a = createEntry(call);
+				System.out.println(a.toString());
+				Entry e = getLast(a);
+				System.out.println(e.toString());
+				ea.intResult = entryToArray(e);
 			} catch (Exception e) {e.printStackTrace();}
 		} else if(call[1] == oopl.prolog.strStorage.getInt("readIfExists")){
 			try {
@@ -179,6 +231,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				ea.intResult = entryToArray(space.takeIfExists(createEntry(call), null, get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1)));
 			} catch (Exception e) {e.printStackTrace();}
 		} else if(call[1] == oopl.prolog.strStorage.getInt("write")){
+			System.out.println("write");
 			try {
 				long lease = get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1);
 				if(lease <= 0) lease = Lease.FOREVER;
@@ -192,6 +245,12 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	     * The next case throws towards the agent an event that its status is changed.
 	     */
 		} else if(call[1] == oopl.prolog.strStorage.getInt("notifyAgent")){ // notifyAgent(name,obligation(blabla)).
+			System.out.println("notify agent");
+/*			for (int i = 0;  i<call.length; i++){
+				
+				String recipient = oopl.prolog.strStorage.getString(call[i]);
+				System.out.println("create entry test "+ i + recipient);
+			}*/
 			String recipient = oopl.prolog.strStorage.getString(call[4]);
 			APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
 			System.out.println("Sending event to "+recipient+": "+event);
@@ -205,7 +264,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				e.printStackTrace();
 			}
 			
-			throwEvent(event, new String[]{recipient});
+			//throwEvent(event, new String[]{recipient});
 			ea.intResult = ar_true;
 		} else if(call[1] == oopl.prolog.strStorage.getInt("clock")){ // Read the clock
 			int[] r = new int[3];
@@ -213,6 +272,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			ea.intResult = r;
 		}
 	}
+
+
 	public void handleCall(Object[] call, ExternalActions p, int returnType) { }
 	
 	/*
@@ -229,9 +290,10 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
 			Cell c = null;
 			if(call[10]!=INT_NULL) c = new Cell(get_number(call,13),get_number(call,16)); 
-			System.out.println(c.toString());
+			//c = new Cell(3,3); 
+			//System.out.println(c.toString());
 			
-			return new Position(name,c,1);
+			return new Position(name,c);
 		}
 		else if(tuple == ""){
 			
@@ -246,7 +308,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			String name = null;
 			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
 			Point p = null;
+
 			if(call[10]!=INT_NULL) p = new Point(get_number(call,13),get_number(call,16)); 
+
 			Integer i = null;
 			int c = oopl.prolog.harvester.scanElement(call, 9, false, false);
 			if(call[c+1]!=INT_NULL) i = get_number(call,c+1);
@@ -279,6 +343,23 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				c = 15;
 			} 
 			addNumber(r, c,t.i);
+			return r;
+		}
+		else if(e instanceof Position){
+			Position t = (Position)e;
+			int[] r = new int[t.cell==null?12:18];
+			addPredicate(r,0,oopl.prolog.strStorage.getInt("position"),2); // tuple/3
+			addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
+			int c = 9;
+			if(t.cell == null) addPredicate(r, 6, oopl.prolog.strStorage.getInt("null"), 0);
+			else {
+				addPredicate(r, 6, oopl.prolog.strStorage.getInt("cell"), 2);
+				addNumber(r, 9, t.cell.x);
+				addNumber(r, 12, t.cell.y);
+				c = 15;
+			} 
+			System.out.println("to array: " + r.toString());
+			//addNumber(r, c,t.i);
 			return r;
 		}
 		return null;
@@ -340,6 +421,23 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			System.out.println(call.toString());
 			return new Tuple(sAgent,p,health); // Create Tuple
 		}
+		if(call.getName().equals(TYPE_POSITION)){ // Prolog format: position(1,4)
+			Cell c = null;
+			if(call.getParams().get(0) instanceof APLNum){ // null is APLIdent  
+				
+				int pointX = ((APLNum)call.getParams().get(0)).toInt(); // Get the position
+				int pointY = ((APLNum)call.getParams().get(1)).toInt();
+				c = new Cell(pointX,pointY);
+			}
+			//System.out.println(c.toString());
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return new Position(sAgent,c); // Create Tuple
+		}
 		else if(call.getName().equals(TYPE_PROHIBITION)){ // Prolog format: status(position(1,4),30) 
 			Prohibition p = null;
 			System.out.println("create entry prohibition "+call.getParams().toString());
@@ -353,8 +451,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			}
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
-			System.out.println(call.toString());
-			System.out.println(p.toString());
+			//System.out.println(call.toString());
+			//System.out.println(p.toString());
 			return p; // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_OBLIGATION)){ // Prolog format: status(position(1,4),30) 
@@ -375,7 +473,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			}
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
-			System.out.println(call.toString());
+			//System.out.println(call.toString());
 			System.out.println(o.toString());
 			return o; // Create Tuple
 		} 
@@ -408,23 +506,60 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			return new APLFunction("tuple", new Term[]{new APLIdent(name),posTerm,i}); // construct result
 			
 		} 
-		/*else if(entry instanceof Position){ // in case of tuples return tuple(name,position(2,4),48)
-			Position tuple = (Position) entry;   // cast to tuple
-			String name = tuple.getAgent();
+		else if(entry instanceof Obligation){ // in case of tuples return tuple(name,position(2,4),48)
+			Obligation o = (Obligation) entry;   // cast to tuple
+			String name = o.agent;
 			if(name==null)name="null"; 
 			Term posTerm = new APLIdent("null");
-			if(tuple.cell!=null){
-				posTerm = new APLFunction("cell", new Term[]{new APLNum(tuple.cell.x),new APLNum(tuple.cell.y)}); // get position
+			Term posTerm1 = new APLIdent("null");
+			Term posTerm2 = new APLIdent("null");
+
+			if(o.obligation!=null){
+				int i = o.obligation.indexOf(",");
+				int j = o.obligation.indexOf(",", i+1);
+				int x = Integer.parseInt(o.obligation.substring(4, i).trim());
+				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
+				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
 			}
-			Term i = new APLIdent("null");
-			if(tuple.i!=null) i = new APLNum(tuple.i);
-			return new APLFunction("tuple", new Term[]{new APLIdent(name),posTerm,i});
+			if(o.deadline!=null){
+				posTerm1 = new APLNum(o.deadline);
+			}
+			if(o.sanction!=null){
+				int i = o.sanction.indexOf("(");
+				posTerm2 = new APLFunction(o.sanction.substring(1,i), new Term[]{new APLIdent(name)});
+			}
+			return new APLFunction("obligation", new Term[]{posTerm,posTerm1,posTerm2});
 			// TODO: other datatypes
-		}*/
+		}
+		else if(entry instanceof Prohibition){ // in case of tuples return tuple(name,position(2,4),48)
+			Prohibition p = (Prohibition) entry;   // cast to tuple
+			String name = p.agent;
+			if(name==null)name="null"; 
+			Term posTerm = new APLIdent("null");
+			
+			Term posTerm2 = new APLIdent("null");
+
+			if(p.prohibition!=null){
+				//System.out.println(p.prohibition);
+				int i = p.prohibition.indexOf(",");
+				int j = p.prohibition.indexOf(",", i+1);
+				int x = Integer.parseInt(p.prohibition.substring(4, i).trim());
+				int y = Integer.parseInt(p.prohibition.substring(i+1, j).trim());
+				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
+			}
+			if(p.sanction!=null){
+				int i = p.sanction.indexOf("(");
+				posTerm2 = new APLFunction(p.sanction.substring(1,i), new Term[]{new APLIdent(name)});
+			}
+			return new APLFunction("prohibition", new Term[]{posTerm,posTerm2});
+			// TODO: other datatypes
+		}
 		return new APLIdent("null");
 	}
 
 	public Term read(String sAgent, APLFunction call, APLNum timeOut){
+		//System.out.println("read hack 2");
+	
 		try{ 
 			return entryToTerm(space.read(createEntry(sAgent,call), null, timeOut.toInt())); 
 		} catch(Exception e){ e.printStackTrace(); return new APLIdent("null"); }
@@ -443,7 +578,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public Term take(String sAgent, APLFunction call, APLNum timeOut){
 		try{ 
 			Term e =  entryToTerm(space.take(createEntry(sAgent,call), null, timeOut.toInt())); 
-			oopl.handleEvent(ar_state_change, false); // check the norms
+			//oopl.handleEvent(ar_state_change, false); // check the norms
 			return e;
 		} catch(Exception e){ e.printStackTrace(); return new APLIdent("null"); }
 	}
@@ -451,17 +586,18 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public Term takeIfExists(String sAgent, APLFunction call, APLNum timeOut){
 		try{ 
 			Term e =  entryToTerm(space.takeIfExists(createEntry(sAgent,call), null, timeOut.toInt())); 
-			if(e!=null)oopl.handleEvent(ar_state_change, false); // check the norms
+			//if(e!=null)oopl.handleEvent(ar_state_change, false); // check the norms
 			return e;
 		} catch(Exception e){ e.printStackTrace(); return new APLIdent("null"); }
 	}
 	
 	public Term write(String sAgent, APLFunction call, APLNum lease){ 
+		//System.out.println("write " + sAgent);
 		try{
 			long leaseVal = lease.toInt();
 			if(leaseVal < 0) leaseVal = Lease.FOREVER; 
 			space.write(createEntry(sAgent,call), null, leaseVal);
-			oopl.handleEvent(ar_state_change, false); // check the norms
+			//oopl.handleEvent(ar_state_change, false); // check the norms
 			return new APLIdent("true");
 		}catch (Exception e){ e.printStackTrace(); return new APLIdent("null"); }
 	}
@@ -474,20 +610,172 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * ENVIRONMENT OVERRIDES
 	 */
 	public synchronized void addAgent(String sAgent) {
+		//System.out.println("register " + sAgent);
+		register(sAgent);
+	}
+	
+	private void register(String agent) {
+		
+		AgentHandler handler;
 		try {
-			Tuple data = (Tuple)space.readIfExists(new Tuple(sAgent,null,null), null, Lease.FOREVER);
-			if(data == null) // agent doesn't exist
-				space.write(new Tuple(sAgent,new Point(1,1),100), null, Lease.FOREVER); // so make it
-		} catch (Exception e) {
+			handler = new AgentHandler(this, agent);
+			space.notify(new Prohibition(), null,
+			        handler,
+			        3000000,
+			        new MarshalledObject(new String("prohibition")));
+			space.notify(new Obligation(), null,
+			        handler,
+			        3000000,
+			        new MarshalledObject(new String("obligation")));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+/*			theManager.renewFor(myReg.getLease(), Lease.FOREVER,
+                30000, new DebugListener());*/
+	}
+	
+	public Obligation readObligation(String agent) {
+		Obligation obligation = new Obligation(agent);
+		ArrayList<Obligation> obligations = new ArrayList<Obligation>();
+		getAll(obligation, obligations);
+		return obligations.get(0);
+	}
+	
+	public Prohibition readProhibition(String agent) {
+		Prohibition prohibition = new Prohibition(agent);
+		ArrayList<Prohibition> prohibitions = new ArrayList<Prohibition>();
+		getAll(prohibition, prohibitions);
+		return prohibitions.get(0);
+	}
+	
+	
+	private static <T> void getAll(Object template, ArrayList<T> result) {
+
+		T entry;
+		
+		try {
+			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
+			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
+			Transaction txn = trans.transaction;
+			try {
+				while ((entry = (T) space.take((Entry) template, txn, 200)) != null){
+					//System.out.println(entry.toString());
+					result.add(entry);
+				}
+				getLatest(result);
+				//System.out.println(result.toString());
+				txn.abort();
+				//leaseRenewalManager.cancel(trans.lease);
+			} catch (UnusableEntryException e) {
+				e.printStackTrace();
+			} catch (TransactionException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} 
+			
+		} catch (LeaseDeniedException e1) {
+			e1.printStackTrace();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+	}
+	private Entry getLast(Entry a) {
+		Entry entry;
+		try {
+			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
+			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
+			Transaction txn = trans.transaction;
+			try {
+				ArrayList<Entry> result = new ArrayList<Entry>();
+				while ((entry = space.take(a, txn, 200)) != null){
+					//System.out.println(entry.toString());
+					result .add(entry);
+				}
+				getLatest(result);
+				//System.out.println(result.toString());
+				txn.abort();
+				//leaseRenewalManager.cancel(trans.lease);
+				if (result.size() > 0)
+					return result.get(0);
+			} catch (UnusableEntryException e) {
+				e.printStackTrace();
+			} catch (TransactionException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} 
+			
+		} catch (LeaseDeniedException e1) {
+			e1.printStackTrace();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+		return null;
+	}
+	private static <T> void getLatest(ArrayList<T> result) {
+		
+		if (result.size() > 0) {
+		/*Collections.sort(result, new Comparator<T>(){
+			  public int compare(T t1, T t2) {
+				  TimeEntry t3 = (TimeEntry) t1;
+				  TimeEntry t4 = (TimeEntry) t2;
+				  System.out.println(t3.toString());
+				  System.out.println(t4.toString());
+				  
+				
+			    return t3.time.compareTo(t4.time);
+			  }
+			  
+			});*/
+
+		int i = result.size();
+		T t = result.get(i-1);
+		result.clear();
+		result.add(t);
 		}
 	}
 
-	public synchronized void removeAgent(String sAgent){
+	public void notifyAgent(String agent, Entry o) {
+		Term t = entryToTerm(o);
+		throwEvent((APLFunction) t, new String[]{agent});
+		System.out.println(t.toString());
+	}
+
+	public void notifyOrg() {
+		System.out.println("org notified ");
+		oopl.handleEvent(ar_state_change, false);
+	}
+	
+    private void registerOrg() {
+		
+		OrgHandler handler;
 		try {
-			space.takeIfExists(new Tuple(sAgent,null,null), null, Lease.FOREVER); // remove the agent
-		} catch (Exception e) {
+			handler = new OrgHandler(this);
+			space.notify(new Position(), null,
+			        handler,
+			        3000000,
+			        new MarshalledObject(new String("position")));
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+/*			theManager.renewFor(myReg.getLease(), Lease.FOREVER,
+                30000, new DebugListener());*/
 	}
 }

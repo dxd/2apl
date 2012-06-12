@@ -3,7 +3,6 @@ BeliefUpdates:
   { true } AddObj(tuple(Name,Pos,_)) { object(Name,Pos) }
   { position(X,Y) and health(H) } UpdateStatus(NewX,NewY,NewHealth) { not position(X,Y), position(NewX,NewY), not health(H), health(NewHealth) }
   { clock(Old) } UpdateClock(New) { not clock(Old), clock(New) }
-  { true } AddProhibition(State,Sanction) { prohibited(State,Sanction) }
 
 Beliefs:   
   raise(X,NewX):- NewX is X + 1.
@@ -16,35 +15,17 @@ Plans:
   updateStatus()
 
 Goals:
-  clean(plastic)
+  at(3,3)
  
 
 PG-rules:
-clean(GarbageType) <- object(GarbageType,position(X,Y)) | {
-    moveTo(X,Y);
-    cleanse(GarbageType)
-}
-
-clean(GarbageType) <- not object(GarbageType,_) | {
-   @space(readIfExists(object(GarbageType,null),0),R);
-   B(R=[actionresult(Result)]);
-   if B(Result = null) then {
-     readClock()
-   } else {
-     AddObj(Result)
-   }
-}
 
 at(X,Y) <- true | {
     moveTo(X,Y); 
     dropgoal(at(X,Y))
-}
+} : 4000
 
 PC-rules:
-cleanse(GarbageType) <- object(GarbageType,position(X,Y)) and position(X,Y) | {
-    RemoveObj(GarbageType,X,Y);
-    @space(takeIfExists(object(GarbageType,position(X,Y)),0),_)
-} 
 
 ///////////// Moving
 moveTo(X,Y) <- position(X2,Y2) and X2 < X and raise(X2,NewX) | { 
@@ -64,8 +45,8 @@ moveTo(X,Y) <- position(X,Y) | { skip }
 updatePos(NewX,NewY) <- position(X,Y) | {
     B(health(Health));
     UpdateStatus(NewX,NewY,Health);
-    @space(take(status(position(X,Y),Health),0),_);
-    @space(write(status(position(NewX,NewY),Health),-1),_)
+    //@space(take(status(position(X,Y),Health),0),_);
+    @space(write(position(NewX,NewY),-1),_)
 } 
 
 readClock() <- true |{
@@ -75,9 +56,10 @@ readClock() <- true |{
 }
 
 updateStatus() <- true |{
-    @space(read(status(null,null),0),R); 
-    B(R=[actionresult(tuple(Me,position(X,Y),H))]);
-    UpdateStatus(X,Y,H)
+	skip
+    //@space(read(status(null,null),0),R); 
+    //B(R=[actionresult(tuple(Me,position(X,Y),H))]);
+    //UpdateStatus(X,Y,H)
 }
 
 event(obligation(Goal,Deadline,Sanction),space) <- true | {
@@ -90,15 +72,13 @@ event(prohibition(State,Sanction),space) <- true | {
 
 event(changed(status),space) <- true |{ updateStatus() }
 
-aprohibition([at(X,Y,_)|T], [reduce_health(_)|_]) <- true | {
-    adoptprohibition(at(X,Y) -> reduce_health);
-    aprohibition(T)
-}
-aprohibition([]) <- true | { skip }
-
-adoptObligation([at(X,Y,_)|T], D, [reduce_health(_)|_]) <- true | {
-    adopta(at(X,Y) :: D -> reduce_health);
-    adoptObligation(T)
+aprohibition(at(X,Y,_), reduce_200(_)) <- true | {
+    adoptprohibition(at(X,Y) -> reduce_200)
 }
 
-adoptObligation([]) <- true | { skip }
+adoptObligation(at(X,Y,_), D, reduce_100(_)) <- true | {
+    adopta(at(X,Y) : D -> reduce_100)
+}
+
+Sanctions:
+	reduce_100 -> 3, reduce_200 -> 5

@@ -1,4 +1,4 @@
 <apaplmas>
   <environment name="space" file="SpaceEnv.jar"></environment>
-  <agent name="robot1" file="tuple_agent.2apl"/>
+  <agent name="a1" file="tuple_agent.2apl"/>
 </apaplmas>
