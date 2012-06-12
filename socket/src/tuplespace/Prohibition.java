@@ -26,6 +26,10 @@ public class Prohibition implements TimeEntry {
 		this.time = new Date();
 	}
 	
+	public Prohibition(String agent2) {
+		this.agent = agent;
+	}
+
 	@Override
 	public String toString() {
 		return "Prohibition [agent=" + agent + ", prohibition=" + prohibition

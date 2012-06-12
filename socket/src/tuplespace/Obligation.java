@@ -31,6 +31,11 @@ public class Obligation implements TimeEntry {
 	}
 
 
+	public Obligation(String agent) {
+		this.agent = agent;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Obligation [agent=" + agent + ", obligation=" + obligation
