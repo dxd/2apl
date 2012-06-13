@@ -19,7 +19,7 @@ import dataJSon.Status;
 import tuplespace.ActionRequest;
 import tuplespace.Cargo;
 import tuplespace.Cell;
-import tuplespace.MessageHandler;
+import tuplespace.NotificationHandler;
 import tuplespace.Points;
 import tuplespace.Position;
 import tuplespace.Prohibition;
@@ -290,7 +290,7 @@ public class JSpace {
 		}
 	}
 	
-	private void writeTime(int clock) {
+	void writeTime(int clock) {
 		Time time = new Time(clock);
 		write(time);	
 	}

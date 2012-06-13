@@ -6,7 +6,7 @@ public class Start {
 	
 
 	private static Date startTime;
-	private static int gamePace = 10000;
+	private static int gamePace = 1000;
 	
 	private static Timer timer;
 	

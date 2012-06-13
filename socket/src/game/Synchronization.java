@@ -26,7 +26,7 @@ import net.jini.core.transaction.TransactionException;
 //import org.json.JSONTokener;
 
 import tuplespace.ActionRequest;
-import tuplespace.MessageHandler;
+import tuplespace.NotificationHandler;
 import tuplespace.Position;
 
 
@@ -56,13 +56,44 @@ public class Synchronization {
 	
 	private void initialize() {
 		
+		resetGame();
 		postJoin("email", "a1", "runner");
 		//postJoin("email", "robot2", "truck");
-		//postJoin("email", "robot3", "controller");
+		postJoin("email", "c1", "controller");
+		startGame();
 		//postLocation(13, new LatLng(52.951623,-1.186357));
 		//getReading(6, new LatLng(52.951623,-1.186357));
 		register();
 	}
+	private void startGame() {
+		//get
+    	try {
+
+    		URL ruby = new URL(server + "/admin/games/" + gameId+ "/start"); 
+    		
+    		Reader reader = new InputStreamReader(ruby.openStream());
+    		reader.close();
+    		
+    	} catch (MalformedURLException e) {
+    	} catch (IOException e) {
+    	}
+		
+	}
+	private void resetGame() {
+		//get
+    	try {
+
+    		URL ruby = new URL(server + "/admin/games/" + gameId+ "/reset"); 
+    		
+    		Reader reader = new InputStreamReader(ruby.openStream());
+    		reader.close();
+    		
+    	} catch (MalformedURLException e) {
+    	} catch (IOException e) {
+    	}
+		
+	}
+
 	private String buildPostData(ArrayList<SimpleEntry<String, Object>> params) throws UnsupportedEncodingException{
 		
 		String data = "";
@@ -164,6 +195,7 @@ public class Synchronization {
     	{
     		initialize();
     	}
+    	jspace.writeTime(clock);
 		//jspace.readAll(update, clock-1);
 		
 		//push();
@@ -288,9 +320,9 @@ public class Synchronization {
 	public void register() {
 		try {
 			JSpace.space.notify(new Position(), null,
-			        new MessageHandler(this),
+			        new NotificationHandler(this),
 			        3000000,
-			        new MarshalledObject(new Integer(1)));
+			        new MarshalledObject(new String("position")));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -301,6 +333,18 @@ public class Synchronization {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void postLocations(ArrayList<Position> readLocations) {
+		if (readLocations != null) {
+			for (Position loc : readLocations)
+			{
+				LatLng latlng = Game.gridToLocation(loc.getCell());
+				postLocation(loc.getId(), latlng);
+			}
+			
+		}
+	
 	}
 }
 
