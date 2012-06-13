@@ -75,15 +75,15 @@ public class Goal implements Iterable<Literal>
 		if (time != null)
 			this.deadline.setTime(deadline.getTime() + Long.getLong(time)*1000);*/
 		this.deadline = new Date();
-
-		this.deadline.setTime(deadline.getTime() + 100*1000);
-		System.out.println("deadline " + deadline.toString());
+		int t = Integer.valueOf(time.trim());
+		this.deadline.setTime(deadline.getTime() + t*1000);
+		//System.out.println("deadline " + deadline.toString());
 	}
 	
 	public void addDeadlineVar(APLVar time)
 	{
 		if (time != null) {
-		System.out.println("deadlineVar " + time.toString());
+		//System.out.println("deadlineVar " + time.toString());
 		this.varDeadline = time;
 		}
 	}
@@ -229,7 +229,7 @@ public class Goal implements Iterable<Literal>
 	{
 		String r = "";
 		for (Literal l : goal) r = r + l.toString(inplan);
-		if (deadline.getTime() < Long.MAX_VALUE) {
+		if (deadline.getTime() != Long.MAX_VALUE) {
 			r = r + " : " + deadline.toGMTString();
 		}
 		else {
@@ -252,7 +252,7 @@ public class Goal implements Iterable<Literal>
 		String s = "\\cf1  and \\cf0 ";
 		for (Literal l : goal) {
 			r = r + l.toRTF(inplan) + s;
-			if (deadline.getTime() < Long.MAX_VALUE) {
+			if (deadline.getTime() != Long.MAX_VALUE) {
 				r = r + deadline.toGMTString();
 			}
 			else {

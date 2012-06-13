@@ -156,7 +156,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		//if(amount>0)  oopl.handleEvent(ar_state_change, false); // clock ticked so deadlines can be passed, handleEvent causes the interpreter to check the norms
 		Time t = new Time();
 		Entry e = getLast(t);
-		System.out.println(e.toString());
+		//System.out.println(e.toString());
 		if (e != null)
 			return ((Time) e).clock;
 		return 0;
@@ -206,7 +206,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		 */
 		if(call[1] == oopl.prolog.strStorage.getInt("read")){
 			try {
-				System.out.println("read hack 1");
+				//System.out.println("read hack 1");
 				//ea.intResult = ar_true;
 				/*Entry e = space.read(createEntry(call, true), null, Lease.FOREVER);
 				Entry e1 = space.read(createEntry(call, false), null, Lease.FOREVER);
@@ -235,14 +235,14 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				ea.intResult = entryToArray(space.takeIfExists(createEntry(call), null, get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1)));
 			} catch (Exception e) {e.printStackTrace();}
 		} else if(call[1] == oopl.prolog.strStorage.getInt("write")){
-			System.out.println("write");
+			//System.out.println("write");
 			try {
 				long lease = get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1);
 				if(lease <= 0) lease = Lease.FOREVER;
 				
 				Entry e = createEntry(call);
 				space.write(e, null, lease);
-				System.out.println(e+"  "+lease+"   "+Lease.FOREVER);
+				//System.out.println(e+"  "+lease+"   "+Lease.FOREVER);
 				ea.intResult = ar_true;
 			} catch (Exception e) {e.printStackTrace();}
 	    /*
@@ -257,7 +257,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			}*/
 			String recipient = oopl.prolog.strStorage.getString(call[4]);
 			APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
-			System.out.println("Sending event to "+recipient+": "+event);
+			//System.out.println("Sending event to "+recipient+": "+event);
 			try {
 				space.write(createEntry(recipient, event), null, Lease.FOREVER);
 			} catch (RemoteException e) {
@@ -289,7 +289,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		String tuple = oopl.prolog.strStorage.getString(call[4]);
 		//System.out.println(tuple);
 		if (tuple.startsWith("position")) {
-			System.out.println("create entry position ");
+			//System.out.println("create entry position ");
 			String name = null;
 			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
 			Cell c = null;
@@ -362,7 +362,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				addNumber(r, 12, t.cell.y);
 				c = 15;
 			} 
-			System.out.println("to array: " + r.toString());
+			//System.out.println("to array: " + r.toString());
 			//addNumber(r, c,t.i);
 			return r;
 		}
@@ -450,7 +450,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 		else if(call.getName().equals(TYPE_PROHIBITION)){ // Prolog format: status(position(1,4),30) 
 			Prohibition p = null;
-			System.out.println("create entry prohibition "+call.getParams().toString());
+			//System.out.println("create entry prohibition "+call.getParams().toString());
 			
 		
 			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
@@ -467,7 +467,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		} 
 		else if(call.getName().equals(TYPE_OBLIGATION)){ // Prolog format: status(position(1,4),30) 
 			Obligation o = null;
-			System.out.println("create entry obligation "+call.getParams().toString());
+			//System.out.println("create entry obligation "+call.getParams().toString());
 			
 		
 			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
@@ -484,7 +484,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			//System.out.println(call.toString());
-			System.out.println(o.toString());
+			//System.out.println(o.toString());
 			return o; // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
@@ -757,7 +757,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public void notifyAgent(String agent, Entry o) {
 		Term t = entryToTerm(o);
 		throwEvent((APLFunction) t, new String[]{agent});
-		System.out.println(t.toString());
+		//System.out.println(t.toString());
 	}
 
 	public void notifyOrg() {
