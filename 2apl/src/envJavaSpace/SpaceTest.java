@@ -141,8 +141,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			ar_state_change = oopl.prolog.mp.parseFact("tuple_space_changed.", oopl.prolog.strStorage, false);
 			// To create a IntProlog structure out of a string use the above lines (but replace the fact string such as "true.")
 			// Starting the clock 
-			Thread t = new Thread(new ClockTicker(this));
-			t.start(); 
+			//Thread t = new Thread(new ClockTicker(this));
+			//t.start(); 
 			
 		} else { 
 			System.out.println("No Java Space found."); 
@@ -152,10 +152,14 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	/*
 	 * Both used for increasing or just reading the clock. 
 	 */
-	public synchronized int updateClock(int amount){
+	public int updateClock(int amount){
 		//if(amount>0)  oopl.handleEvent(ar_state_change, false); // clock ticked so deadlines can be passed, handleEvent causes the interpreter to check the norms
-		clock += amount;
-		return clock;
+		Time t = new Time();
+		Entry e = getLast(t);
+		System.out.println(e.toString());
+		if (e != null)
+			return ((Time) e).clock;
+		return 0;
 	}
 	
 	/*
@@ -211,9 +215,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				else
 					ea.intResult = ar_false;*/
 				Entry a = createEntry(call);
-				System.out.println(a.toString());
+				//System.out.println(a.toString());
 				Entry e = getLast(a);
-				System.out.println(e.toString());
+				//System.out.println(e.toString());
 				ea.intResult = entryToArray(e);
 			} catch (Exception e) {e.printStackTrace();}
 		} else if(call[1] == oopl.prolog.strStorage.getInt("readIfExists")){
@@ -409,17 +413,23 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
-			Point p = null;
+			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
 				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
 				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
 				int pointY = ((APLNum)point.getParams().get(1)).toInt();
-				p = new Point(pointX,pointY);
+				c = new Cell(pointX,pointY);
 			}
-			Integer health = null; // if health is null (which is ident) it stays also in java null
-			if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
-			System.out.println(call.toString());
-			return new Tuple(sAgent,p,health); // Create Tuple
+			Integer clock = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			//System.out.println(call.toString());
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return new Position(sAgent,c,clock); // Create Tuple
 		}
 		if(call.getName().equals(TYPE_POSITION)){ // Prolog format: position(1,4)
 			Cell c = null;
@@ -557,8 +567,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		return new APLIdent("null");
 	}
 
+	//from agent program
 	public Term read(String sAgent, APLFunction call, APLNum timeOut){
-		//System.out.println("read hack 2");
 	
 		try{ 
 			return entryToTerm(space.read(createEntry(sAgent,call), null, timeOut.toInt())); 

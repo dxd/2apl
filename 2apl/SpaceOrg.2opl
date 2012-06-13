@@ -38,7 +38,7 @@ do_sanction([H|T]):- uniqueassertz(H),do_sanction(T).
 do_sanction([]).
 
 do_reduce_health(Agent,P):- 
-   @external(envJavaSpace,takeIfExists(tuple(Agent,null,null),0),tuple(Agent,point(X,Y),Health)),
+   //@external(envJavaSpace,takeIfExists(tuple(Agent,null,null),0),tuple(Agent,point(X,Y),Health)),
    NewHealth is Health - P,
    @external(envJavaSpace,write(tuple(Agent,point(X,Y),NewHealth),-1),_).
 
