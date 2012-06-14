@@ -10,7 +10,7 @@ Beliefs:
   clock(0).
   
 Goals:
-  at(3,3) :: 200 >> 7, at(6,6) :: 200 >> 5
+  at(1,6) :: 200 >> 7, at(3,3) :: 200 >> 5
  
 
 PG-rules:
@@ -67,7 +67,7 @@ adoptObligation(at(X,Y,_), D, reduce_100(_)) <- true | {
 }
 
 Prohibitions:
-	position(3,3) -> reduce_100
+	position(2,1) -> reduce_100
 	
 Sanctions:
 	reduce_100 -> 3, reduce_200 -> 5

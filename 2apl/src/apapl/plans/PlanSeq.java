@@ -582,8 +582,8 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	/**
 	 * @param isAtomic the isAtomic to set
 	 */
-	public void setAtomic(boolean isAtomic) {
-		this.isAtomic = isAtomic;
+	public void setAtomic(boolean b) {
+		this.isAtomic = b;
 	}
 	public void setAtomic() {
 		this.isAtomic = true;

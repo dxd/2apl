@@ -221,6 +221,7 @@ public class PGrulebase extends Rulebase<PGrule>
 			p.setActivationRule(pgrule);
 			p.setActivationGoal(goaltheta);
 			p.setActivationSubstitution(theta);
+			
 
 			// For the special case we are dealing with a reactive rule (head is True)
 			// it should not be the case that the module is working on an instance of
@@ -251,7 +252,7 @@ public class PGrulebase extends Rulebase<PGrule>
 			p.setActivationRule(pgrule);
 			p.setActivationGoal(goaltheta);
 			p.setActivationSubstitution(theta);
-
+			p.setAtomic(pgrule.getBody().isAtomic());
 			p.setDuration(pgrule.getDuration());
 			if (goal != null)
 			{
