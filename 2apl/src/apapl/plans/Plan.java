@@ -18,6 +18,8 @@ public abstract class Plan
 {
 	protected ParentPlan parent;
 	
+
+	
 	/**
 	 * Sets the parent of this plan.
 	 * 
@@ -154,5 +156,5 @@ public abstract class Plan
      * @return the descriptor of the plan
      */
 	public abstract Term getPlanDescriptor();
-
+	
 }

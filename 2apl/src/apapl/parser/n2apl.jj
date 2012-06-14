@@ -369,38 +369,43 @@ void Prohibitionbase(Prohibitionbase prohibitions) :
 
 }
 
-
-
 PlanSeq PlanSeq() :
-{PlanSeq p;}
+{PlanSeq p = new PlanSeq(); Plan p1;}
 {
 	p = UnBracedPlanSeq() {return p;}
 |	LOOKAHEAD(<ACCL> UnBracedPlanSeq() <ACCR>)
 	<ACCL> p = UnBracedPlanSeq() <ACCR> {return  p;}
+
+
 }
 
 PlanSeq UnBracedPlanSeq() :
 {Plan p; PlanSeq pl = new PlanSeq();}
 {
-	p = Plan() {pl.addPlan(p);} 
-	(	LOOKAHEAD( <DOTCOMMA>)
-		<DOTCOMMA> p = Plan() {pl.addPlan(p);}
-	)*
+	
+	LOOKAHEAD(<LISTL>)
+	<LISTL> p = Plan() {pl.addPlan(p);} (<DOTCOMMA> p = Plan() {pl.addPlan(p);})* <LISTR> {pl.setAtomic();return pl;}
+| 	p = Plan() {pl.addPlan(p);}
+	(	LOOKAHEAD( <DOTCOMMA>) <DOTCOMMA> p = Plan() {pl.addPlan(p);})*
 	{return pl;}
 }
 
 PlanSeq PlanSeqWithVar() :
-{PlanSeq p;}
+{PlanSeq p = new PlanSeq(); Plan p1;}
 {
 	p = UnBracedPlanSeqWithVar() {return p;}
 |	LOOKAHEAD(<ACCL> UnBracedPlanSeqWithVar() <ACCR>)
 	<ACCL> p = UnBracedPlanSeqWithVar() <ACCR> {return  p;}
+
 }
 
 PlanSeq UnBracedPlanSeqWithVar() :
 {Plan p; PlanSeq pl = new PlanSeq();}
 {
-	p = PlanWithVar() {pl.addPlan(p);} 
+	
+ 	LOOKAHEAD(<LISTL>)
+ 	<LISTL> p = PlanWithVar() {pl.addPlan(p);} (<DOTCOMMA> p = PlanWithVar() {pl.addPlan(p);})* <LISTR> {pl.setAtomic();return pl;}
+| 	p = PlanWithVar() {pl.addPlan(p);}
 	(	LOOKAHEAD( <DOTCOMMA>)
 		<DOTCOMMA> p = PlanWithVar() {pl.addPlan(p);}
 	)*
@@ -420,9 +425,7 @@ Plan PlanWithVar() :
 	p = GoalAction() {return p;}
 |	LOOKAHEAD(PAction())
 	p = PAction() {return p;}
-|	LOOKAHEAD(ChunkPlanWithVar())
-	p = ChunkPlanWithVar() {return p;}
-|	af = PlanAtom() {return new AbstractAction(af);}
+| 	af = PlanAtom() {return new AbstractAction(af);}
 |	p = SendAction() {return p;}
 |	LOOKAHEAD(Variable() <LBRACE>)
 	af = BeliefUpdateAction() {return new BeliefUpdateAction(af);}
@@ -456,9 +459,7 @@ Plan Plan() :
 	p = GoalAction() {return p;}
 |	LOOKAHEAD(PAction())
 	p = PAction() {return p;}
-|	LOOKAHEAD(ChunkPlan())
-	p = ChunkPlan() {return p;}
-|	af = PlanAtom() {return new AbstractAction(af);}
+| 	af = PlanAtom() {return new AbstractAction(af);}
 |	p = SendAction() {return p;}
 |	af = BeliefUpdateAction() {return new BeliefUpdateAction(af);}
 |	<SKIPPLAN> {return new Skip();}
@@ -595,8 +596,8 @@ ExternalAction ExternalAction() :
 	}
 }
 
-ChunkPlan ChunkPlan() :
-{Plan p; ChunkPlan cp = new ChunkPlan();}
+PlanSeq ChunkPlan() :
+{Plan p; PlanSeq cp = new PlanSeq();}
 {
 	<LISTL>
 	p = Plan() {cp.addPlan(p);}
@@ -605,8 +606,8 @@ ChunkPlan ChunkPlan() :
 	{return cp;}
 }
 
-ChunkPlan ChunkPlanWithVar() :
-{Plan p; ChunkPlan cp = new ChunkPlan();}
+PlanSeq ChunkPlanWithVar() :
+{Plan p; PlanSeq cp = new PlanSeq();}
 {
 	<LISTL>
 	p = PlanWithVar() {cp.addPlan(p);}

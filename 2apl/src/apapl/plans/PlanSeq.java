@@ -28,7 +28,7 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	private Date executionStart;
 	private long duration;
 	
-	private boolean isAtomic = false;
+	protected boolean isAtomic = false;
 
 	private byte priority;
 	
@@ -551,9 +551,7 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 			this.executionStart = date;
 	}
 
-	public void setAtomic() {
-		this.isAtomic = true;
-	}
+
 
 	public Byte getPriority() {
 
@@ -586,6 +584,9 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	 */
 	public void setAtomic(boolean isAtomic) {
 		this.isAtomic = isAtomic;
+	}
+	public void setAtomic() {
+		this.isAtomic = true;
 	}
 	
 }

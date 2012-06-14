@@ -111,31 +111,5 @@ public class BeliefUpdates extends Rulebase<BeliefUpdate>
 		b.setRules(getRules());
 		return b;
 	}
-
-	public BeliefUpdate selectBeliefUpdate(Plan plan, Beliefbase beliefbase,
-			SubstList<Term> theta) {
-		
-		for (BeliefUpdate c : rules) {
-			BeliefUpdate rulecopy = c.clone();
-			ArrayList<String> unfresh = plan.getVariables();
-			ArrayList<String> own = rulecopy.getVariables();
-			ArrayList<ArrayList<String>> changes = new ArrayList<ArrayList<String>>();
-			rulecopy.freshVars(unfresh,own,changes);
-			APLFunction act = rulecopy.getAct();
-			
-			SubstList<Term> theta2 = theta.clone();
-			if (Unifier.unify(plan.getPlanDescriptor(),act,theta2)) {
-				Query pre = rulecopy.getPre();
-				pre.applySubstitution(theta2);
-				if (beliefbase.doQuery(pre,theta2)) {
-					theta.getMap().clear();
-					theta.putAll(theta2);
-					return rulecopy;
-				}
-			}
-		}
-		
-		return null;
-	}
 	
 }

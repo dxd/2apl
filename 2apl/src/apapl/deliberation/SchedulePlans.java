@@ -13,6 +13,7 @@ import apapl.data.Literal;
 import apapl.data.Prohibition;
 import apapl.data.Term;
 import apapl.plans.BeliefUpdateAction;
+import apapl.plans.ChunkPlan;
 import apapl.plans.Plan;
 import apapl.plans.PlanResult;
 import apapl.plans.PlanSeq;
@@ -54,13 +55,13 @@ public class SchedulePlans implements DeliberationStep {
 		ArrayList<PlanSeq> newNonAtomic = new ArrayList<PlanSeq>();
 		
 		planbase.sortPlans();
-
+		
 		for (PlanSeq ps : planbase) {
 			
 			//atomic
 			
 			ArrayList<PlanSeq> tempAtomic;
-			
+
 			if (ps.isAtomic()) {
 				
 				if (atomic == ps) {
@@ -68,7 +69,8 @@ public class SchedulePlans implements DeliberationStep {
 					tempAtomic = newAtomic;
 					
 				} else {
-
+					
+					
 					Date ne = new Date();
 					tempAtomic = new ArrayList<PlanSeq>();
 					

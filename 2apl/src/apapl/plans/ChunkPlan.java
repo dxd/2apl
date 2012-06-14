@@ -30,14 +30,15 @@ public class ChunkPlan extends Plan implements ParentPlan
     
     public ChunkPlan()
     {
+    	
     }
     
     public PlanSeq toPlanSeq()
     {
-    	System.out.println("n plantseq");
+    	//System.out.println("n plantseq");
         PlanSeq r = new PlanSeq();
         for (Plan p : plans) r.addLast(p);
-        r.setAtomic();
+        //r.setAtomic();
         return r;
     }
     

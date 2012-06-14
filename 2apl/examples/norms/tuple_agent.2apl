@@ -10,14 +10,16 @@ Beliefs:
   clock(0).
   
 Goals:
-  at(3,3) :: 200 >> 7
+  at(3,3) :: 200 >> 7, at(6,6) :: 200 >> 5
  
 
 PG-rules:
 
 at(X,Y) <- true | {
-    moveTo(X,Y); 
-    dropgoal(at(X,Y))
+
+   [moveTo(X,Y); 
+    dropgoal(at(X,Y))]
+    
 } : 150
 
 PC-rules:
