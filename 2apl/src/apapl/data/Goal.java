@@ -26,7 +26,7 @@ public class Goal implements Iterable<Literal>
 	public APLVar				varDeadline;
 	private Date				deadline;
 	private byte				priority;
-	private ArrayList<Literal>	sanctions;
+	private Literal				sanction;
 	
 	/**
 	 * Constructs a new empty goal.
@@ -36,7 +36,7 @@ public class Goal implements Iterable<Literal>
 		goal = new LinkedList<Literal>();
 		this.deadline = new Date(Long.MAX_VALUE);
 		this.priority = 1;
-		this.sanctions = new ArrayList<Literal>();
+		
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class Goal implements Iterable<Literal>
 		this.goal = goal;
 		this.deadline = new Date(Long.MAX_VALUE);
 		this.priority = 1;
-		this.sanctions = new ArrayList<Literal>();
+	
 	}
 	
 	/**
@@ -74,16 +74,23 @@ public class Goal implements Iterable<Literal>
 		this.deadline = new Date();
 		if (time != null)
 			this.deadline.setTime(deadline.getTime() + Long.getLong(time)*1000);*/
-		this.deadline = new Date();
-		int t = Integer.valueOf(time.trim());
-		this.deadline.setTime(deadline.getTime() + t*1000);
-		//System.out.println("deadline " + deadline.toString());
+		
+		try {
+			this.deadline = new Date();
+			int t = Integer.valueOf(time.trim());
+			this.deadline.setTime(deadline.getTime() + t*1000);
+			System.out.println("deadline " + deadline.toString());
+		} catch (Exception e) {
+			this.varDeadline = new APLVar(time);
+		}
+		
+		
 	}
 	
 	public void addDeadlineVar(APLVar time)
 	{
 		if (time != null) {
-		//System.out.println("deadlineVar " + time.toString());
+		System.out.println("deadlineVar " + time.toString());
 		this.varDeadline = time;
 		}
 	}
@@ -100,7 +107,7 @@ public class Goal implements Iterable<Literal>
 	
 	public void addSanction(Literal sanction)
 	{
-		this.sanctions.add(sanction);
+		this.sanction = sanction;
 	}
 	
 	/**
@@ -199,7 +206,12 @@ public class Goal implements Iterable<Literal>
 	public void applySubstitution(SubstList<Term> theta)
 	{
 		for (Literal l : goal) l.applySubstitution(theta);
-		//this.varDeadline.applySubstitution(theta);
+		if (this.varDeadline != null)
+		{
+			this.varDeadline.applySubstitution(theta);
+			//System.out.println("substitution: "+ varDeadline);
+			this.deadline.setTime(System.currentTimeMillis() + 100*1000);//TODO
+		}
 	}
 	
 	/**
@@ -219,6 +231,11 @@ public class Goal implements Iterable<Literal>
 	{
 		Goal copy = new Goal();
 		for (Literal l : goal) copy.addLiteral(l.clone());
+		copy.deadline = deadline;
+		copy.sanction = sanction;
+		copy.priority = priority;
+		copy.varDeadline = varDeadline;
+		
 		return copy;
 	}
 	
@@ -235,6 +252,7 @@ public class Goal implements Iterable<Literal>
 		else {
 			r = r + " : Infinite";
 		}
+		r += ", priority " + this.priority;
 		//if (r.length()>=5) r = r.substring(0,r.length()-5);	
 		return r;
 	}
@@ -366,7 +384,7 @@ public class Goal implements Iterable<Literal>
 	}
 
 	public boolean isObligation() {
-		return sanctions.size() == 0;
+		return sanction != null;
 	}
 
 	public Byte getPriority() {
@@ -380,13 +398,14 @@ public class Goal implements Iterable<Literal>
 		return this.deadline;
 	}
 
-	public ArrayList<Literal> getSanction() {
+	public Literal getSanction() {
 
-		return sanctions;
+		return sanction;
 	}
 
 	public void setPriority(byte priority) {
 
 		this.priority = priority;
 	}
+
 }

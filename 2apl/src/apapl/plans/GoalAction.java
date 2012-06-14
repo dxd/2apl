@@ -63,6 +63,7 @@ public class GoalAction extends ModulePlan
 					if (action.equals("adopta")) goals.assertGoalHead(g);
 					else if (action.equals("adoptz")) goals.assertGoal(g);
 						parent.removeFirst();
+					module.assignPriorities();
 					r = PlanResult.SUCCEEDED;
 				}
 			}

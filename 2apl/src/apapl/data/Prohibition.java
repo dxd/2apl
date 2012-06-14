@@ -60,6 +60,7 @@ public class Prohibition {
 	{
 		String r = "";
 		r = r + prohibition.toString(inplan) + " -> " + sanction.toString(inplan);
+		r += ", priority " + this.priority;
 		//if (r.length()>=5) r = r.substring(0,r.length()-5);	
 		return r;
 	}
@@ -89,31 +90,6 @@ public class Prohibition {
 	public Byte getPriority() {
 		
 		return priority;
-	}
-
-
-	public boolean existIn(PlanSeq ps, BeliefUpdates bu) {
-
-        for (BeliefUpdate b : bu.getRules())
-        {
-        	for (Literal l : b.getPost())
-        	{
-        		if (l == this.sanction)
-        		{
-        			for (Plan p : ps.getPlans())
-            		{
-            			//TODO!!!!
-            			String plan = p.toString().toLowerCase().trim();
-            			String action = b.getAct().toString().toLowerCase().trim();
-            			if (plan.contains(action))
-            			{
-            				return true;
-            			}
-            		}
-        		}
-        	}
-        }
-		return false;
 	}
 
 
@@ -167,6 +143,12 @@ public class Prohibition {
 		ArrayList<String> vars = new ArrayList<String>();
 		vars.addAll(prohibition.getVariables());
 		return vars;
+	}
+
+
+	public Literal getProhibition() {
+
+		return prohibition;
 	}
 
 }

@@ -5,12 +5,18 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import apapl.APLModule;
+import apapl.NoRuleException;
 import apapl.SubstList;
+import apapl.data.APLFunction;
 import apapl.data.Goal;
+import apapl.data.Literal;
 import apapl.data.Prohibition;
 import apapl.data.Term;
+import apapl.plans.BeliefUpdateAction;
 import apapl.plans.Plan;
+import apapl.plans.PlanResult;
 import apapl.plans.PlanSeq;
+import apapl.program.BeliefUpdate;
 import apapl.program.BeliefUpdates;
 import apapl.program.Beliefbase;
 import apapl.program.Goalbase;
@@ -21,8 +27,12 @@ import apapl.program.Prohibitionbase;
 import apapl.program.Schedule;
 
 public class SchedulePlans implements DeliberationStep {
+	
+	APLModule module;
 
 	public DeliberationResult execute(APLModule module) {
+		
+		this.module = module;
 
 		Planbase planbase = module.getPlanbase();
 		// Planbase atomicplans = module.getAtomicPlanbase();
@@ -139,7 +149,7 @@ public class SchedulePlans implements DeliberationStep {
 			return false;
 
 		Date deadline = ps.getDeadline();
-		if (deadline == null)
+		if (deadline == null || deadline.getTime() == Long.MAX_VALUE)
 			return true;
 
 		Date started = ps.getExecStart();
@@ -164,8 +174,41 @@ public class SchedulePlans implements DeliberationStep {
 
 		if (hpp != null) {
 			for (Prohibition p : hpp) {
-				if (p.existIn(ps, bu))
-					return true;
+				try {
+					if (existIn(ps, p))
+						return true;
+				} catch (NoRuleException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
+	
+	private boolean existIn(PlanSeq ps, Prohibition pp) throws NoRuleException {
+		
+		for (Plan plan : ps.getPlans())
+			{
+			//plan.evaluateArguments();
+			if (plan instanceof BeliefUpdateAction) {
+				APLFunction p = ((BeliefUpdateAction) plan).getPlan();
+				SubstList<Term> theta = new SubstList<Term>();
+				Beliefbase beliefbase = module.getBeliefbase();
+				BeliefUpdate c;
+				c = module.getBeliefUpdates().selectBeliefUpdate(p,beliefbase,theta);
+			
+				if (c == null)
+					continue;
+		
+				for (Literal l : c.getPost()) {
+					Literal lcopy = l.clone();
+					lcopy.applySubstitution(theta);
+					Literal pl = pp.getProhibition();
+					System.out.println(lcopy.toString() +"  "+pl.toString());
+					if (lcopy.equals(pl))
+						return true;
+				}
 			}
 		}
 		return false;

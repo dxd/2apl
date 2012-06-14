@@ -128,7 +128,7 @@ public class Goalbase extends Base implements Iterable<Goal>
 	{
 		if( logger != null)
 			logger.goalAddition(goal.toString(),"asserGoalHead");
-		System.out.println(goal.varDeadline);
+		//System.out.println(goal.varDeadline);
 		for (Goal g : gb) if (g.equals(goal)) return;
 		goal.evaluate();
 		gb.add(0,goal);
