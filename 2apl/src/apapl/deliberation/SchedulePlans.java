@@ -90,6 +90,7 @@ public class SchedulePlans implements DeliberationStep {
 				boolean pass = true;
 
 				if (!violatesProhibitions(ps, prohibitions))
+				{
 					for (PlanSeq p1 : tempAtomic) {
 						Date now = new Date();
 						long rt = 0;
@@ -104,14 +105,15 @@ public class SchedulePlans implements DeliberationStep {
 						}
 
 						if (now.getTime() + rt <= p1.getDeadline().getTime()) {
-							pass = false;
+							//pass = false; TODO algorithm not working
 							break;
 						}
 					}
+				}
 				else 
 				{
-					
 					pass = false;
+					ps.setProhibited();
 				}
 
 				if (pass)
@@ -134,14 +136,15 @@ public class SchedulePlans implements DeliberationStep {
 		for (PlanSeq ps1 : newNonAtomic) {
 			planbase.addPlan(ps1);
 		}
-		int i = 0;
+		boolean first = true;
 		for (PlanSeq ps1 : newAtomic) {
-			planbase.addPlan(ps1);
-			if (i == 0)
+			if (!ps1.getProhibited() && first)
 			{
 				module.setAtomic(ps1);
-				i++;
+				first = false;
 			}
+			planbase.addPlan(ps1);
+
 		}
 		
 		}

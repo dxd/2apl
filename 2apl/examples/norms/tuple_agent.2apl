@@ -20,7 +20,7 @@ at(X,Y) <- true | {
    [moveTo(X,Y); 
     dropgoal(at(X,Y))]
     
-} : 150
+} : 1
 
 PC-rules:
 

@@ -33,6 +33,8 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	private byte priority;
 	
 	private boolean scheduled = false;
+
+	private boolean prohibited = false;
 	
 	/**
 	 * Constructs a sequence of plans.
@@ -588,5 +590,14 @@ public class PlanSeq implements ParentPlan, Iterable<Plan>, Substitutable
 	public void setAtomic() {
 		this.isAtomic = true;
 	}
+
+	public void setProhibited() {
+		this.prohibited  = true;
+		
+	}
 	
+	public boolean getProhibited() {
+		return this.prohibited;
+		
+	}
 }

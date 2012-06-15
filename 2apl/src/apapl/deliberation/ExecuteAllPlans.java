@@ -35,7 +35,9 @@ public class ExecuteAllPlans implements DeliberationStep
 			{	
 				 if (ps.isAtomic() && module.getAtomic() != ps)
 					continue;
-				
+				 if (ps.getProhibited())
+					continue;
+				 
 				LinkedList<Plan> plans = ps.getPlans();
 			
 				PlanResult r = null;
