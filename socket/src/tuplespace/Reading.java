@@ -12,6 +12,7 @@ public class Reading implements TimeEntry {
 	public Integer id;
 	//public Long longitude;
 	//public Long latitude;
+	public String agent;
 	public Cell cell;
 	public Date time;
 	public Float value;
@@ -21,8 +22,9 @@ public class Reading implements TimeEntry {
 
 	}
 	
-	public Reading(Integer id, Cell cell, int clock, float value) {
+	public Reading(Integer id, String agent, Cell cell, int clock, float value) {
 		this.id = id;
+		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;
 		this.time = new Date();
@@ -31,8 +33,9 @@ public class Reading implements TimeEntry {
 
 	@Override
 	public String toString() {
-		return "Reading [id=" + id + ", cell=" + cell + ", time=" + time
-				+ ", value=" + value + ", clock=" + clock + "]";
+		return "Reading [id=" + id + ", agent=" + agent + ", cell=" + cell
+				+ ", time=" + time + ", value=" + value + ", clock=" + clock
+				+ "]";
 	}
 		
 }

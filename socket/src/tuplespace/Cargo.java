@@ -8,6 +8,8 @@ import net.jini.core.entry.Entry;
 
 public class Cargo implements TimeEntry {
 	
+
+
 	public Integer id;
 	public Cell cell;
 	public Date time;
@@ -26,6 +28,11 @@ public class Cargo implements TimeEntry {
 		this.clock = clock;
 		this.time = new Date();
 
+	}
+	public Cargo(Cell cell, Integer clock) {
+		super();
+		this.cell = cell;
+		this.clock = clock;
 	}
 	public Integer getId() {
 		return id;

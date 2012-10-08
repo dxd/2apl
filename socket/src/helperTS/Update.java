@@ -8,7 +8,7 @@ import tuplespace.ActionRequest;
 import tuplespace.Cargo;
 import tuplespace.Points;
 import tuplespace.Position;
-import tuplespace.Request;
+import tuplespace.Coin;
 
 public class Update {
 	
@@ -17,7 +17,7 @@ public class Update {
 	private ArrayList<ActionRequest> actionInv;
 	private ArrayList<AgentPoints> agentPoints;
 	private ArrayList<Cargo> cargos;
-	private ArrayList<Request> requests;
+	private ArrayList<Coin> coins;
 	
 	private Status status;
 
@@ -115,13 +115,13 @@ public class Update {
 		
 	}
 
-	public void Requests(ArrayList<Request> requeststs) {
-		requests = new ArrayList<Request>();
+	public void Coins(ArrayList<Coin> requeststs) {
+		coins = new ArrayList<Coin>();
 		
-		for (Request r : requeststs)
+		for (Coin r : requeststs)
 		{
 			if (r.getId() == null)
-				requests.add(r);
+				coins.add(r);
 		}
 		
 	}
@@ -134,12 +134,12 @@ public class Update {
 		this.cargos = cargos;
 	}
 
-	public ArrayList<Request> getRequests() {
-		return requests;
+	public ArrayList<Coin> getRequests() {
+		return coins;
 	}
 
-	public void setRequests(ArrayList<Request> requests) {
-		this.requests = requests;
+	public void setRequests(ArrayList<Coin> coins) {
+		this.coins = coins;
 	}
 
 }

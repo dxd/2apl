@@ -215,7 +215,7 @@ public class Synchronization {
 	}
 	
 	private void postRequests() {
-		for (tuplespace.Request r : update.getRequests())
+		for (tuplespace.Coin r : update.getRequests())
 		{
 			LatLng latlng = Game.gridToLocation(r.getCell());
 			updateRequests(latlng);
@@ -331,7 +331,7 @@ public class Synchronization {
 			        new NotificationHandler(this),
 			        3000000,
 			        new MarshalledObject(new String("makeReading")));
-			JSpace.space.notify(new tuplespace.Request(), null,
+			JSpace.space.notify(new tuplespace.Coin(), null,
 			        new NotificationHandler(this),
 			        3000000,
 			        new MarshalledObject(new String("request")));

@@ -40,7 +40,7 @@ public class Request {
 	}
 	
 	 public String toString() {
-		    return "Request[ " +
+		    return "Coin[ " +
 		      "id = " + id +
 		      ", longitude = " + longitude +
 		      ", latitude = " + latitude +

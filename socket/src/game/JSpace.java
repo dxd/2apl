@@ -23,7 +23,7 @@ import tuplespace.NotificationHandler;
 import tuplespace.Points;
 import tuplespace.Position;
 import tuplespace.Prohibition;
-import tuplespace.Request;
+import tuplespace.Coin;
 import tuplespace.Time;
 import tuplespace.TimeEntry;
 import tuplespace.Tuple;
@@ -141,14 +141,14 @@ public class JSpace {
 		
 		ArrayList<Position> positions = readLocations(clock);
 		ArrayList<Points> points = readPoints(clock);
-		ArrayList<Request> requests = readRequests(clock);
+		ArrayList<Coin> coins = readRequests(clock);
 		ArrayList<Cargo> cargos = readCargos(clock);
 		ArrayList<ActionRequest> ar = readReadingRequests(clock);
 		
 		update.Positions(positions);
 		update.Points(points);
 		update.Cargos(cargos);
-		update.Requests(requests);
+		update.Coins(coins);
 		update.ActionRequests(ar);
 		return update;
 	}
@@ -160,11 +160,11 @@ public class JSpace {
 		return cargos;
 	}
 
-	private ArrayList<Request> readRequests(int clock) {
-		Request request = new Request(clock);
-		ArrayList<Request> requests = new ArrayList<Request>();
-		getAll(request, requests);
-		return requests;
+	private ArrayList<Coin> readRequests(int clock) {
+		Coin coin = new Coin(clock);
+		ArrayList<Coin> coins = new ArrayList<Coin>();
+		getAll(coin, coins);
+		return coins;
 	}
 
 	private ArrayList<Points> readPoints(int clock) {
@@ -257,8 +257,8 @@ public class JSpace {
 		for (dataJSon.Request r : status.getRequests())
 		{
 			Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
-			tuplespace.Request request = new tuplespace.Request(r.getId(), cell, clock);
-			write(request);
+			tuplespace.Coin coin = new tuplespace.Coin(r.getId(), cell,"a1" , clock); //TODO agent is hardcoded
+			write(coin);
 		}
 		
 	}
@@ -268,8 +268,8 @@ public class JSpace {
 		for (dataJSon.Reading r : status.getReadings())
 		{
 			Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
-			System.out.println(cell.toString());
-			tuplespace.Reading reading = new tuplespace.Reading(r.getId(), cell, clock, r.getValue());
+			//System.out.println(cell.toString());
+			tuplespace.Reading reading = new tuplespace.Reading(r.getId(),status.getPlayerName(r.getPlayer_id()), cell, clock, r.getValue());
 			write(reading);
 		}
 		
@@ -277,7 +277,7 @@ public class JSpace {
 
 	private void write(Entry data)
 	{
-		System.out.println(data.toString());
+		//System.out.println(data.toString());
 		try {
 			Lease l = space.write(data, null, Lease.FOREVER);
 
