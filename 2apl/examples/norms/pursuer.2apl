@@ -1,0 +1,44 @@
+Include: agent.2apl
+
+BeliefUpdates:
+  { position(X,Y) and points(H) } UpdateStatus(NewX,NewY,NewPoints) { not position(X,Y), position(NewX,NewY), not points(H), points(NewPoints) }
+  { clock(Old) } UpdateClock(New) { not clock(Old), clock(New) }
+  { reading(X,Y,Old) } UpdateReadings(X,Y,Value) { not reading(X,Y,Old), reading(X,Y,Value) }
+  { } UpdateReadings(X,Y,Value) { reading(X,Y,Value) }
+
+Beliefs:   
+  raise(X,NewX):- NewX is X + 1.
+  lower(X,NewX):- NewX is X - 1.
+  points(1000).
+  position(int(random(20)),int(random(20))).
+  clock(0).
+  
+Goals:
+  at(10,10) :: 200 >> 7, 
+  makeReading :: 300 >> 5
+ 
+
+PG-rules:
+
+at(X,Y) <- true | {
+
+   [moveTo(X,Y); 
+    dropgoal(at(X,Y))]
+    
+} : 1
+
+makeReading <- position(X,Y) and clock(10) | {
+
+   [reading(X,Y); 
+    dropgoal(makeReading)]
+    
+} : 1
+
+PC-rules:
+
+reading(X,Y) <- true | {
+    @space(readingRequest(X,Y),V);
+    B(V=[actionresult(Value)]);
+    UpdateReadings(X,Y,V)
+    //@space(write(coin(position(X,Y),Clock,Agent),-1),_)
+} 

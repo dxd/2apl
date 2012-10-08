@@ -1,0 +1,46 @@
+Include: agent.2apl
+
+BeliefUpdates:
+  { position(X,Y) and points(H) } UpdateStatus(NewX,NewY,NewPoints) { not position(X,Y), position(NewX,NewY), not points(H), points(NewPoints) }
+  { clock(Old) } UpdateClock(New) { not clock(Old), clock(New) }
+  { clock(Old) } UpdateCargos(X,Y) { cargo(X,Y) }
+
+Beliefs:   
+  raise(X,NewX):- NewX is X + 1.
+  lower(X,NewX):- NewX is X - 1.
+  points(1000).
+  position(1,1).
+  clock(0).
+  
+Goals:
+  at(20,20) :: 2000 >> 3,
+  dropLoad :: 200 >> 3
+ 
+
+PG-rules:
+
+dropLoad <- position(X,Y) and clock(8) | {
+
+   [drop(X,Y); 
+    dropgoal(dropLoad)]
+    
+} : 1
+
+at(X,Y) <- true | {
+
+   [moveTo(X,Y); 
+    dropgoal(at(X,Y))]
+    
+} : 1
+
+PC-rules:
+
+drop(X,Y) <- true | {
+    B(points(Points));
+    @space(clock(),R);
+    B(R=[actionresult(Clock)]);
+    UpdateClock(Clock);
+    UpdateCargos(X,Y);
+    @space(write(cargo(position(X,Y),Clock),-1),_)
+} 
+
