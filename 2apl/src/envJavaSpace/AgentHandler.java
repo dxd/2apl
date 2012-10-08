@@ -5,6 +5,8 @@ import game.Synchronization;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import tuplespace.Cargo;
+import tuplespace.Coin;
 import tuplespace.Obligation;
 import tuplespace.Prohibition;
 
@@ -51,6 +53,11 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             	//System.out.println("agent prohibition notification");
             	Prohibition p = spaceTest.readProhibition(agent);
             	spaceTest.notifyAgent(agent, p);
+            }
+            if (type.equals("coin")) {
+            	//System.out.println("agent prohibition notification");
+            	Coin c = spaceTest.readCoin(agent);
+            	spaceTest.notifyAgent(agent, c);
             }
         } catch (Exception anE) {
            // System.out.println("Got event but couldn't display it");

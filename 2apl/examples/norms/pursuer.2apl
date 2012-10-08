@@ -14,8 +14,8 @@ Beliefs:
   clock(0).
   
 Goals:
-  at(10,10) :: 200 >> 7, 
-  makeReading :: 300 >> 5
+  at(10,10) :: 200 >> 7 
+ // makeReading :: 300 >> 5
  
 
 PG-rules:

@@ -79,7 +79,7 @@ public class Goal implements Iterable<Literal>
 			this.deadline = new Date();
 			int t = Integer.valueOf(time.trim());
 			this.deadline.setTime(deadline.getTime() + t*1000);
-			System.out.println("deadline " + deadline.toString());
+			//System.out.println("deadline " + deadline.toString());
 		} catch (Exception e) {
 			this.varDeadline = new APLVar(time);
 		}
@@ -90,7 +90,7 @@ public class Goal implements Iterable<Literal>
 	public void addDeadlineVar(APLVar time)
 	{
 		if (time != null) {
-		System.out.println("deadlineVar " + time.toString());
+		//System.out.println("deadlineVar " + time.toString());
 		this.varDeadline = time;
 		}
 	}

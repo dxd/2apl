@@ -37,7 +37,7 @@ public class GoalAction extends ModulePlan
 	public PlanResult execute(APLModule module)
 	{
 		APLModule updatedModule;
-		System.out.println(g.varDeadline);
+		//System.out.println(g.varDeadline);
 		
 		if (moduleId != null) {
 			try {

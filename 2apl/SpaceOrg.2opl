@@ -1,19 +1,19 @@
 Facts:
     
 %Truck:
-norm(
-    max_speed(Thing),
-    Thing, // the subject agent
-    ( truck(Thing)), // precondition
-    prohibition([speedOver(Max_speed)],[reduce_500(Thing)]) // prohibition format
-    ).
+//norm(
+//    max_speed(Thing),
+//    Thing, // the subject agent
+//    ( truck(Thing)), // precondition
+//    prohibition([speedOver(Max_speed)],[reduce_500(Thing)]) // prohibition format
+//    ).
 
-norm(
-    load_drop_location(Thing),
-    Thing, // the subject agent
-    ( truck(Thing), cargo(X,Y, Time), time_since(NewTime)), // precondition
-    prohibition([cargo(X,Y,NewTime)],[reduce_100(Thing)]) // prohibition format
-    ).  
+//norm(
+//    load_drop_location(Thing),
+//    Thing, // the subject agent
+//    ( truck(Thing), cargo(X,Y, Time), time_since(NewTime)), // precondition
+//    prohibition([cargo(X,Y,NewTime)],[reduce_100(Thing)]) // prohibition format
+//    ).  
       
 norm(
     load_drop_time(Thing),
@@ -90,7 +90,7 @@ norm(
 norm(
     place_coin(Thing),
     Thing, // the subject agent
-    ( controller(Thing), clock(Now), Deadline is Now + 5, time_since(NewTime) ), // precondition
+    ( controller(Thing), clock(Now), Deadline is Now + 5, time_since(NewTime), int(NewTime) ), // precondition
     obligation([coin(_,_, NewTime, _)],Deadline,[reduce_100(Thing)]) // obligation format
     ).
 
@@ -99,30 +99,30 @@ norm(
 norm(
     make_false_reading(Thing),
     Thing, // the subject agent
-    ( agent(Thing), agent(A1), at(X,Y,A1), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
+    ( agent(Thing), agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
     prohibition([reading(X1,Y1, _, A1,_)],[reduce_500(Thing)]) // prohibition format
     ).
   
 norm(
     false_investigate(Thing),
     Thing, // the subject agent
-    ( agent(Thing), agent(A1), at(X,Y,A1), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
-    prohibition([investigate(X1,Y1, _, A1,_)],[reduce_500(Thing)]) // prohibition format
+    ( agent(Thing), agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
+    prohibition([investigate(X1,Y1, _, Thing,_)],[reduce_500(Thing)]) // prohibition format
     ).  
     
 norm(
     read_too_often(Thing),
     Thing, // the subject agent
-    ( agent(Thing), agent(A1), reading(X,Y, Value,A1,Time), NewTime is Time + 1), // precondition
-    prohibition([reading(_, _, _, A1,NewTime)],[reduce_300(Thing)]) // prohibition format
+    ( agent(Thing), agent(Thing), reading(X,Y, Value,Thing,Time), NewTime is Time + 1), // precondition
+    prohibition([reading(_, _, _, Thing,NewTime)],[reduce_300(Thing)]) // prohibition format
     ). 
     
-norm(
-    max_speed(Thing),
-    Thing, // the subject agent
-    ( agent(Thing)), // precondition
-    prohibition([speedOver(Max_speed)],[reduce_500(Thing)]) // prohibition format
-    ).
+//norm(
+//    max_speed(Thing),
+//    Thing, // the subject agent
+//    ( agent(Thing)), // precondition
+//    prohibition([speedOver(Max_speed)],[reduce_500(Thing)]) // prohibition format
+//    ).
     
 norm(
     enter_water(Thing),
@@ -142,14 +142,14 @@ norm(
     collect_coin(Thing),
     Thing, // the subject agent
     ( agent(Thing), coin(X,Y,Thing), clock(Now), Deadline is Now + 10 ), // precondition
-    obligation([reading(X,Y, _, A1,_)],Deadline,[reduce_400(Thing)]) // obligation format
+    obligation([reading(X,Y, _, Thing,_)],Deadline,[reduce_400(Thing)]) // obligation format
     ).
 
 norm(
     make_reading(Thing),
     Thing, // the subject agent
-    ( agent(Thing), reading(X,Y, Value,A1,Time), clock(Now), Deadline is Now + 10, time_since(NewTime) ), // precondition
-    obligation([reading(_, _, _, A1, NewTime)],Deadline,[reduce_100(Thing)]) // obligation format
+    ( agent(Thing), reading(X,Y, Value,Thing,Time), clock(Now), Deadline is Now + 10, time_since(NewTime) ), // precondition
+    obligation([reading(_, _, _, Thing, NewTime)],Deadline,[reduce_100(Thing)]) // obligation format
     ).    
     
 //norm(
@@ -162,8 +162,8 @@ norm(
 norm(
     false_publish(Thing),
     Thing, // the subject agent
-    ( agent(Thing), reading(X,Y, Value,A1,Time), clock(Now), Deadline is Now + 1 ), // precondition
-    obligation([reading(X,Y, Value,A1,Time)],Deadline,[reduce_500(Thing)]) // obligation format
+    ( agent(Thing), reading(X,Y, Value,Thing,Time), clock(Now), Deadline is Now + 1 ), // precondition
+    obligation([reading(X,Y, Value,Thing,Time)],Deadline,[reduce_500(Thing)]) // obligation format
     ).  
     
 agent(a1).
@@ -190,13 +190,12 @@ investigate(X, Y, Value, Object, Time):-
 	agent(Object),
       @external(envJavaSpace,read(investigate(null,null,Object,null),0),investigate(cell(X,Y), Value, Object, Time)).
 
-coin(X, Y, Object):-
-	agent(Object),
-      @external(envJavaSpace,read(coin(null,Object),0),investigate(cell(X,Y), Object)).
+coin(X, Y, Time, Object):-
+	controller(Object),
+      @external(envJavaSpace,read(coin(null, null,Object),0),coin(cell(X,Y),Time, Object)).
       
-loadDrop(X, Y, Time):-
-	agent(Object),
-      @external(envJavaSpace,read(loadDrop(null,Object),0),loadDrop(cell(X,Y), Time)).      
+cargo(X, Y, Time):-
+      @external(envJavaSpace,read(cargo(null,null),0),cargo(cell(X,Y), Time)).      
 
 time_past(Time):- clock(Now), Now > Time.
 time_since(Time):- clock(Now), Time > Now.
@@ -234,7 +233,8 @@ do_sanction([]).
 do_reduce_health(Agent,P):- 
    //@external(envJavaSpace,takeIfExists(tuple(Agent,null,null),0),tuple(Agent,point(X,Y),Health)),
    NewHealth is Health - P,
-   @external(envJavaSpace,write(tuple(Agent,point(X,Y),NewHealth),-1),_).
+   clock(now),
+   @external(envJavaSpace,write(points(Agent,Now,NewHealth),-1),_).
 
 listTrue([H|T]):- H, listTrue(T).
 listTrue([]).
