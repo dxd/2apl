@@ -42,7 +42,7 @@ import dataJSon.*;
 public class Synchronization {
 
 	private static String server = "http://albinoni.cs.nott.ac.uk:49992";
-	private static int gameId = 6;
+	private static int gameId = 9;
 	
 	public JSpace jspace;
 
@@ -56,12 +56,16 @@ public class Synchronization {
 	
 	private void initialize() {
 		
-		resetGame();
-		postJoin("email", "a1", "runner");
-		//postJoin("email", "robot2", "truck");
-		postJoin("email", "c1", "controller");
-		startGame();
-		//postLocation(13, new LatLng(52.951623,-1.186357));
+		//resetGame();
+		//postJoin("email", "a1", "runner");
+		//postJoin("email1", "a2", "runner");
+		//postJoin("email2", "a3", "runner");
+		//postJoin("email", "t1", "truck");
+		//postJoin("email", "c1", "controller");
+		//startGame();
+		postLocation(65, new LatLng(52.9511,-1.1866));
+		postLocation(66, new LatLng(52.9518,-1.1860));
+		postLocation(67, new LatLng(52.9513,-1.185));
 		//getReading(6, new LatLng(52.951623,-1.186357));
 		register();
 	}
@@ -278,7 +282,7 @@ public class Synchronization {
 		}
 		
 	}
-	private void getReadings() {
+	public void getReadings() {
 		for (ActionRequest ar : update.getActionRead())
 		{
 			LatLng latlng = Game.gridToLocation(ar.getCell());
@@ -323,6 +327,18 @@ public class Synchronization {
 			        new NotificationHandler(this),
 			        3000000,
 			        new MarshalledObject(new String("position")));
+			JSpace.space.notify(new ActionRequest(), null,
+			        new NotificationHandler(this),
+			        3000000,
+			        new MarshalledObject(new String("makeReading")));
+			JSpace.space.notify(new tuplespace.Request(), null,
+			        new NotificationHandler(this),
+			        3000000,
+			        new MarshalledObject(new String("request")));
+			JSpace.space.notify(new tuplespace.Cargo(), null,
+			        new NotificationHandler(this),
+			        3000000,
+			        new MarshalledObject(new String("cargo")));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -175,7 +175,7 @@ public class JSpace {
 		return points;
 	}
 
-	private ArrayList<ActionRequest> readReadingRequests(int clock) {
+	public ArrayList<ActionRequest> readReadingRequests(Integer clock) {
 		
 		ActionRequest template = new ActionRequest(clock);
 		ArrayList<ActionRequest> ar = new ArrayList<ActionRequest>();
