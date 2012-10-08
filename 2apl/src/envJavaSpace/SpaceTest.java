@@ -289,14 +289,14 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		String tuple = oopl.prolog.strStorage.getString(call[4]);
 		//System.out.println(tuple);
 		if (tuple.startsWith("position")) {
-			//System.out.println("create entry position ");
+			System.out.println("create entry position ");
 			String name = null;
 			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
 			Cell c = null;
 			if(call[10]!=INT_NULL) c = new Cell(get_number(call,13),get_number(call,16)); 
 			//c = new Cell(3,3); 
 			//System.out.println(c.toString());
-			
+
 			return new Position(name,c);
 		}
 		else if(tuple == ""){
@@ -506,6 +506,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		if(entry instanceof Tuple){ // in case of tuples return tuple(name,position(2,4),48)
 			Tuple tuple = (Tuple) entry;   // cast to tuple
 			String name = tuple.str;
+			
 			if(name==null)name="null"; 
 			Term posTerm = new APLIdent("null");
 			if(tuple.point!=null){
@@ -708,7 +709,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				ArrayList<Entry> result = new ArrayList<Entry>();
 				while ((entry = space.take(a, txn, 200)) != null){
 					//System.out.println(entry.toString());
-					result .add(entry);
+					result.add(entry);
 				}
 				getLatest(result);
 				//System.out.println(result.toString());
