@@ -216,7 +216,7 @@ public class SchedulePlans implements DeliberationStep {
 					Literal lcopy = l.clone();
 					lcopy.applySubstitution(theta);
 					Literal pl = pp.getProhibition();
-					System.out.println(lcopy.toString() +"  "+pl.toString());
+					//System.out.println(lcopy.toString() +"  "+pl.toString());
 					if (lcopy.equals(pl))
 						return true;
 				}

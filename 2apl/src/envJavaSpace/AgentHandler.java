@@ -35,10 +35,10 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
 
         try {
         	String type = anEvent.getRegistrationObject().get().toString();
-            System.out.println("Got event: " + anEvent.getSource() + ", " +
-                               anEvent.getID() + ", " +
-                               anEvent.getSequenceNumber() + ", " + 
-                               anEvent.getRegistrationObject().get());
+            //System.out.println("Got event: " + anEvent.getSource() + ", " +
+            //                   anEvent.getID() + ", " +
+            //                   anEvent.getSequenceNumber() + ", " + 
+            //                   anEvent.getRegistrationObject().get());
             
             if (type.equals("position")) {
             	//System.out.println("agent position notification");

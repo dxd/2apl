@@ -213,6 +213,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		 */
 		if(call[1] == oopl.prolog.strStorage.getInt("read")){
 			try {
+				//
+				
 				//System.out.println("read hack 1");
 				//ea.intResult = ar_true;
 				/*Entry e = space.read(createEntry(call, true), null, Lease.FOREVER);
@@ -242,7 +244,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				ea.intResult = entryToArray(space.takeIfExists(createEntry(call), null, get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1)));
 			} catch (Exception e) {e.printStackTrace();}
 		} else if(call[1] == oopl.prolog.strStorage.getInt("write")){
-			//System.out.println("write");
+			System.out.println("write");
 			try {
 				long lease = get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1);
 				if(lease <= 0) lease = Lease.FOREVER;
@@ -256,7 +258,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	     * The next case throws towards the agent an event that its status is changed.
 	     */
 		} else if(call[1] == oopl.prolog.strStorage.getInt("notifyAgent")){ // notifyAgent(name,obligation(blabla)).
-			System.out.println("notify agent");
+			//System.out.println("notify agent");
 /*			for (int i = 0;  i<call.length; i++){
 				
 				String recipient = oopl.prolog.strStorage.getString(call[i]);
@@ -523,6 +525,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * @return The entry representation of the predicate.
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
+		System.out.println(call.toString());
+		System.out.println(sAgent);
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
@@ -533,16 +537,10 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			}
 			Integer clock = null; // if health is null (which is ident) it stays also in java null
 			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
-			//System.out.println(call.toString());
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			return new Position(sAgent,c,clock); // Create Tuple
 		}
-		if(call.getName().equals(TYPE_POSITION)){ // Prolog format: position(1,4)
+		else if(call.getName().equals(TYPE_POSITION)){ // Prolog format: position(1,4)
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLNum){ // null is APLIdent  
 				
@@ -550,14 +548,47 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				int pointY = ((APLNum)call.getParams().get(1)).toInt();
 				c = new Cell(pointX,pointY);
 			}
-			//System.out.println(c.toString());
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			return new Position(sAgent,c); // Create Tuple
+		}
+		else if(call.getName().equals(TYPE_COIN)){ // Prolog format: coin(position(X,Y),Clock,Agent)
+			System.out.println("create entry coin "+call.getParams().toString());
+			Cell c = null;
+			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
+				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
+				int pointY = ((APLNum)point.getParams().get(1)).toInt();
+				c = new Cell(pointX,pointY);
+			}
+			Integer clock = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			String agent = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(1) instanceof APLIdent) agent = ((APLIdent)call.getParams().get(1)).toString(); // The health meter
+			
+			return new Coin(c,agent,clock); // Create Tuple
+		}
+		else if(call.getName().equals(TYPE_CARGO)){ // Prolog format: cargo(position(X,Y),Clock)
+			System.out.println("create entry cargo "+call.getParams().toString());
+			Cell c = null;
+			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
+				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
+				int pointY = ((APLNum)point.getParams().get(1)).toInt();
+				c = new Cell(pointX,pointY);
+			}
+			Integer clock = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			
+			return new Cargo(c,clock); // Create Tuple
+		} 
+		else if(call.getName().equals(TYPE_POINTS)){ //points(Agent,Now,NewHealth)
+			System.out.println("create entry points "+call.getParams().toString());
+			
+			Integer clock = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
+			Integer health = null; // if health is null (which is ident) it stays also in java null
+			if(call.getParams().get(2) instanceof APLNum) health = ((APLNum)call.getParams().get(2)).toInt(); // The health meter
+		
+			return new Points(sAgent,clock,health); // Create Tuple
 		}
 		else if(call.getName().equals(TYPE_PROHIBITION)){ // Prolog format: status(position(1,4),30) 
 			Prohibition p = null;
@@ -638,8 +669,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//all possible obligations
 			String term;
 			int t = o.obligation.indexOf("(");
-			term = o.obligation.substring(1, t);
-			if (term == "at")
+			term = o.obligation.substring(1, t).trim();
+			if (term.startsWith("at"))
 			{
 				int i = o.obligation.indexOf(",");
 				int j = o.obligation.indexOf(",", i+1);
@@ -647,50 +678,18 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
 				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
 			}
-			else if (term == "coin") { //[coin(X,Y,NewTime,A1)]
-				int i = o.obligation.indexOf(",");
-				int j = o.obligation.indexOf(",", i+1);
-				int k = o.obligation.indexOf(",", j+1);
-				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.obligation.substring(j+1, k).trim());
-				posTerm = new APLFunction("coin", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name)});
+			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
+				posTerm = coinTerm(o.obligation, term, o.agent);
 			}
-			else if (term == "cargo") { //[cargo(X,Y,NewTime)]
-				int i = o.obligation.indexOf(",");
-				int j = o.obligation.indexOf(",", i+1);
-				int k = o.obligation.indexOf(")", j+1);
-				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.obligation.substring(j+1, k).trim());
-				posTerm = new APLFunction("cargo", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name)});
+			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
+				posTerm = cargoTerm(o.obligation, term, o.agent);
 			}
-			else if (term == "reading") { //[reading(X1,Y1,Value,Thing,Time)]
-				int i = o.obligation.indexOf(",");
-				int j = o.obligation.indexOf(",", i+1);
-				int k = o.obligation.indexOf(",", j+1);
-				int l = o.obligation.indexOf(",", k+1);
-				int m = o.obligation.indexOf(")", l+1);
-				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.obligation.substring(j+1, k).trim());
-				int w = Integer.parseInt(o.obligation.substring(k+1, m).trim());
-				posTerm = new APLFunction("reading", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name), new APLNum(w)});
+			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
+				posTerm = readingTerm(o.obligation, term, o.agent);
 			}
-			else if (term == "investigate") {
-				int i = o.obligation.indexOf(",");
-				int j = o.obligation.indexOf(",", i+1);
-				int k = o.obligation.indexOf(",", j+1);
-				int l = o.obligation.indexOf(",", k+1);
-				int m = o.obligation.indexOf(")", l+1);
-				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.obligation.substring(j+1, k).trim());
-				int w = Integer.parseInt(o.obligation.substring(k+1, m).trim());
-				posTerm = new APLFunction("investigate", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name), new APLNum(w)});
+			else if (term.startsWith("investigate")) {
+				posTerm = investigateTerm(o.obligation, term, o.agent);
 			}
-			System.out.println(posTerm.toString());
-			System.out.println("term " + term);
 			
 			if(o.deadline!=null){
 				posTerm1 = new APLNum(o.deadline);
@@ -711,8 +710,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			
 			String term;
 			int t = o.prohibition.indexOf("(");
-			term = o.prohibition.substring(1, t);
-			if (term == "at")
+			term = o.prohibition.substring(1, t).trim();
+			if (term.startsWith("at"))
 			{
 				int i = o.prohibition.indexOf(",");
 				int j = o.prohibition.indexOf(",", i+1);
@@ -720,51 +719,19 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
 				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
 			}
-			else if (term == "coin") { //[coin(X,Y,NewTime,A1)]
-				int i = o.prohibition.indexOf(",");
-				int j = o.prohibition.indexOf(",", i+1);
-				int k = o.prohibition.indexOf(",", j+1);
-				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.prohibition.substring(j+1, k).trim());
-				posTerm = new APLFunction("coin", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name)});
+			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
+				posTerm = coinTerm(o.prohibition, term, o.agent);
 			}
-			else if (term == "cargo") { //[cargo(X,Y,NewTime)]
-				int i = o.prohibition.indexOf(",");
-				int j = o.prohibition.indexOf(",", i+1);
-				int k = o.prohibition.indexOf(")", j+1);
-				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.prohibition.substring(j+1, k).trim());
-				posTerm = new APLFunction("cargo", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name)});
+			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
+				posTerm = cargoTerm(o.prohibition, term, o.agent);
 			}
-			else if (term == "reading") { //[reading(X1,Y1,Value,Thing,Time)]
-				int i = o.prohibition.indexOf(",");
-				int j = o.prohibition.indexOf(",", i+1);
-				int k = o.prohibition.indexOf(",", j+1);
-				int l = o.prohibition.indexOf(",", k+1);
-				int m = o.prohibition.indexOf(")", l+1);
-				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.prohibition.substring(j+1, k).trim());
-				int w = Integer.parseInt(o.prohibition.substring(k+1, m).trim());
-				posTerm = new APLFunction("reading", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name), new APLNum(w)});
+			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
+				posTerm = readingTerm(o.prohibition, term, o.agent);
 			}
-			else if (term == "investigate") {
-				int i = o.prohibition.indexOf(",");
-				int j = o.prohibition.indexOf(",", i+1);
-				int k = o.prohibition.indexOf(",", j+1);
-				int l = o.prohibition.indexOf(",", k+1);
-				int m = o.prohibition.indexOf(")", l+1);
-				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
-				int z = Integer.parseInt(o.prohibition.substring(j+1, k).trim());
-				int w = Integer.parseInt(o.prohibition.substring(k+1, m).trim());
-				posTerm = new APLFunction("investigate", new Term[]{new APLNum(x),new APLNum(y),new APLNum(z), new APLIdent(name), new APLNum(w)});
+			else if (term.startsWith("investigate")) {
+				posTerm = investigateTerm(o.prohibition, term, o.agent);
 			}
 			
-			System.out.println(posTerm.toString());
-			System.out.println("term " + term);
 
 			if(o.sanction!=null){
 				int i = o.sanction.indexOf("(");
@@ -774,6 +741,81 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			// TODO: other datatypes
 		}
 		return new APLIdent("null");
+	}
+
+	private Term investigateTerm(String s, String term, String agent) {
+		int i = s.indexOf(",");
+		int j = s.indexOf(",", i+1);
+		int k = s.indexOf(",", j+1);
+		int l = s.indexOf(",", k+1);
+		int m = s.indexOf(")", l+1);
+		String x = s.substring(term.length() + 2, i).trim();
+		String y = s.substring(i+1, j).trim();
+		String z = s.substring(j+1, k).trim();
+		String w = s.substring(k+1, m).trim();
+		Term xt = numOrVar(x);
+		Term yt = numOrVar(y);
+		Term zt = numOrVar(z);
+		Term wt = numOrVar(w);
+		Term posTerm = new APLFunction("investigate", new Term[]{xt,yt,zt, new APLIdent(agent), wt});return posTerm;
+	}
+
+	private Term readingTerm(String s, String term, String agent) {
+		int i = s.indexOf(",");
+		int j = s.indexOf(",", i+1);
+		int k = s.indexOf(",", j+1);
+		int l = s.indexOf(",", k+1);
+		int m = s.indexOf(")", l+1);
+		String x = s.substring(term.length() + 2, i).trim();
+		String y = s.substring(i+1, j).trim();
+		String z = s.substring(j+1, k).trim();
+		String w = s.substring(k+1, m).trim();
+		Term xt = numOrVar(x);
+		Term yt = numOrVar(y);
+		Term zt = numOrVar(z);
+		Term wt = numOrVar(w);
+		Term posTerm = new APLFunction("reading", new Term[]{xt,yt,zt, new APLIdent(agent), wt});
+		return posTerm;
+	}
+
+	private Term cargoTerm(String s, String term, String agent) {
+		int i = s.indexOf(",");
+		int j = s.indexOf(",", i+1);
+		int k = s.indexOf(")", j+1);
+		String x = s.substring(term.length() + 2, i).trim();
+		String y = s.substring(i+1, j).trim();
+		String z = s.substring(j+1, k).trim();
+		Term xt = numOrVar(x);
+		Term yt = numOrVar(y);
+		Term zt = numOrVar(z);
+		Term posTerm = new APLFunction("cargo", new Term[]{xt,yt,zt, new APLIdent(agent)});
+		return posTerm;
+	}
+
+	private Term coinTerm(String s, String term, String name) {
+		int i = s.indexOf(",");
+		int j = s.indexOf(",", i+1);
+		int k = s.indexOf(",", j+1);
+		String x = s.substring(term.length() + 2, i).trim();
+		String y = s.substring(i+1, j).trim();
+		String z = s.substring(j+1, k).trim();
+		Term xt = numOrVar(x);
+		Term yt = numOrVar(y);
+		Term zt = numOrVar(z);
+		Term posTerm = new APLFunction("coin", new Term[]{xt,yt,zt, new APLIdent(name)});
+		return posTerm;
+	}
+
+	private Term numOrVar(String x) {
+		Term xt;
+		Integer ix = Integer.getInteger(x);
+		if (ix != null) {
+			xt = new APLNum(ix);
+		}
+		else {
+			xt = new APLVar(x);
+		}
+		return xt;
 	}
 
 	//from agent program
@@ -824,7 +866,11 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public Term clock(String sAgent){
 		return new APLNum(updateClock(0));
 	}
-	
+	public Term readingRequest(String sAgent, APLFunction call){
+		return new APLNum(50);
+		
+		//TODO hack
+	}
 	/*
 	 * ENVIRONMENT OVERRIDES
 	 */

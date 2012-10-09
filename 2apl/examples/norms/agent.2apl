@@ -1,4 +1,6 @@
-
+BeliefUpdates:
+  { position(X,Y) and points(H) } UpdateStatus(NewX,NewY,NewPoints) { not position(X,Y), position(NewX,NewY), not points(H), points(NewPoints) }
+  { clock(Old) } UpdateClock(New) { not clock(Old), clock(New) }
 
 PC-rules:
 

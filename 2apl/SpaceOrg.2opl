@@ -19,7 +19,7 @@ norm(
     load_drop_time(Thing),
     Thing, // the subject agent
     ( truck(Thing), cargo(X,Y, Time), NewTime is Time + 1), // precondition
-    prohibition([cargo(_,_,NewTime)],[reduce_100(Thing)]) // prohibition format
+    prohibition([cargo(A,B,NewTime)],[reduce_100(Thing)]) // prohibition format
     ).  
 
 norm(
@@ -40,7 +40,7 @@ norm(
     drop_load(Thing),
     Thing, // the subject agent
     ( truck(Thing), cargo(X,Y, Time), clock(Now), Deadline is Now + 10 ), // precondition
-    obligation([cargo(_,_,_)],Deadline,[reduce_100(Thing)]) // obligation format
+    obligation([cargo(A,B,C)],Deadline,[reduce_100(Thing)]) // obligation format
     ).
     
 //norm(
@@ -56,42 +56,42 @@ norm(
     place_coin_often(Thing),
     Thing, // the subject agent
     ( controller(Thing), coin(X,Y, Time, Thing), NewTime is Time + 1), // precondition
-    prohibition([coin(_,_, NewTime, _)],[reduce_100(Thing)]) // prohibition format
+    prohibition([coin(A,B, NewTime, C)],[reduce_100(Thing)]) // prohibition format
     ). 
 
 norm(
     place_coin_near(Thing),
     Thing, // the subject agent
     ( controller(Thing), coin(X,Y, Time, Thing), NewX is X + 1, NewY is Y + 1), // precondition
-    prohibition([coin(NewX, NewY, _, _)],[reduce_100(Thing)]) // prohibition format
+    prohibition([coin(NewX, NewY, A, B)],[reduce_100(Thing)]) // prohibition format
     ). 
     
 norm(
     place_coin_too_far(Thing),
     Thing, // the subject agent
     ( controller(Thing), agent(A1), at(AX, AY, A1), tooFar(AX, AY, X, Y)), // precondition
-    prohibition([coin(X, Y, _, A1)],[reduce_300(Thing)]) // prohibition format
+    prohibition([coin(X, Y, A, A1)],[reduce_300(Thing)]) // prohibition format
     ).   
 
 norm(
     place_coin_water(Thing),
     Thing, // the subject agent
     ( controller(Thing), agent(A1), water(X,Y)), // precondition
-    prohibition([coin(X, Y, _, A1)],[reduce_300(Thing)]) // prohibition format
+    prohibition([coin(X, Y, A, A1)],[reduce_300(Thing)]) // prohibition format
     ).   
       
 norm(
     favour_agent(Thing),
     Thing, // the subject agent
     ( controller(Thing), agent(A1), coin(_,_, _, A1)), // precondition
-    prohibition([coin(_,_, _, A1)],[reduce_100(Thing)]) // prohibition format
+    prohibition([coin(A,B,C, A1)],[reduce_100(Thing)]) // prohibition format
     ).
 
 norm(
     place_coin(Thing),
     Thing, // the subject agent
     ( controller(Thing), clock(Now), Deadline is Now + 5, time_since(NewTime), int(NewTime) ), // precondition
-    obligation([coin(_,_, NewTime, _)],Deadline,[reduce_100(Thing)]) // obligation format
+    obligation([coin(A,B, NewTime, C)],Deadline,[reduce_100(Thing)]) // obligation format
     ).
 
 
@@ -99,22 +99,22 @@ norm(
 norm(
     make_false_reading(Thing),
     Thing, // the subject agent
-    ( agent(Thing), agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
-    prohibition([reading(X1,Y1, _, A1,_)],[reduce_500(Thing)]) // prohibition format
+    ( agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
+    prohibition([reading(X1,Y1, A, A1,B)],[reduce_500(Thing)]) // prohibition format
     ).
   
 norm(
     false_investigate(Thing),
     Thing, // the subject agent
-    ( agent(Thing), agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
-    prohibition([investigate(X1,Y1, _, Thing,_)],[reduce_500(Thing)]) // prohibition format
+    ( agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
+    prohibition([investigate(X1,Y1, A, Thing,B)],[reduce_500(Thing)]) // prohibition format
     ).  
     
 norm(
     read_too_often(Thing),
     Thing, // the subject agent
-    ( agent(Thing), agent(Thing), reading(X,Y, Value,Thing,Time), NewTime is Time + 1), // precondition
-    prohibition([reading(_, _, _, Thing,NewTime)],[reduce_300(Thing)]) // prohibition format
+    ( agent(Thing), reading(X,Y, Value,Thing,Time), NewTime is Time + 1), // precondition
+    prohibition([reading(A, B, C, Thing,NewTime)],[reduce_300(Thing)]) // prohibition format
     ). 
     
 //norm(
@@ -142,14 +142,14 @@ norm(
     collect_coin(Thing),
     Thing, // the subject agent
     ( agent(Thing), coin(X,Y,Thing), clock(Now), Deadline is Now + 10 ), // precondition
-    obligation([reading(X,Y, _, Thing,_)],Deadline,[reduce_400(Thing)]) // obligation format
+    obligation([reading(X,Y, A, Thing,B)],Deadline,[reduce_400(Thing)]) // obligation format
     ).
 
 norm(
     make_reading(Thing),
     Thing, // the subject agent
     ( agent(Thing), reading(X,Y, Value,Thing,Time), clock(Now), Deadline is Now + 10, time_since(NewTime) ), // precondition
-    obligation([reading(_, _, _, Thing, NewTime)],Deadline,[reduce_100(Thing)]) // obligation format
+    obligation([reading(A, B, C, Thing, NewTime)],Deadline,[reduce_100(Thing)]) // obligation format
     ).    
     
 //norm(
