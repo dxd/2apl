@@ -30,7 +30,7 @@ public class Cargo implements TimeEntry {
 
 	}
 	public Cargo(Cell cell, Integer clock) {
-		super();
+		
 		this.cell = cell;
 		this.clock = clock;
 	}

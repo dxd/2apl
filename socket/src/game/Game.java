@@ -17,8 +17,8 @@ public final class Game {
 	private static double kmX = 0.500;
 	private static double kmY = 0.500;
 	
-	private static int gridX = 30;
-	private static int gridY = 30;
+	private static int gridX = 20;
+	private static int gridY = 20;
 	
 	private static LatLng[][] grid;
 	private static double width;
