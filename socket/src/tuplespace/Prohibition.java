@@ -5,11 +5,6 @@ import java.util.Date;
 import net.jini.core.entry.Entry;
 
 public class Prohibition implements TimeEntry {
-	
-
-	public Prohibition() {
-
-	}
 
 	public String agent;
 	public String prohibition;
@@ -17,6 +12,10 @@ public class Prohibition implements TimeEntry {
 	public Integer clock;
 	public Date time;
 	
+
+	public Prohibition() {
+
+	}
 	public Prohibition(String agent, String prohibition, String sanction, Integer clock) {
 		
 		this.agent = agent;

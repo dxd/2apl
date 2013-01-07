@@ -56,16 +56,16 @@ public class Synchronization {
 	
 	private void initialize() {
 		
-		//resetGame();
-		//postJoin("email", "a1", "runner");
-		//postJoin("email1", "a2", "runner");
-		//postJoin("email2", "a3", "runner");
-		//postJoin("email", "t1", "truck");
-		//postJoin("email", "c1", "controller");
-		//startGame();
-		postLocation(65, new LatLng(52.9511,-1.1866));
-		postLocation(66, new LatLng(52.9518,-1.1860));
-		postLocation(67, new LatLng(52.9513,-1.185));
+		resetGame();
+		postJoin("email", "a1", "runner");
+		postJoin("email1", "a2", "runner");
+		postJoin("email2", "a3", "runner");
+		postJoin("email", "t1", "truck");
+		postJoin("email", "c1", "controller");
+		startGame();
+		//postLocation(65, new LatLng(52.9511,-1.1866));
+		//postLocation(66, new LatLng(52.9518,-1.1860));
+		//postLocation(67, new LatLng(52.9513,-1.185));
 		//getReading(6, new LatLng(52.951623,-1.186357));
 		register();
 	}
@@ -334,7 +334,7 @@ public class Synchronization {
 			JSpace.space.notify(new tuplespace.Coin(), null,
 			        new NotificationHandler(this),
 			        3000000,
-			        new MarshalledObject(new String("request")));
+			        new MarshalledObject(new String("coin")));
 			JSpace.space.notify(new tuplespace.Cargo(), null,
 			        new NotificationHandler(this),
 			        3000000,

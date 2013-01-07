@@ -7,13 +7,6 @@ import net.jini.core.entry.Entry;
 
 public class Coin implements TimeEntry {
 	
-	public Coin(Cell cell, String agent, Integer clock) {
-		
-		this.cell = cell;
-		this.agent = agent;
-		this.clock = clock;
-	}
-
 	public Integer id;
 	public Cell cell;
 	public String agent;
@@ -23,7 +16,12 @@ public class Coin implements TimeEntry {
 	public Coin() {
 
 	}
-	
+public Coin(Cell cell, String agent, Integer clock) {
+		
+		this.cell = cell;
+		this.agent = agent;
+		this.clock = clock;
+	}
 	public Coin(Integer id, Cell cell, String agent, int clock) {
 
 		this.id = id;

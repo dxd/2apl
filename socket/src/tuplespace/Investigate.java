@@ -8,10 +8,7 @@ import net.jini.core.entry.Entry;
 
 public class Investigate implements TimeEntry {
 	
-
 	public Integer id;
-	//public Long longitude;
-	//public Long latitude;
 	public String agent;
 	public Cell cell;
 	public Date time;

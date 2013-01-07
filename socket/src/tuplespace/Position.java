@@ -5,11 +5,8 @@ import net.jini.core.entry.Entry;
 
 public class Position implements TimeEntry {
 	
-	
 	public Integer id = null;
 	public String agent = null;
-	//public Long longitude;
-	//public Long latitude;
 	public Cell cell = null;
 	public Date time = null;
 	public Integer clock;

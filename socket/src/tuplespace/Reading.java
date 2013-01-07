@@ -7,11 +7,8 @@ import java.util.Date;
 import net.jini.core.entry.Entry;
 
 public class Reading implements TimeEntry {
-	
 
 	public Integer id;
-	//public Long longitude;
-	//public Long latitude;
 	public String agent;
 	public Cell cell;
 	public Date time;

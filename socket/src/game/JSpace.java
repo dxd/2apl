@@ -26,7 +26,7 @@ import tuplespace.Prohibition;
 import tuplespace.Coin;
 import tuplespace.Time;
 import tuplespace.TimeEntry;
-import tuplespace.Tuple;
+
 
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
