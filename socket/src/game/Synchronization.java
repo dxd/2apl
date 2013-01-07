@@ -287,7 +287,9 @@ public class Synchronization {
 		{
 			LatLng latlng = Game.gridToLocation(ar.getCell());
 			status.addReading(getReading(ar.getId(), latlng), latlng, ar.getId());
+			jspace.writeReading(status.getReadings().iterator().next(), Start.gs.getClock(), status);
 		}
+		
 
 	}
 
@@ -339,6 +341,10 @@ public class Synchronization {
 			        new NotificationHandler(this),
 			        3000000,
 			        new MarshalledObject(new String("cargo")));
+			JSpace.space.notify(new tuplespace.Points(), null,
+			        new NotificationHandler(this),
+			        3000000,
+			        new MarshalledObject(new String("points")));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

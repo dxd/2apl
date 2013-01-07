@@ -34,4 +34,8 @@ public class Points implements TimeEntry {
 	public Points(int clock) {
 		this.clock = clock;
 	}
+
+	public Points(String agent) {
+		this.agent = agent;
+	}
 }

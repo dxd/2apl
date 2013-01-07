@@ -13,6 +13,8 @@ public class Start {
 	private static JSpace jspace;
 	private static Synchronization synchro;
 	
+	public static GameStep gs;
+	
 	public static void main(String[] args) {
 		
 		jspace = new JSpace();
@@ -31,7 +33,8 @@ public class Start {
 		startTime = new Date();
 		
 	    timer = new Timer();
-	    timer.schedule(new GameStep(synchro),0, gamePace);
+	    gs = new GameStep(synchro);
+	    timer.schedule(gs ,0, gamePace);
 	    
 	    Game.initiateGrid();
 	    

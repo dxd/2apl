@@ -28,6 +28,10 @@ public class Reading implements TimeEntry {
 		this.value = value;
 	}
 
+	public Reading(String agent) {
+		this.agent = agent;
+	}
+
 	@Override
 	public String toString() {
 		return "Reading [id=" + id + ", agent=" + agent + ", cell=" + cell

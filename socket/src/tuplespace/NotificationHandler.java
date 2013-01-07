@@ -50,6 +50,24 @@ public class NotificationHandler extends UnicastRemoteObject implements RemoteEv
             	synchro.update.ActionRequests(synchro.jspace.readReadingRequests(null));
             	synchro.getReadings();
             }
+            if (type.equals("coin")) {
+            	System.out.println("coin request notification");
+            	
+            	synchro.update.Coins(synchro.jspace.readRequests(null));
+            	synchro.getReadings();
+            }
+            if (type.equals("cargo")) {
+            	System.out.println("cargo notification");
+            	
+            	synchro.update.Cargos(synchro.jspace.readCargos(null));
+            	synchro.getReadings();
+            }
+            if (type.equals("points")) {
+            	System.out.println("points notification");
+            	
+            	synchro.update.Points(synchro.jspace.readPoints(null));
+            	synchro.getReadings();
+            }
         } catch (Exception anE) {
             System.out.println("Got event but couldn't display it");
             anE.printStackTrace(System.out);

@@ -153,21 +153,21 @@ public class JSpace {
 		return update;
 	}
 
-	private ArrayList<Cargo> readCargos(int clock) {
+	public ArrayList<Cargo> readCargos(Integer clock) {
 		Cargo cargo = new Cargo(clock);
 		ArrayList<Cargo> cargos = new ArrayList<Cargo>();
 		getAll(cargo, cargos);
 		return cargos;
 	}
 
-	private ArrayList<Coin> readRequests(int clock) {
+	public ArrayList<Coin> readRequests(Integer clock) {
 		Coin coin = new Coin(clock);
 		ArrayList<Coin> coins = new ArrayList<Coin>();
 		getAll(coin, coins);
 		return coins;
 	}
 
-	private ArrayList<Points> readPoints(int clock) {
+	public ArrayList<Points> readPoints(Integer clock) {
 
 		Points point = new Points(clock);
 		ArrayList<Points> points = new ArrayList<Points>();
@@ -316,6 +316,14 @@ public class JSpace {
 		result.clear();
 		result.add(t);
 		}
+	}
+
+	public void writeReading(Reading r, int clock, Status status) {
+		Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
+		//System.out.println(cell.toString());
+		tuplespace.Reading reading = new tuplespace.Reading(r.getId(),status.getPlayerName(r.getPlayer_id()), cell, clock, r.getValue());
+		write(reading);
+		
 	}
 	
 
