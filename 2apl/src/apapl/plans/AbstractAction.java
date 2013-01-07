@@ -10,12 +10,14 @@ import apapl.program.Beliefbase;
 import apapl.program.PCrulebase;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.Callable;
+
 import apapl.SubstList;
 
 /**
  * An abstract action.
  */
-public class AbstractAction extends Plan
+public class AbstractAction extends Plan implements Callable<PlanResult>
 {
 	private APLFunction plan;
 	
@@ -124,6 +126,14 @@ public class AbstractAction extends Plan
 
 	public APLIdent getPlanDescriptor() {
 		return new APLIdent("abstractaction");
+	}
+
+
+
+	@Override
+	public PlanResult call() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

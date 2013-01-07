@@ -5,6 +5,11 @@ import apapl.program.*;
 import apapl.data.APLFunction;
 import apapl.plans.*;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * The deliberation step in which plans are executed. In this step the first
@@ -12,6 +17,8 @@ import java.util.*;
  */
 public class ExecuteAllPlans implements DeliberationStep
 {
+	ArrayList<AbstractAction> abstractActions = new ArrayList<AbstractAction>();
+	
 	/**
 	 * Executes the first action of all plans in the planbase.
 	 * 
@@ -91,8 +98,34 @@ public class ExecuteAllPlans implements DeliberationStep
 
 		return( result );
 	}
+	private void findAA(){
+		
+	}
+	
+	public void threading() {
+		 ExecutorService executor = Executors.newFixedThreadPool(3);
+		    List<Future<PlanResult>> list = new ArrayList<Future<PlanResult>>();
+		    for (int i = 0; i < abstractActions.size(); i++) {
+		      Callable<PlanResult> worker = abstractActions.get(i);
+		      abstractActions.remove(i);
+		      Future<PlanResult> submit = executor.submit(worker);
+		      list.add(submit);
+		    }
 
-
+		    //System.out.println(list.size());
+		    // Now retrieve the result
+		    for (Future<PlanResult> future : list) {
+		      try {
+		        future.get();
+		      } catch (InterruptedException e) {
+		        e.printStackTrace();
+		      } catch (ExecutionException e) {
+		        e.printStackTrace();
+		      }
+		    }
+		   
+		    executor.shutdown();
+	}
 	public String toString()
 	{
 		return "Execute Plans";

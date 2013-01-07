@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 
-import tuplespace.Tuple;
+
 
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;

@@ -1,7 +1,11 @@
 package envJavaSpace;
 import java.awt.Container;
 import java.awt.Point;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.rmi.*; 
 import java.util.ArrayList;
@@ -78,6 +82,28 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
+		 try {
+	            File file = new File("./log/space"+ System.currentTimeMillis() +".log");
+
+	            // Create file if it does not exist
+	            boolean success = file.createNewFile();
+	            if (success) {
+	                // File did not exist and was created
+	            } else {
+	                // File already exists
+	            }
+	            PrintStream printStream;
+	    		try {
+	    			printStream = new PrintStream(new FileOutputStream(file));
+	    			System.setOut(printStream);
+	    		} catch (FileNotFoundException e1) {
+	    			// TODO Auto-generated catch block
+	    			e1.printStackTrace();
+	    		}
+	        } catch (IOException e) {
+	        }
+
+		
 		System.out.println("Service Registrar: "+sr.getServiceID()); 
 		ServiceTemplate template = new ServiceTemplate(null, new Class[] { JavaSpace.class }, null); 
 		ServiceMatches sms = null; 
@@ -352,6 +378,22 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 */
 		return null;
+	}
+	
+	public Entry fromProlog(String s) {
+		
+		String delims = "[(),]+";
+		String[] tokens = s.split(delims);
+		System.out.println("create entry test " + tokens.toString());
+		return null;
+		
+	}
+	
+	public String fromJava(Entry e) {
+		
+		
+		return null;
+		
 	}
 	
 	/*
