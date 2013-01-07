@@ -8,7 +8,9 @@ import java.rmi.server.UnicastRemoteObject;
 import tuplespace.Cargo;
 import tuplespace.Coin;
 import tuplespace.Obligation;
+import tuplespace.Points;
 import tuplespace.Prohibition;
+import tuplespace.Reading;
 
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
@@ -40,9 +42,10 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             //                   anEvent.getSequenceNumber() + ", " + 
             //                   anEvent.getRegistrationObject().get());
             
-            if (type.equals("position")) {
+            if (type.equals("reading")) {
             	//System.out.println("agent position notification");
-            	
+            	Reading r = spaceTest.readReading(agent);
+            	spaceTest.notifyAgent(agent, r);
             }
             if (type.equals("obligation")) {
             	//System.out.println("agent obligation notification");
@@ -58,6 +61,11 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             	//System.out.println("agent prohibition notification");
             	Coin c = spaceTest.readCoin(agent);
             	spaceTest.notifyAgent(agent, c);
+            }
+            if (type.equals("points")) {
+            	//System.out.println("agent prohibition notification");
+            	Points p = spaceTest.readPoints(agent);
+            	spaceTest.notifyAgent(agent, p);
             }
         } catch (Exception anE) {
            // System.out.println("Got event but couldn't display it");

@@ -938,6 +938,14 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			        handler,
 			        3000000,
 			        new MarshalledObject(new String("coin")));
+			space.notify(new Points(agent), null,
+			        handler,
+			        3000000,
+			        new MarshalledObject(new String("points")));
+			space.notify(new Reading(agent), null,
+			        handler,
+			        3000000,
+			        new MarshalledObject(new String("reading")));
 
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -980,6 +988,25 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			return coins.get(0);
 		return null;
 	}
+	
+	public Reading readReading(String agent) {
+		Reading reading = new Reading(agent);
+		ArrayList<Reading> readings = new ArrayList<Reading>();
+		getAll(reading, readings);
+		if (readings.size() > 0)
+			return readings.get(0);
+		return null;
+	}
+	
+	public Points readPoints(String agent) {
+		Points point = new Points(agent);
+		ArrayList<Points> points = new ArrayList<Points>();
+		getAll(point, points);
+		if (points.size() > 0)
+			return points.get(0);
+		return null;
+	}
+
 	
 	private static <T> void getAll(Object template, ArrayList<T> result) {
 
@@ -1088,22 +1115,22 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			        handler,
 			        3000000,
 			        new MarshalledObject(new String("position")));
-			space.notify(new Position(), null,
+			space.notify(new Coin(), null,
 			        handler,
 			        3000000,
 			        new MarshalledObject(new String("coin")));
-			space.notify(new Position(), null,
+			space.notify(new Cargo(), null,
 			        handler,
 			        3000000,
 			        new MarshalledObject(new String("cargo")));
-			space.notify(new Position(), null,
+			space.notify(new Reading(), null,
 			        handler,
 			        3000000,
 			        new MarshalledObject(new String("reading")));
-			space.notify(new Position(), null,
+			space.notify(new Points(), null,
 			        handler,
 			        3000000,
-			        new MarshalledObject(new String("investigate")));
+			        new MarshalledObject(new String("points")));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1159,6 +1186,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			e.printStackTrace();
 		}
     }
+
+
+
 
 	
 }
