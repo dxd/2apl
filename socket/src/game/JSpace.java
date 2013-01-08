@@ -56,6 +56,7 @@ public class JSpace {
 	static ServiceDiscoveryManager sdm;
 	private static TransactionManager transManager;
 	private static LeaseRenewalManager leaseRenewalManager;
+	public static String[] agents = {"a1", "a2", "a3", "t1"};
 
 	public JSpace(){
 		init();
@@ -63,11 +64,12 @@ public class JSpace {
 	
 	public void init() {
 		
-    System.setSecurityManager(new RMISecurityManager());
+        System.setSecurityManager(new RMISecurityManager());
+      
 		
 		LookupLocator ll = null;
 		try {
-			ll = new LookupLocator("jini://localhost:4160");
+			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk:4160");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,39 +155,71 @@ public class JSpace {
 		return update;
 	}
 
+	public ArrayList<Position> readLocations(Integer clock) {
+		ArrayList<Position> positions = new ArrayList<Position>();
+		for (String a : agents)
+		{
+			Position position = new Position(a);
+			ArrayList<Position> p = new ArrayList<Position>();
+			getLatest(position, p);
+			positions.addAll(p);
+		}
+		return positions;
+	}
+	
 	public ArrayList<Cargo> readCargos(Integer clock) {
 		Cargo cargo = new Cargo(clock);
 		ArrayList<Cargo> cargos = new ArrayList<Cargo>();
-		getAll(cargo, cargos);
+		getLatest(cargo, cargos);
 		return cargos;
 	}
 
 	public ArrayList<Coin> readRequests(Integer clock) {
-		Coin coin = new Coin(clock);
+		
 		ArrayList<Coin> coins = new ArrayList<Coin>();
-		getAll(coin, coins);
+		for (String a : agents)
+		{
+			Coin coin = new Coin(a);
+			ArrayList<Coin> p = new ArrayList<Coin>();
+			getLatest(coin, p);
+			coins.addAll(p);
+		}
+		
 		return coins;
 	}
 
 	public ArrayList<Points> readPoints(Integer clock) {
 
-		Points point = new Points(clock);
 		ArrayList<Points> points = new ArrayList<Points>();
-		getAll(point, points);
+		for (String a : agents)
+		{
+			Points point = new Points(a);
+			ArrayList<Points> p = new ArrayList<Points>();
+			getLatest(point, p);
+			points.addAll(p);
+		}
 		return points;
 	}
 
 	public ArrayList<ActionRequest> readReadingRequests(Integer clock) {
 		
-		ActionRequest template = new ActionRequest(clock);
+		
+		
 		ArrayList<ActionRequest> ar = new ArrayList<ActionRequest>();
-		getAll(template, ar);
+		for (String a : agents)
+		{
+			ActionRequest t = new ActionRequest(a);
+			ArrayList<ActionRequest> p = new ArrayList<ActionRequest>();
+			getLatest(t, p);
+			ar.addAll(p);
+		}
+		
 		return ar;
 		
 	}
 
 
-	private static <T> void getAll(Object template, ArrayList<T> result) {
+	private static <T> void getLatest(Object template, ArrayList<T> result) {
 
 		T entry;
 		
@@ -217,12 +251,7 @@ public class JSpace {
 		}
 	}
 
-	public ArrayList<Position> readLocations(Integer clock) {
-		Position position = new Position();
-		ArrayList<Position> positions = new ArrayList<Position>();
-		getAll(position, positions);
-		return positions;
-	}
+	
 
 
 	public void writeAll(int clock, Status status) {

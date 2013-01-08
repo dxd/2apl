@@ -12,10 +12,10 @@ import tuplespace.Coin;
 
 public class Update {
 	
-	private ArrayList<Position> locations;
+	private ArrayList<Position> positions;
 	private ArrayList<ActionRequest> actionRead;
 	private ArrayList<ActionRequest> actionInv;
-	private ArrayList<AgentPoints> agentPoints;
+	private ArrayList<Points> points;
 	private ArrayList<Cargo> cargos;
 	private ArrayList<Coin> coins;
 	
@@ -34,23 +34,18 @@ public class Update {
 		this.status = status;
 	}
 
-	public void Positions(ArrayList<Position> positions) {
-		locations = new ArrayList<Position>();
-		
-		for (Position pos : positions)
+	public void Positions(ArrayList<Position> p) {
+		positions = new ArrayList<Position>();
+		for (Position pos : p)
 		{
-			int id = status.getPlayerId(pos.agent);
-			locations.add(new Position(id,pos.cell));
+			pos.id = status.getPlayerId(pos.agent);
+			positions.add(pos);
 		}
 		
 	}
 
-	public ArrayList<Position> getLocations() {
-		return locations;
-	}
-
-	public void setLocations(ArrayList<Position> locations) {
-		this.locations = locations;
+	public ArrayList<Position> getPositions() {
+		return positions;
 	}
 
 	public void ActionRequests(ArrayList<ActionRequest> ar) {
@@ -86,22 +81,22 @@ public class Update {
 		this.actionInv = actionInv;
 	}
 
-	public void Points(ArrayList<Points> points) {
-		agentPoints = new ArrayList<AgentPoints>();
+	public void Points(ArrayList<Points> pts) {
+		points = new ArrayList<Points>();
 		
-		for (Points p : points)
+		for (Points p : pts)
 		{
-			int id = status.getPlayerId(p.agent);
-			agentPoints.add(new AgentPoints(id,p.value));
+			p.id = status.getPlayerId(p.agent);
+			points.add(p);
 		}
 	}
 
-	public ArrayList<AgentPoints> getAgents() {
-		return agentPoints;
+	public ArrayList<Points> Points() {
+		return points;
 	}
 
-	public void setAgents(ArrayList<AgentPoints> agentPoints) {
-		this.agentPoints = agentPoints;
+	public void setPoints(ArrayList<Points> points) {
+		this.points = points;
 	}
 
 	public void Cargos(ArrayList<Cargo> cargosts) {

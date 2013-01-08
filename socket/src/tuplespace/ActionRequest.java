@@ -25,6 +25,9 @@ public class ActionRequest implements TimeEntry {
 		this.clock = clock;
 	}
 
+	public ActionRequest(String agent) {
+		this.agent = agent;
+	}
 	public String getAgent() {
 		return agent;
 	}

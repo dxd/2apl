@@ -27,6 +27,7 @@ import net.jini.core.transaction.TransactionException;
 
 import tuplespace.ActionRequest;
 import tuplespace.NotificationHandler;
+import tuplespace.Points;
 import tuplespace.Position;
 
 
@@ -60,8 +61,8 @@ public class Synchronization {
 		postJoin("email", "a1", "runner");
 		postJoin("email1", "a2", "runner");
 		postJoin("email2", "a3", "runner");
-		postJoin("email", "t1", "truck");
-		postJoin("email", "c1", "controller");
+		postJoin("email3", "t1", "truck");
+		postJoin("email4", "c1", "controller");
 		startGame();
 		//postLocation(65, new LatLng(52.9511,-1.1866));
 		//postLocation(66, new LatLng(52.9518,-1.1860));
@@ -214,7 +215,7 @@ public class Synchronization {
 		getReadings();
 	}
 	
-	private void postRequests() {
+	public void postRequests() {
 		for (tuplespace.Coin r : update.getRequests())
 		{
 			LatLng latlng = Game.gridToLocation(r.getCell());
@@ -237,7 +238,7 @@ public class Synchronization {
 		}
 		
 	}
-	private void postCargos() {
+	public void postCargos() {
 		for (tuplespace.Cargo c : update.getCargos())
 		{
 			LatLng latlng = Game.gridToLocation(c.getCell());
@@ -260,10 +261,10 @@ public class Synchronization {
 		}
 		
 	}
-	private void postPoints() {
-		for (helperTS.AgentPoints a : update.getAgents())
+	public void postPoints() {
+		for (Points a : update.Points())
 		{
-			updatePoints(a.getId(), a.getPoints());
+			updatePoints(a.id, a.value);
 		}
 	}
 	
@@ -294,7 +295,7 @@ public class Synchronization {
 	}
 
 	public void postLocations() {
-		for (Position loc : update.getLocations())
+		for (Position loc : update.getPositions())
 		{
 			LatLng latlng = Game.gridToLocation(loc.getCell());
 			postLocation(loc.getId(), latlng);
@@ -357,16 +358,6 @@ public class Synchronization {
 		}
 	}
 
-	public void postLocations(ArrayList<Position> readLocations) {
-		if (readLocations != null) {
-			for (Position loc : readLocations)
-			{
-				LatLng latlng = Game.gridToLocation(loc.getCell());
-				postLocation(loc.getId(), latlng);
-			}
-			
-		}
 	
-	}
 }
 

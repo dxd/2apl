@@ -41,10 +41,6 @@ public class Position implements TimeEntry {
 		this.agent = agent;
 	}
 
-	public Position(int clock) {
-		this.clock = clock;
-	}
-
 	@Override
 	public String toString() {
 		return "Position [agent=" + agent + ", id=" + id + ", cell=" + cell

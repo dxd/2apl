@@ -10,6 +10,7 @@ public class Points implements TimeEntry {
 	public Date time;
 	public Integer clock;
 	public Integer value;
+	public Integer id;
 	
 	public Points() {
 

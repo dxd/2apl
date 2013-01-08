@@ -42,7 +42,7 @@ public class NotificationHandler extends UnicastRemoteObject implements RemoteEv
             	System.out.println("position notification");
             	
             	synchro.update.Positions(synchro.jspace.readLocations(null));
-            	synchro.postLocations(synchro.update.getLocations());
+            	synchro.postLocations();
             }
             if (type.equals("makeReading")) {
             	System.out.println("reading request notification");
@@ -54,19 +54,19 @@ public class NotificationHandler extends UnicastRemoteObject implements RemoteEv
             	System.out.println("coin request notification");
             	
             	synchro.update.Coins(synchro.jspace.readRequests(null));
-            	synchro.getReadings();
+            	synchro.postRequests();
             }
             if (type.equals("cargo")) {
             	System.out.println("cargo notification");
             	
             	synchro.update.Cargos(synchro.jspace.readCargos(null));
-            	synchro.getReadings();
+            	synchro.postCargos();
             }
             if (type.equals("points")) {
             	System.out.println("points notification");
             	
             	synchro.update.Points(synchro.jspace.readPoints(null));
-            	synchro.getReadings();
+            	synchro.postPoints();
             }
         } catch (Exception anE) {
             System.out.println("Got event but couldn't display it");
