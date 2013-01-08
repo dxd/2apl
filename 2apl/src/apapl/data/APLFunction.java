@@ -171,7 +171,8 @@ public class APLFunction extends Fact
 		else {
 			ArrayList<Term> paramcopy = new ArrayList<Term>();
 			for (Term t : params) 
-				paramcopy.add(t.clone());
+				if (t != null) //TODO why??
+					paramcopy.add(t.clone()); 
 			return new APLFunction(new String(name),paramcopy);
 		}
 	}

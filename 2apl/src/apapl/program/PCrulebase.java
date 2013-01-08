@@ -55,7 +55,8 @@ public class PCrulebase extends Rulebase<PCrule>
 			PCrule variant = pcrule.getVariant(unfreshVars);
 			Query guard = variant.getGuard().clone();
 			APLFunction head = variant.getHead();
-			
+			if (a == null)
+				continue; //TODO why???
 			if (Unifier.unify(head,a.clone(),theta2)) {
 				norulefound = false;
 				guard.applySubstitution(theta2);

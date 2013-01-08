@@ -7,11 +7,11 @@ Beliefs:
   raise(X,NewX):- NewX is X + 1.
   lower(X,NewX):- NewX is X - 1.
   points(1000).
-  position(1,1).
+  position(20,20).
   clock(0).
   
 Goals:
-  at(20,20) :: 20000 >> 3,
+  at(2,2) :: 20000 >> 3,
   dropLoad :: 2000 >> 3
  
 

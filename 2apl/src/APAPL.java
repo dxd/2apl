@@ -32,28 +32,7 @@ public class APAPL {
         // has been the path to MAS file provided?
         File masfile = null; 
         
-        try {
-            File file = new File("./log/2napl"+ System.currentTimeMillis() +".log");
-
-            // Create file if it does not exist
-            boolean success = file.createNewFile();
-            if (success) {
-            	System.out.println("file created");
-            } else {
-            	System.out.println("file not created");
-            }
-            PrintStream printStream;
-    		try {
-    			printStream = new PrintStream(new FileOutputStream(file));
-    			System.setOut(printStream);
-    			System.out.println("test");
-    		} catch (FileNotFoundException e1) {
-    			System.out.println("cannot set stream");
-    			e1.printStackTrace();
-    		}
-        } catch (IOException e) {
-        	System.out.println("file error");
-        }
+       
 
         // Parse arguments, the last argument should be the mas filename.       
         for (String arg : args) {  

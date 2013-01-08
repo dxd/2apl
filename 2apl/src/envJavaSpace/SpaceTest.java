@@ -72,7 +72,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			ll = new LookupLocator("jini://localhost:4160"); 
+			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk:4160"); 
 		} catch (MalformedURLException e) { 
 			e.printStackTrace(); 
 		} 
@@ -284,7 +284,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	     * The next case throws towards the agent an event that its status is changed.
 	     */
 		} else if(call[1] == oopl.prolog.strStorage.getInt("notifyAgent")){ // notifyAgent(name,obligation(blabla)).
-			//System.out.println("notify agent");
+			//System.out.println("notify agent THIS SHOULD NOT BE CALLED!!!!!!");
 /*			for (int i = 0;  i<call.length; i++){
 				
 				String recipient = oopl.prolog.strStorage.getString(call[i]);
@@ -520,6 +520,18 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			
 			//addNumber(r, c,t.i);
 			return r;
+		
+		}
+		else if(e instanceof Points){
+			Points t = (Points)e;
+			int[] r = new int[12];
+			addPredicate(r,0,oopl.prolog.strStorage.getInt("points"),4); // points/2
+			
+			addPredicate(r,3,makeStringKnown(t.agent),0); // the name
+			addNumber(r,6,t.clock);
+			addNumber(r, 9, t.value);
+
+			return r;
 		}
 		return null;
 	}
@@ -568,7 +580,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
 		System.out.println(call.toString());
-		System.out.println(sAgent);
+		System.out.println("agent " + sAgent);
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
@@ -646,7 +658,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			//System.out.println(call.toString());
-			//System.out.println(p.toString());
+			System.out.println(p.toString());
 			return p; // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_OBLIGATION)){ // Prolog format: status(position(1,4),30) 
@@ -668,7 +680,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			//System.out.println(call.toString());
-			//System.out.println(o.toString());
+			System.out.println(o.toString());
 			return o; // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
@@ -934,10 +946,6 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			        handler,
 			        3000000,
 			        new MarshalledObject(new String("obligation")));
-			space.notify(new Coin(agent), null,
-			        handler,
-			        3000000,
-			        new MarshalledObject(new String("coin")));
 			space.notify(new Points(agent), null,
 			        handler,
 			        3000000,
@@ -1098,7 +1106,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public void notifyAgent(String agent, Entry o) {
 		Term t = entryToTerm(o);
 		throwEvent((APLFunction) t, new String[]{agent});
-		//System.out.println(t.toString());
+		System.out.println(t.toString());
 	}
 
 	public void notifyOrg() {
