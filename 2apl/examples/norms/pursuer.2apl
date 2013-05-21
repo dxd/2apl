@@ -2,7 +2,7 @@ Include: agent.2apl
 
 BeliefUpdates:
   { reading(X,Y,Old) } UpdateReadings(X,Y,Value) { not reading(X,Y,Old)}
-  { } UpdateReadings(X,Y,Value) { reading(X,Y,Value) }
+  { true } UpdateReadings(X,Y,Value) { reading(X,Y,Value) }
   {position(X,Y) } UpdatePosition(X1,Y1) { not position(X,Y), position(X1,Y1) }
 
 Beliefs:   
@@ -41,6 +41,7 @@ PC-rules:
 
 reading(X,Y) <- true | {
     @space(readingRequest(position(X,Y)),V);
+    //@space(reading(position(X,Y)),V);
     B(V=[actionresult(Value)]);
     UpdateReadings(X,Y,Value)
 } 

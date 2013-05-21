@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 import java.rmi.*; 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.*; 
 
@@ -47,7 +49,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public int clock = 0;
 	public DistributedOOPL oopl; // norm interpreter
 	public static String TYPE_STATUS="status", TYPE_PROHIBITION="prohibition", 
-			TYPE_OBLIGATION="obligation", TYPE_POSITION = "position",TYPE_READING = "reading",TYPE_INVESTIGATE = "investigate",TYPE_CARGO = "cargo",TYPE_COIN = "coin",TYPE_POINTS = "points",
+		TYPE_OBLIGATION="obligation", TYPE_READINGREQ = "readingRequest",TYPE_READING = "reading",TYPE_INVESTIGATE = "investigate",TYPE_CARGO = "cargo",TYPE_COIN = "coin",TYPE_POINTS = "points",
 			TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
 	public int[] ar_true, ar_null, ar_state_change, ar_false; // precalculated IntProlog data 
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
@@ -579,8 +581,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * @return The entry representation of the predicate.
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
+		
+		System.out.print("from agent " + sAgent + "  ");
 		System.out.println(call.toString());
-		System.out.println("agent " + sAgent);
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
@@ -594,18 +597,18 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			
 			return new Position(sAgent,c,clock); // Create Tuple
 		}
-		else if(call.getName().equals(TYPE_POSITION)){ // Prolog format: position(1,4)
+		else if(call.getName().equals(TYPE_READINGREQ)){ // Prolog format: readingRequest(position(X,Y))
 			Cell c = null;
-			if(call.getParams().get(0) instanceof APLNum){ // null is APLIdent  
-				
-				int pointX = ((APLNum)call.getParams().get(0)).toInt(); // Get the position
-				int pointY = ((APLNum)call.getParams().get(1)).toInt();
+			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
+				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
+				int pointY = ((APLNum)point.getParams().get(1)).toInt();
 				c = new Cell(pointX,pointY);
 			}
-			return new Position(sAgent,c); // Create Tuple
+			return new ActionRequest(sAgent,"reading",c); // Create Tuple
 		}
 		else if(call.getName().equals(TYPE_COIN)){ // Prolog format: coin(position(X,Y),Clock,Agent)
-			System.out.println("create entry coin "+call.getParams().toString());
+			//System.out.println("create entry coin "+call.getParams().toString());
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
 				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
@@ -621,7 +624,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			return new Coin(c,agent,clock); // Create Tuple
 		}
 		else if(call.getName().equals(TYPE_CARGO)){ // Prolog format: cargo(position(X,Y),Clock)
-			System.out.println("create entry cargo "+call.getParams().toString());
+			//System.out.println("create entry cargo "+call.getParams().toString());
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
 				APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
@@ -635,7 +638,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			return new Cargo(c,clock); // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_POINTS)){ //points(Agent,Now,NewHealth)
-			System.out.println("create entry points "+call.getParams().toString());
+			//System.out.println("create entry points "+call.getParams().toString());
 			
 			Integer clock = null; // if health is null (which is ident) it stays also in java null
 			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
@@ -646,7 +649,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 		else if(call.getName().equals(TYPE_PROHIBITION)){ // Prolog format: status(position(1,4),30) 
 			Prohibition p = null;
-			System.out.println("create entry prohibition "+call.getParams().toString());
+			//System.out.println("create entry prohibition "+call.getParams().toString());
 			
 		
 			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
@@ -658,12 +661,12 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			//System.out.println(call.toString());
-			System.out.println(p.toString());
+			//System.out.println(p.toString());
 			return p; // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_OBLIGATION)){ // Prolog format: status(position(1,4),30) 
 			Obligation o = null;
-			System.out.println("create entry obligation "+call.getParams().toString());
+			//System.out.println("create entry obligation "+call.getParams().toString());
 			
 		
 			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
@@ -680,7 +683,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			//System.out.println(call.toString());
-			System.out.println(o.toString());
+			//System.out.println(o.toString());
 			return o; // Create Tuple
 		} 
 		else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
@@ -697,20 +700,19 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		return null;
 	}
 	
+	//agent use
 	public Term entryToTerm(Entry entry){ 
 		
-		if(entry instanceof Tuple){ // in case of tuples return tuple(name,position(2,4),48)
-			Tuple tuple = (Tuple) entry;   // cast to tuple
-			String name = tuple.str;
-			
-			if(name==null)name="null"; 
-			Term posTerm = new APLIdent("null");
-			if(tuple.point!=null){
-				posTerm = new APLFunction("position", new Term[]{new APLNum(tuple.point.x),new APLNum(tuple.point.y)}); // get position
-			}
-			Term i = new APLIdent("null");
-			if(tuple.i!=null) i = new APLNum(tuple.i);
-			return new APLFunction("tuple", new Term[]{new APLIdent(name),posTerm,i}); // construct result
+		if(entry instanceof Points){ // in case of tuples return points(name,value,clock)
+			Points points = (Points) entry;   // cast to tuple
+			return new APLFunction("points", new Term[]{new APLIdent(points.agent),new APLNum(points.value),new APLNum(points.clock)}); // construct result
+		} 
+		else if(entry instanceof Reading){ // in case of tuples return reading(name,position(2,4),value,clock)
+			Reading reading = (Reading) entry;   // cast to tuple
+
+			Term posTerm = new APLFunction("position", new Term[]{new APLNum(reading.cell.x),new APLNum(reading.cell.y)}); // get position
+
+			return new APLFunction("tuple", new Term[]{new APLIdent(reading.agent),posTerm,new APLNum(reading.value.intValue()),new APLNum(reading.clock)}); // construct result
 			
 		} 
 		else if(entry instanceof Obligation){ // in case of tuples return tuple(name,position(2,4),48)
@@ -1016,7 +1018,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	}
 
 	
-	private static <T> void getAll(Object template, ArrayList<T> result) {
+	private <T> void getAll(Object template, ArrayList<T> result) {
 
 		T entry;
 		
@@ -1029,8 +1031,10 @@ public class SpaceTest  extends Environment implements ExternalTool{
 					//System.out.println(entry.toString());
 					result.add(entry);
 				}
-				getLatest(result);
-				//System.out.println(result.toString());
+				T t = getLatest(result);
+				result = new ArrayList<T>();
+				result.add(t);
+				System.out.println(result.toString());
 				txn.abort();
 				//leaseRenewalManager.cancel(trans.lease);
 			} catch (UnusableEntryException e) {
@@ -1059,12 +1063,11 @@ public class SpaceTest  extends Environment implements ExternalTool{
 					//System.out.println(entry.toString());
 					result.add(entry);
 				}
-				getLatest(result);
+				Entry e = getLatest(result);
 				//System.out.println(result.toString());
 				txn.abort();
 				//leaseRenewalManager.cancel(trans.lease);
-				if (result.size() > 0)
-					return result.get(0);
+				return e;
 			} catch (UnusableEntryException e) {
 				e.printStackTrace();
 			} catch (TransactionException e) {
@@ -1080,27 +1083,24 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 		return null;
 	}
-	private static <T> void getLatest(ArrayList<T> result) {
+	private <T> T getLatest(ArrayList<T> result) {
 		
 		if (result.size() > 0) {
-		/*Collections.sort(result, new Comparator<T>(){
+			System.out.println("to be compared: "+result.toString());	
+		Collections.sort(result, new Comparator<T>(){
 			  public int compare(T t1, T t2) {
 				  TimeEntry t3 = (TimeEntry) t1;
 				  TimeEntry t4 = (TimeEntry) t2;
-				  System.out.println(t3.toString());
-				  System.out.println(t4.toString());
-				  
-				
 			    return t3.time.compareTo(t4.time);
 			  }
 			  
-			});*/
+			});
+		return result.get(result.size()-1);
 
-		int i = result.size();
-		T t = result.get(i-1);
-		result.clear();
-		result.add(t);
 		}
+
+		return null;
+		
 	}
 
 	public void notifyAgent(String agent, Entry o) {

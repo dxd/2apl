@@ -27,4 +27,7 @@ Obligations:
 
 Prohibitions:
 	something(3) -> something(1)
+	
+Sanctions:
+	something(5) -> 2, something(10) -> 1
 	*/
