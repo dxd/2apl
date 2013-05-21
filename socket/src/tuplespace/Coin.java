@@ -21,6 +21,7 @@ public Coin(Cell cell, String agent, Integer clock) {
 		this.cell = cell;
 		this.agent = agent;
 		this.clock = clock;
+		this.time = new Date();
 	}
 	public Coin(Integer id, Cell cell, String agent, int clock) {
 

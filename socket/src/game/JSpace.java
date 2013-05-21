@@ -219,7 +219,7 @@ public class JSpace {
 	}
 
 
-	private static <T> void getLatest(Object template, ArrayList<T> result) {
+	private <T> void getLatest(Entry template, ArrayList<T> result) {
 
 		T entry;
 		
@@ -228,11 +228,13 @@ public class JSpace {
 			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
 			Transaction txn = trans.transaction;
 			try {
-				while ((entry = (T) space.take((Entry) template, txn, 200)) != null){
+				while ((entry = (T) space.take(template, txn, 200)) != null){
 					//System.out.println(entry.toString());
 					result.add(entry);
 				}
-				getLatest(result);
+				T t = getLatest(result);
+				result = new ArrayList<T>();
+				result.add(t);
 				System.out.println(result.toString());
 				txn.abort();
 				//leaseRenewalManager.cancel(trans.lease);
@@ -324,27 +326,24 @@ public class JSpace {
 		write(time);	
 	}
 
-	private static <T> void getLatest(ArrayList<T> result) {
+	private <T> T getLatest(ArrayList<T> result) {
 		
 		if (result.size() > 0) {
+			System.out.println("to be compared: "+result.toString());	
 		/*Collections.sort(result, new Comparator<T>(){
 			  public int compare(T t1, T t2) {
 				  TimeEntry t3 = (TimeEntry) t1;
 				  TimeEntry t4 = (TimeEntry) t2;
-				  System.out.println(t3.toString());
-				  System.out.println(t4.toString());
-				  
-				
-			    return t3.time.compareTo(t4.time);
+			    return (int) (t3.time.getTime() - t4.time.getTime());
 			  }
 			  
 			});*/
+		return result.get(result.size()-1);
 
-		int i = result.size();
-		T t = result.get(i-1);
-		result.clear();
-		result.add(t);
 		}
+
+		return null;
+		
 	}
 
 	public void writeReading(Reading r, int clock, Status status) {

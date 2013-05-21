@@ -39,4 +39,10 @@ public class Points implements TimeEntry {
 	public Points(String agent) {
 		this.agent = agent;
 	}
+
+	@Override
+	public String toString() {
+		return "Points [agent=" + agent + ", time=" + time + ", clock=" + clock
+				+ ", value=" + value + ", id=" + id + "]";
+	}
 }

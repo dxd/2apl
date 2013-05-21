@@ -31,6 +31,7 @@ public class Cargo implements TimeEntry {
 		
 		this.cell = cell;
 		this.clock = clock;
+		this.time = new Date();
 	}
 	public Integer getId() {
 		return id;
@@ -55,5 +56,10 @@ public class Cargo implements TimeEntry {
 	}
 	public void setClock(Integer clock) {
 		this.clock = clock;
+	}
+	@Override
+	public String toString() {
+		return "Cargo [id=" + id + ", cell=" + cell + ", time=" + time
+				+ ", clock=" + clock + "]";
 	}
 }

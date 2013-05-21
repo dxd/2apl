@@ -216,6 +216,7 @@ public class Synchronization {
 	}
 	
 	public void postRequests() {
+		if (update.getRequests() != null)
 		for (tuplespace.Coin r : update.getRequests())
 		{
 			LatLng latlng = Game.gridToLocation(r.getCell());
@@ -239,6 +240,7 @@ public class Synchronization {
 		
 	}
 	public void postCargos() {
+		if (update.getCargos()!= null)
 		for (tuplespace.Cargo c : update.getCargos())
 		{
 			LatLng latlng = Game.gridToLocation(c.getCell());
@@ -262,6 +264,7 @@ public class Synchronization {
 		
 	}
 	public void postPoints() {
+		if (update.Points() != null)
 		for (Points a : update.Points())
 		{
 			updatePoints(a.id, a.value);
@@ -295,10 +298,12 @@ public class Synchronization {
 	}
 
 	public void postLocations() {
+		if (update.getPositions() != null)
 		for (Position loc : update.getPositions())
 		{
 			LatLng latlng = Game.gridToLocation(loc.getCell());
 			postLocation(loc.getId(), latlng);
+			System.out.println(loc.getId().toString()+ latlng.toString());
 		}
 		
 	}

@@ -17,11 +17,12 @@ public class Position implements TimeEntry {
 	public Position(Integer id, Cell cell) {
 		this.id = id;
 		this.cell = cell;
+		this.time = new Date();
 	}
 	public Position(String agent, Cell cell) {
 		this.agent = agent;
 		this.cell = cell;
-		//this.time = new Date();
+		this.time = new Date();
 	}
 	public Position(Integer id, String agent, Cell cell, int clock) {
 		this.id = id;

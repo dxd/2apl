@@ -42,6 +42,7 @@ public class NotificationHandler extends UnicastRemoteObject implements RemoteEv
             	System.out.println("position notification");
             	
             	synchro.update.Positions(synchro.jspace.readLocations(null));
+            	System.out.println("position posting");
             	synchro.postLocations();
             }
             if (type.equals("makeReading")) {

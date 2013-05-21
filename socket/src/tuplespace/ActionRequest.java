@@ -20,6 +20,7 @@ public class ActionRequest implements TimeEntry {
 		this.agent = agent;
 		this.cell = cell;
 		this.type = type;
+		this.time = new Date();
 	}
 	public ActionRequest(Integer clock) {
 		this.clock = clock;
