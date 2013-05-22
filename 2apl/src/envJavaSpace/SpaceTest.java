@@ -984,65 +984,64 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	
 	public Obligation readObligation(String agent) {
 		Obligation obligation = new Obligation(agent);
-		ArrayList<Obligation> obligations = new ArrayList<Obligation>();
+		ArrayList<TimeEntry> obligations = new ArrayList<TimeEntry>();
 		getAll(obligation, obligations);
 		if (obligations.size() > 0)
-			return obligations.get(0);
+			return (Obligation) obligations.get(0);
 		return null;
 	}
 	
 	public Prohibition readProhibition(String agent) {
 		Prohibition prohibition = new Prohibition(agent);
-		ArrayList<Prohibition> prohibitions = new ArrayList<Prohibition>();
+		ArrayList<TimeEntry> prohibitions = new ArrayList<TimeEntry>();
 		getAll(prohibition, prohibitions);
 		if (prohibitions.size() > 0)
-			return prohibitions.get(0);
+			return (Prohibition) prohibitions.get(0);
 		return null;
 	}
 
 	public Coin readCoin(String agent) {
 		Coin coin = new Coin(agent);
-		ArrayList<Coin> coins = new ArrayList<Coin>();
+		ArrayList<TimeEntry> coins = new ArrayList<TimeEntry>();
 		getAll(coin, coins);
 		if (coins.size() > 0)
-			return coins.get(0);
+			return (Coin) coins.get(0);
 		return null;
 	}
 	
 	public Reading readReading(String agent) {
 		Reading reading = new Reading(agent);
-		ArrayList<Reading> readings = new ArrayList<Reading>();
+		ArrayList<TimeEntry> readings = new ArrayList<TimeEntry>();
 		getAll(reading, readings);
 		if (readings.size() > 0)
-			return readings.get(0);
+			return (Reading) readings.get(0);
 		return null;
 	}
 	
 	public Points readPoints(String agent) {
 		Points point = new Points(agent);
-		ArrayList<Points> points = new ArrayList<Points>();
+		ArrayList<TimeEntry> points = new ArrayList<TimeEntry>();
 		getAll(point, points);
 		if (points.size() > 0)
-			return points.get(0);
+			return (Points) points.get(0);
 		return null;
 	}
 
 	
-	private <T> void getAll(Object template, ArrayList<T> result) {
+	private void getAll(Object template, ArrayList<TimeEntry> result) {
 
-		T entry;
-		
+		TimeEntry entry;
 		try {
 			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
 			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
 			Transaction txn = trans.transaction;
 			try {
-				while ((entry = (T) space.take((Entry) template, txn, 200)) != null){
+				while ((entry = (TimeEntry) space.take((Entry) template, txn, 200)) != null){
 					//System.out.println(entry.toString());
 					result.add(entry);
 				}
-				T t = getLatest(result);
-				result = new ArrayList<T>();
+				TimeEntry t = getLatest(result);
+				result = new ArrayList<TimeEntry>();
 				result.add(t);
 				System.out.println(result.toString());
 				txn.abort();
@@ -1062,18 +1061,18 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 	}
 	private Entry getLast(Entry a) {
-		Entry entry;
+		TimeEntry entry;
 		try {
 			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
 			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
 			Transaction txn = trans.transaction;
 			try {
-				ArrayList<Entry> result = new ArrayList<Entry>();
-				while ((entry = space.take(a, txn, 200)) != null){
+				ArrayList<TimeEntry> result = new ArrayList<TimeEntry>();
+				while ((entry = (TimeEntry) space.take(a, txn, 200)) != null){
 					//System.out.println(entry.toString());
 					result.add(entry);
 				}
-				Entry e = getLatest(result);
+				TimeEntry e = getLatest(result);
 				//System.out.println(result.toString());
 				txn.abort();
 				//leaseRenewalManager.cancel(trans.lease);
@@ -1093,20 +1092,26 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 		return null;
 	}
-	private <T> T getLatest(ArrayList<T> result) {
+	private TimeEntry getLatest(ArrayList<TimeEntry> result) {
 		
-		if (result.size() > 0) {
-			System.out.println("to be compared: "+result.toString());	
-		Collections.sort(result, new Comparator<T>(){
-			  public int compare(T t1, T t2) {
-				  TimeEntry t3 = (TimeEntry) t1;
-				  TimeEntry t4 = (TimeEntry) t2;
-			    return t3.time.compareTo(t4.time);
+		if (result.size() > 1) {
+			//System.out.println("to be compared: "+result.toString());	
+		Collections.sort(result, new Comparator<TimeEntry>(){
+			  @SuppressWarnings("static-access")
+			public int compare(TimeEntry t1, TimeEntry t2) {
+				  //TimeEntry t3 = (TimeEntry) t1;
+				 //TimeEntry t4 = (TimeEntry) t2;
+				if (t1.time != null && t1.time != null)  
+					return t1.time.compareTo(t2.time);
+				return 1;
 			  }
 			  
 			});
 		return result.get(result.size()-1);
 
+		}
+		else if (result.size() == 1) {
+			return result.get(0);
 		}
 
 		return null;
