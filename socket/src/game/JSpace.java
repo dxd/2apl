@@ -55,7 +55,7 @@ public class JSpace {
 	ServiceRegistrar sr = null;
 	static ServiceDiscoveryManager sdm;
 	private static TransactionManager transManager;
-	private static LeaseRenewalManager leaseRenewalManager;
+	//private static LeaseRenewalManager leaseRenewalManager;
 	public static String[] agents = {"a1", "a2", "a3", "t1"};
 
 	public JSpace(){
@@ -125,12 +125,12 @@ public class JSpace {
 		} else {
 		    System.out.println("No TransactionManager found.");
 		}
-		try {
+/*		try {
 			sdm = new ServiceDiscoveryManager(null,null);
 			leaseRenewalManager = sdm.getLeaseRenewalManager();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 
