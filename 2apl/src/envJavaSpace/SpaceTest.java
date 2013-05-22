@@ -70,20 +70,28 @@ public class SpaceTest  extends Environment implements ExternalTool{
      */
 	public void initialize() throws RemoteException, UnusableEntryException, TimeoutException, InterruptedException { 
 		// Jini stuff
-		//System.out.println("test.");  
+		System.out.println("test.");  
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk:4160"); 
+			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
 		} catch (MalformedURLException e) { 
+			
 			e.printStackTrace(); 
 		} 
+		
+		System.out.println("Lookup locator: "+ll.toString());
+		//StreamServiceRegistrar sr = ll.getStreamRegistrar();
+		
 		ServiceRegistrar sr = null; 
 		try { 
 			sr = ll.getRegistrar(); 
+			System.out.println("Service Registrar: "+sr.getServiceID());
 		} catch (Exception e) { 
+			
 			e.printStackTrace(); 
 		} 
+		
 		 try {
 	            File file = new File("./log/space"+ System.currentTimeMillis() +".log");
 
@@ -94,6 +102,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	            } else {
 	                // File already exists
 	            }
+	            
 	            PrintStream printStream;
 	    		try {
 	    			printStream = new PrintStream(new FileOutputStream(file));
@@ -103,8 +112,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	    			e1.printStackTrace();
 	    		}
 	        } catch (IOException e) {
+	        	
 	        }
-
+		 System.out.println("test2.");
 		
 		System.out.println("Service Registrar: "+sr.getServiceID()); 
 		ServiceTemplate template = new ServiceTemplate(null, new Class[] { JavaSpace.class }, null); 
@@ -135,12 +145,12 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			} else {
 			    System.out.println("No TransactionManager found.");
 			}
-			try {
+/*			try {
 				sdm = new ServiceDiscoveryManager(null,null);
 				leaseRenewalManager = sdm.getLeaseRenewalManager();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 
 			registerOrg();
 			// Starting the normative system:
