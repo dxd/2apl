@@ -2,7 +2,11 @@ package game;
 
 import helperTS.Update;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.rmi.MarshalledObject;
 import java.rmi.RMISecurityManager;
@@ -56,7 +60,7 @@ public class JSpace {
 	static ServiceDiscoveryManager sdm;
 	private static TransactionManager transManager;
 	//private static LeaseRenewalManager leaseRenewalManager;
-	public static String[] agents = {"a1", "a2", "a3", "t1"};
+	public static String[] agents = {"a1", "a2", "a3", "t1", "c1"};
 
 	public JSpace(){
 		init();
@@ -66,6 +70,28 @@ public class JSpace {
 		
         System.setSecurityManager(new RMISecurityManager());
       
+        try {
+            File file = new File("./log/space"+ System.currentTimeMillis() +".log");
+
+            // Create file if it does not exist
+            boolean success = file.createNewFile();
+            if (success) {
+                // File did not exist and was created
+            } else {
+                // File already exists
+            }
+            
+            PrintStream printStream;
+    		try {
+    			printStream = new PrintStream(new FileOutputStream(file));
+    			System.setOut(printStream);
+    		} catch (FileNotFoundException e1) {
+    			// TODO Auto-generated catch block
+    			e1.printStackTrace();
+    		}
+        } catch (IOException e) {
+        	
+        }
 		
 		LookupLocator ll = null;
 		try {
