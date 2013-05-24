@@ -1,37 +1,36 @@
 package envJavaSpace;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
-import tuplespace.Cargo;
-import tuplespace.Cell;
-import tuplespace.Coin;
-import tuplespace.Investigate;
-import tuplespace.Position;
-import tuplespace.Reading;
-import apapl.data.Literal;
+import apapl.data.APLFunction;
+
 
 public class Prolog2Java {
 	
-	//public DistributedOOPL oopl; // norm interpreter
+	
 	public static String TYPE_STATUS="status", TYPE_PROHIBITION="prohibition", 
 		TYPE_OBLIGATION="obligation", TYPE_READINGREQ = "readingRequest",TYPE_READING = "reading",TYPE_INVESTIGATE = "investigate",TYPE_CARGO = "cargo",TYPE_COIN = "coin",TYPE_POINTS = "points",
 			TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
 	public int[] ar_true, ar_null, ar_state_change, ar_false; // precalculated IntProlog data 
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
+	public APAPLTermConverter converter;
 	
 	public Entry parseTerm(int[] call, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
 		int type = call[4];
-		//System.out.println("!!!!! from org !!!!!!");
+		converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
+		System.out.println("!!!!! from org !!!!!!");
 		
 		String tuple = oopl.prolog.strStorage.getString(call[4]);
 		//System.out.println(tuple);
 		int l = call.length;
 		//if (!tuple.startsWith("position")) return null;
 		//System.out.println(l);
+		APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
+		System.out.println(event.toString());
 		
 		String[] params = new String[10];
 		int x = 0;

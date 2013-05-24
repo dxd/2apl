@@ -611,7 +611,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public Entry createEntry(String sAgent, APLFunction call){ 
 		
-		System.out.print("from agent " + sAgent + "  ");
+		System.out.print("from/for agent " + sAgent + "  ");
 		System.out.println(call.toString());
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
 			Cell c = null;
