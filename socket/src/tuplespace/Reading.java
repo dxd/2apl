@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 
 public class Reading implements TimeEntry {
@@ -32,6 +33,31 @@ public class Reading implements TimeEntry {
 		this.agent = agent;
 	}
 
+	public Reading(String[] params) {
+		this.agent = params[2];
+	}
+	
+	public int[] toArray(DistributedOOPL oopl) {
+		int[] r = new int[21];
+		JL.addPredicate(r,0,oopl.prolog.strStorage.getInt("reading"),4, oopl); // cargo/2
+
+		
+		JL.addPredicate(r, 3, oopl.prolog.strStorage.getInt("cell"), 2, oopl);
+		JL.addNumber(r, 6, this.cell.x, oopl);
+		JL.addNumber(r, 9, this.cell.y, oopl);
+		JL.addNumber(r, 12, this.value.intValue(), oopl);
+		JL.addPredicate(r,15, JL.makeStringKnown(this.agent, oopl),0, oopl);
+		JL.addNumber(r,18,this.clock, oopl);
+		//addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
+		//for (int i = 0;  i<r.length; i++){
+		//	System.out.println("to array: " + oopl.prolog.strStorage.getString(r[i]));
+			
+		//}
+		
+		//addNumber(r, c,t.i);
+		return r;
+	}
+	
 	@Override
 	public String toString() {
 		return "Reading [id=" + id + ", agent=" + agent + ", cell=" + cell

@@ -2,6 +2,7 @@ package tuplespace;
 
 import java.util.Date;
 
+import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 
 public class ActionRequest implements TimeEntry {
@@ -75,6 +76,11 @@ public class ActionRequest implements TimeEntry {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	@Override
+	public int[] toArray(DistributedOOPL oopl) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

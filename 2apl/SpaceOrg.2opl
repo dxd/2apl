@@ -194,6 +194,10 @@ coin(X, Y, Time, Object):-
 	controller(Object),
       @external(envJavaSpace,read(coin(null, null,Object),0),coin(cell(X,Y),Time, Object)).
       
+coin(X, Y, Time):-
+	controller(Object),
+      @external(envJavaSpace,read(coin(null, null),0),coin(cell(X,Y),Time)).
+      
 cargo(X, Y, Time):-
       @external(envJavaSpace,read(cargo(null,null),0),cargo(cell(X,Y), Time)).      
 

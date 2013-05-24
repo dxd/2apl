@@ -223,8 +223,10 @@ public class APLFunction extends Fact
 		{
             if (params.size() > 0) {
                 String r = "";
-                for (Term t : params)
+                for (Term t : params) {
+                	if (t==null) continue;
                     r = r + t.toString(inplan) + ", ";
+                }
                 if (r.length() >= 1)
                     r = r.substring(0, r.length() - 2);
 

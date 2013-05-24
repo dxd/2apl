@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="river/jini-core.jar"/>
 	<classpathentry kind="lib" path="river/jini-ext.jar"/>
 	<classpathentry kind="lib" path="river/sun-util.jar"/>
+	<classpathentry kind="lib" path="/Users/dxd/git/Git/2apl/lib/2OPL.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

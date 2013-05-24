@@ -1,6 +1,8 @@
 package tuplespace;
 
 import java.util.Date;
+
+import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 
 public class Position implements TimeEntry {
@@ -42,6 +44,31 @@ public class Position implements TimeEntry {
 		this.agent = agent;
 	}
 
+	
+	public Position(String[] params) {
+		this.agent = params[0];
+		if (params[1] != null)
+			this.cell = new Cell(Integer.getInteger(params[1]), Integer.getInteger(params[2]));
+	}
+	
+	public int[] toArray(DistributedOOPL oopl) {
+		//JL = new JiniLib();
+		int[] r = new int[this.cell==null?12:18];
+		JL.addPredicate(r,0,oopl.prolog.strStorage.getInt("position"),2, oopl); // tuple/3
+		JL.addPredicate(r,3,JL.makeStringKnown(this.agent==null?"null":this.agent, oopl),0, oopl); // the name
+		int c = 9;
+		if(this.cell == null) JL.addPredicate(r, 6, JL.oopl.prolog.strStorage.getInt("null"), 0, oopl);
+		else {
+			JL.addPredicate(r, 6, oopl.prolog.strStorage.getInt("cell"), 2, oopl);
+			JL.addNumber(r, 9, this.cell.x, oopl);
+			JL.addNumber(r, 12, this.cell.y, oopl);
+			c = 15;
+		} 
+		//System.out.println("to array: " + r.toString());
+		//addNumber(r, c,t.i);
+		return r;
+	}
+	
 	@Override
 	public String toString() {
 		return "Position [agent=" + agent + ", id=" + id + ", cell=" + cell

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.rmi.*; 
 import java.util.ArrayList;
@@ -19,14 +20,11 @@ import oopl.DistributedOOPL;
 import oopl.GUI.GUI;
 import tuplespace.*;
 import tuplespace.Prohibition;
- 
-
 import apapl.Environment;
 import apapl.data.*;
 import aplprolog.prolog.Prolog;
 import aplprolog.prolog.builtins.ExternalActions;
 import aplprolog.prolog.builtins.ExternalTool;
-
 import net.jini.core.discovery.*;
 import net.jini.core.entry.*;
 import net.jini.core.event.RemoteEventListener;
@@ -55,8 +53,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
 	public APAPLTermConverter converter; // Converts between IntProlog and 2APL
 	private static TransactionManager transManager;
-	private Object leaseRenewalManager;
+	//private Object leaseRenewalManager;
 	private ServiceDiscoveryManager sdm;
+	private Prolog2Java p2j;
 	
 	/*
 	 * Just for testing.
@@ -153,6 +152,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			}*/
 
 			registerOrg();
+			p2j = new Prolog2Java();
 			// Starting the normative system:
 			oopl = new DistributedOOPL(); // Create interpreter object
 			GUI g = new GUI(oopl,"SpaceOrg.2opl","OOPL",null,6677); // Make a GUI for the interpreter
@@ -188,7 +188,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			// Starting the clock 
 			//Thread t = new Thread(new ClockTicker(this));
 			//t.start(); 
-			this.insertTestData();
+			//this.insertTestData();
 		} else { 
 			System.out.println("No Java Space found."); 
 		}
@@ -331,11 +331,16 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * Create an entry object form an integer array. Perhaps we want to replace this with
 	 * something like createEntry(oopl.prolog.toPrologString(call)).
 	 */
-	public Entry createEntry(int[] call){ // e.g.: read(tuple(name,point(2,4),20),0)
-		int type = call[4];
+	public Entry createEntry(int[] call) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchMethodException{ // e.g.: read(tuple(name,point(2,4),20),0)
+		//System.out.println(oopl.prolog.arStr(call));
+		return p2j.parseTerm(call, oopl);
 		
+		
+	/*	
+		int type = call[4];
+		System.out.println("!!!!!!!!!!!!!!!!");
 		String tuple = oopl.prolog.strStorage.getString(call[4]);
-		//System.out.println(tuple);
+		System.out.println(call.toString());
 		if (tuple.startsWith("position")) {
 			//System.out.println("org reads position");
 			String name = null;
@@ -360,12 +365,12 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		else if (tuple.startsWith("reading")) {
 			//System.out.println("org reads reading");
 			
-			return new Coin();
+			return new Reading();
 		}
 		else if (tuple.startsWith("investigate")) {
 			//System.out.println("org reads investigate");
 		
-			return new Coin();
+			return new Investigate();
 		}
 		else if(tuple == ""){
 			
@@ -388,10 +393,11 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			if(call[c+1]!=INT_NULL) i = get_number(call,c+1);
 			return new Tuple(name,p,i);
 		}
-*/
-		return null;
+
+		return null;*/
 	}
 	
+	/*
 	public Entry fromProlog(String s) {
 		
 		String delims = "[(),]+";
@@ -407,7 +413,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		return null;
 		
 	}
-	
+	*/
+
 	/*
 	 * Convert an entry to an array. Can also be done by calling the prolog compiler and give
 	 * it e.toPrologString() as an argument.
@@ -417,7 +424,13 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			int[] r = new int[3];
 			addPredicate(r, 0, oopl.prolog.strStorage.getInt("null"), 0);
 			return r;
-		} else if(e instanceof Tuple){
+				
+		} 
+		else {
+			return ((TimeEntry) e).toArray(oopl);
+		}
+		/*
+		else if(e instanceof Tuple){
 			Tuple t = (Tuple)e;
 			int[] r = new int[t.point==null?12:18];
 			addPredicate(r,0,oopl.prolog.strStorage.getInt("tuple"),3); // tuple/3
@@ -433,6 +446,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			addNumber(r, c,t.i);
 			return r;
 		}
+		
+		
 		else if(e instanceof Position){
 			Position t = (Position)e;
 			int[] r = new int[t.cell==null?12:18];
@@ -545,7 +560,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 
 			return r;
 		}
+		
 		return null;
+		*/
 	}
 	/*
 	 * Gets the int value of a number out of an integer array.
@@ -582,6 +599,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		if(a) return (int)((l>>>32));
 		else return (int)((l<<32)>>>32);
 	}
+	
+	
 	//////////////////////// 2APL AND JAVASPACE
 
 	/**
@@ -1097,8 +1116,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		if (result.size() > 1) {
 			//System.out.println("to be compared: "+result.toString());	
 		Collections.sort(result, new Comparator<TimeEntry>(){
-			  @SuppressWarnings("static-access")
-			public int compare(TimeEntry t1, TimeEntry t2) {
+			  public int compare(TimeEntry t1, TimeEntry t2) {
 				  //TimeEntry t3 = (TimeEntry) t1;
 				 //TimeEntry t4 = (TimeEntry) t2;
 				if (t1.time != null && t1.time != null)  

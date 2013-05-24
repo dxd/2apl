@@ -2,6 +2,7 @@ package tuplespace;
 
 import java.util.Date;
 
+import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 
 public class Prohibition implements TimeEntry {
@@ -34,6 +35,11 @@ public class Prohibition implements TimeEntry {
 		return "Prohibition [agent=" + agent + ", prohibition=" + prohibition
 				+ ", sanction=" + sanction + ", clock=" + clock + ", time="
 				+ time + "]";
+	}
+	@Override
+	public int[] toArray(DistributedOOPL oopl) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

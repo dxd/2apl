@@ -2,6 +2,7 @@ package tuplespace;
 
 import java.util.Date;
 
+import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 
 public class Points implements TimeEntry {
@@ -40,6 +41,17 @@ public class Points implements TimeEntry {
 		this.agent = agent;
 	}
 
+	public int[] toArray(DistributedOOPL oopl) {
+		int[] r = new int[12];
+		JL.addPredicate(r,0,oopl.prolog.strStorage.getInt("points"),4, oopl); // points/2
+		
+		JL.addPredicate(r,3,JL.makeStringKnown(this.agent, oopl),0, oopl); // the name
+		JL.addNumber(r,6, this.clock, oopl);
+		JL.addNumber(r, 9, this.value, oopl);
+
+		return r;
+	}
+	
 	@Override
 	public String toString() {
 		return "Points [agent=" + agent + ", time=" + time + ", clock=" + clock

@@ -2,6 +2,7 @@ package tuplespace;
 
 import java.util.Date;
 
+import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 
 public class Time implements TimeEntry {
@@ -19,6 +20,11 @@ public class Time implements TimeEntry {
 	@Override
 	public String toString() {
 		return "Time [clock=" + clock + ", time=" + time + "]";
+	}
+	@Override
+	public int[] toArray(DistributedOOPL oopl) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

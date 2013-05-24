@@ -72,36 +72,36 @@ adoptObligation(at(X,Y,_), D, reduce_500(_)) <- true | {
     adopta(at(X,Y) : D -> reduce_500)
 }	
 
-aprohibition(coin(X,Y,_,A), reduce_100(_)) <- true | {
-    adoptprohibition(coin(X,Y,A) -> reduce_100)
+aprohibition(coin(X,Y,_,_), reduce_100(_)) <- true | {
+    adoptprohibition(coin(X,Y,_) -> reduce_100)
 }
-aprohibition(coin(X,Y,_,A), reduce_200(_)) <- true | {
-    adoptprohibition(coin(X,Y,A) -> reduce_200)
+aprohibition(coin(X,Y,_,_), reduce_200(_)) <- true | {
+    adoptprohibition(coin(X,Y,_) -> reduce_200)
 }
-aprohibition(coin(X,Y,_,A), reduce_300(_)) <- true | {
-    adoptprohibition(coin(X,Y,A) -> reduce_300)
+aprohibition(coin(X,Y,_,_), reduce_300(_)) <- true | {
+    adoptprohibition(coin(X,Y,_) -> reduce_300)
 }
-aprohibition(coin(X,Y,_,A), reduce_400(_)) <- true | {
-    adoptprohibition(coin(X,Y,A) -> reduce_400)
+aprohibition(coin(X,Y,_,_), reduce_400(_)) <- true | {
+    adoptprohibition(coin(X,Y,_) -> reduce_400)
 }
-aprohibition(coin(X,Y,_,A), reduce_500(_)) <- true | {
-    adoptprohibition(coin(X,Y,A) -> reduce_500)
+aprohibition(coin(X,Y,_,_), reduce_500(_)) <- true | {
+    adoptprohibition(coin(X,Y,_) -> reduce_500)
 }
 
-adoptObligation(coin(X,Y,_,A), D, reduce_100(_)) <- true | {
-    adopta(coin(X,Y,A) : D -> reduce_100)
+adoptObligation(coin(X,Y,_,_), D, reduce_100(_)) <- true | {
+    adopta(coin(X,Y,_) : D -> reduce_100)
 }
-adoptObligation(coin(X,Y,_,A), D, reduce_200(_)) <- true | {
-    adopta(coin(X,Y,A) : D -> reduce_200)
+adoptObligation(coin(X,Y,_,_), D, reduce_200(_)) <- true | {
+    adopta(coin(X,Y,_) : D -> reduce_200)
 }
-adoptObligation(coin(X,Y,_,A), D, reduce_300(_)) <- true | {
-    adopta(coin(X,Y,A) : D -> reduce_300)
+adoptObligation(coin(X,Y,_,_), D, reduce_300(_)) <- true | {
+    adopta(coin(X,Y,_) : D -> reduce_300)
 }
-adoptObligation(coin(X,Y,_,A), D, reduce_400(_)) <- true | {
-    adopta(coin(X,Y,A) : D -> reduce_400)
+adoptObligation(coin(X,Y,_,_), D, reduce_400(_)) <- true | {
+    adopta(coin(X,Y,_) : D -> reduce_400)
 }
-adoptObligation(coin(X,Y,_,A), D, reduce_500(_)) <- true | {
-    adopta(coin(X,Y,A) : D -> reduce_500)
+adoptObligation(coin(X,Y,_,_), D, reduce_500(_)) <- true | {
+    adopta(coin(X,Y,_) : D -> reduce_500)
 }
 
 aprohibition(cargo(X,Y,_), reduce_100(_)) <- true | {
