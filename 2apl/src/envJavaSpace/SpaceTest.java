@@ -686,7 +686,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				//APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
 				String s1 = call.getParams().get(0).toString();// Get the position
 				String s2 = call.getParams().get(1).toString();
-				p = new Prohibition(sAgent, s1, s2, 1);
+				p = new Prohibition(sAgent, s1, s2, clock);
 			}
 			//Integer health = null; // if health is null (which is ident) it stays also in java null
 			//if(call.getParams().get(1) instanceof APLNum) health = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
@@ -707,7 +707,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				
 				int deadline = ((APLNum)call.getParams().get(1)).toInt();
 				
-				o = new Obligation(sAgent, s1, s3, deadline, 1);
+				o = new Obligation(sAgent, s1, s3, deadline, clock);
 				//System.out.println(s2);
 			}
 			//Integer health = null; // if health is null (which is ident) it stays also in java null

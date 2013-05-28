@@ -7,6 +7,8 @@ import java.util.Arrays;
 import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 import apapl.data.APLFunction;
+import apapl.data.APLIdent;
+import apapl.data.APLNum;
 import apapl.data.Term;
 
 
@@ -32,7 +34,8 @@ public class Prolog2Java {
 		APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 3, call.length));
 		System.out.println(event.toString());
 		
-		String[] params = new String[10];
+		String[] params = new String[5];
+		
 		int x = 0;
 		for (int i = 7; i < l-3; i = i + 3 ) {
 			//System.out.println(i);
@@ -48,7 +51,25 @@ public class Prolog2Java {
 				params[x] = null;
 			x++;
 		}
-		
+		for (int i = 0; i <= event.getParams().size()-1; i++ ) {
+			//Integer number = null; // if health is null (which is ident) it stays also in java null
+			if(event.getParams().get(i) instanceof APLNum) {
+				String s = ((APLNum)event.getParams().get(i)).toString();
+				if (s.startsWith("null"))
+					params[i] = null;
+				else
+					params[i] = s;
+			}
+			//String astring = null; // if health is null (which is ident) it stays also in java null
+			else if(event.getParams().get(i) instanceof APLIdent) {
+				String s = ((APLIdent)event.getParams().get(i)).toString();
+				if (s.startsWith("null"))
+					params[i] = null;
+				else
+					params[i] = s;
+			}
+			else System.out.println("not expected to receive a term here!");
+		}
 		//System.out.println(params.toString());
 		Entry e;
 		
@@ -56,8 +77,10 @@ public class Prolog2Java {
 		Class<?> clazz = Class.forName("tuplespace."+ output);
 		Constructor<?> ctor = clazz.getConstructor(String[].class);
 		Object object = ctor.newInstance(new Object[] { params });
-		
+		System.out.println(object.toString());
 		return (Entry) object;
+		
+		
 		/*
 		if (tuple.startsWith("position")) {
 			//System.out.println("org reads position");
