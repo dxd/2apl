@@ -1,4 +1,4 @@
-package helperTS;
+/*package helperTS;
 
 import tuplespace.Points;
 
@@ -30,3 +30,4 @@ public class AgentPoints extends Points {
 	
 
 }
+*/

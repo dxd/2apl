@@ -1,5 +1,5 @@
 package game;
-import helperTS.Update;
+//import helperTS.Update;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -50,7 +50,7 @@ public class Synchronization {
 
 	private Status status;
 
-	public Update update;
+	//public Update update;
     
 	public Synchronization(JSpace jspace) {
 		this.jspace = jspace;
@@ -196,7 +196,7 @@ public class Synchronization {
 	public void run(int clock) {
 		
 		pull();
-		update = new Update(status);
+		//update = new Update(status);
     	if (clock == 1)
     	{
     		initialize();
@@ -216,7 +216,7 @@ public class Synchronization {
 		getReadings();
 	}*/
 	
-	public void postRequests() {
+	/*public void postRequests() {
 		if (update.getRequests() != null)
 		for (tuplespace.Coin r : update.getRequests())
 		{
@@ -224,7 +224,7 @@ public class Synchronization {
 			updateRequests(latlng);
 		}
 		
-	}
+	}*/
 	public void postRequest(Coin coin) {
 		LatLng latlng = Game.gridToLocation(coin.getCell());
 		updateRequests(latlng);
@@ -249,7 +249,7 @@ public class Synchronization {
 		LatLng latlng = Game.gridToLocation(cargo.getCell());
 		dropCargos(latlng);
 	}
-	public void postCargos() {
+	/*public void postCargos() {
 		if (update.getCargos()!= null)
 		for (tuplespace.Cargo c : update.getCargos())
 		{
@@ -257,7 +257,7 @@ public class Synchronization {
 			dropCargos(latlng);
 		}
 		
-	}
+	}*/
 	private void dropCargos(LatLng loc) {
 		Generic gen = new Generic();
 		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
@@ -277,13 +277,13 @@ public class Synchronization {
 	public void postPoint(Points a) {
 		updatePoints(a.id, a.value);
 	}
-	public void postPoints() {
+	/*public void postPoints() {
 		if (update.Points() != null)
 		for (Points a : update.Points())
 		{
 			updatePoints(a.id, a.value);
 		}
-	}
+	}*/
 	
 	private void updatePoints(int id, int points) {
 		Generic gen = new Generic();
@@ -330,7 +330,7 @@ public class Synchronization {
 		//System.out.println(loc.getId().toString()+ latlng.toString());
 	}
 	
-	public void postLocations() {
+	/*public void postLocations() {
 		if (update.getPositions() != null)
 		for (Position loc : update.getPositions())
 		{
@@ -339,7 +339,7 @@ public class Synchronization {
 			System.out.println(loc.getId().toString()+ latlng.toString());
 		}
 		
-	}
+	}*/
 	private void pull() {
 		getStatus();
 	}

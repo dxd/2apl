@@ -38,40 +38,40 @@ public class NotificationHandler extends UnicastRemoteObject implements RemoteEv
                //                anEvent.getSequenceNumber() + ", " + 
                  //              anEvent.getRegistrationObject().get());
             
-            if (type[0].equals("position")) {
+        	if (type[0].equals("position")) {
             	System.out.println("position notification " + type[1]);
             	//synchro.update.UpdatePosition((Position) synchro.jspace.readUpdate(new Position(type[1])));
             	//System.out.println("position posting");
             	synchro.postLocation((Position) synchro.jspace.readUpdate(new Position(type[1])));
             }
-            if (type[0].equals("makeReading")) {
+        	else if (type[0].equals("makeReading")) {
             	System.out.println("reading request notification " + type[1]);
             	
             	//synchro.update.ActionRequests(synchro.jspace.readReadingRequests(null));
             	synchro.getReading((ActionRequest)synchro.jspace.readUpdate(new ActionRequest(type[1],"reading")));
             	//synchro.getReadings();
             }
-            if (type[0].equals("makeInvestigation")) {
+        	else if (type[0].equals("makeInvestigation")) {
             	System.out.println("reading request notification " + type[1]);
             	
             	//synchro.update.ActionRequests(synchro.jspace.readReadingRequests(null));
             	synchro.getInvestigation((ActionRequest)synchro.jspace.readUpdate(new ActionRequest(type[1],"investigation")));
             	//synchro.getReadings();
             }
-            if (type[0].equals("coin")) {
+            else if (type[0].equals("coin")) {
             	System.out.println("coin request notification " + type[1]);
             	
             	//synchro.update.Coins(synchro.jspace.readRequests(null));
             	synchro.postRequest((Coin)synchro.jspace.readUpdate(new Coin(type[1])));
             }
-            if (type[0].equals("cargo")) {
-            	System.out.println("cargo notification " + type[1]);
+            else if (type[0].equals("cargo")) {
+            	System.out.println("cargo notification ");
             	
             	//synchro.update.Cargos(synchro.jspace.readCargos(null));
             	//synchro.postCargos();
             	synchro.postCargo((Cargo)synchro.jspace.readUpdate(new Cargo()));
             }
-            if (type[0].equals("points")) {
+            else if (type[0].equals("points")) {
             	System.out.println("points notification " + type[1]);
             	
             	//synchro.update.Points(synchro.jspace.readPoints(null));

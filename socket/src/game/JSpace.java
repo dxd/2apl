@@ -1,14 +1,11 @@
 package game;
 
-import helperTS.Update;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.MalformedURLException;
-import java.rmi.MarshalledObject;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,17 +14,10 @@ import java.util.Comparator;
 
 import com.javadocmd.simplelatlng.LatLng;
 
-import dataJSon.Reading;
 import dataJSon.Status;
 
-import tuplespace.ActionRequest;
-import tuplespace.Cargo;
 import tuplespace.Cell;
-import tuplespace.NotificationHandler;
-import tuplespace.Points;
 import tuplespace.Position;
-import tuplespace.Prohibition;
-import tuplespace.Coin;
 import tuplespace.Time;
 import tuplespace.TimeEntry;
 
@@ -37,19 +27,14 @@ import net.jini.core.entry.Entry;
 import net.jini.core.entry.UnusableEntryException;
 import net.jini.core.lease.Lease;
 import net.jini.core.lease.LeaseDeniedException;
-import net.jini.core.lease.UnknownLeaseException;
 import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.lookup.ServiceDiscoveryManager;
-import net.jini.core.transaction.CannotAbortException;
 import net.jini.core.transaction.Transaction;
 import net.jini.core.transaction.TransactionException;
 import net.jini.core.transaction.TransactionFactory;
-import net.jini.core.transaction.UnknownTransactionException;
 import net.jini.core.transaction.server.TransactionManager;
-import net.jini.lease.LeaseRenewalManager;
-import net.jini.lease.LeaseRenewalService;
 import net.jini.space.JavaSpace;
 
 
@@ -293,7 +278,7 @@ public class JSpace {
 	
 
 
-	public void writeAll(int clock, Status status) {
+	/*public void writeAll(int clock, Status status) {
 		
 		writeTime(clock);
 		writeReadings(clock, status);
@@ -341,7 +326,7 @@ public class JSpace {
 			write(reading);
 		}
 		
-	}
+	}*/
 
 	private void write(Entry data)
 	{
