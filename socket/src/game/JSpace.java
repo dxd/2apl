@@ -362,7 +362,7 @@ public class JSpace {
 			  }
 			  
 			});
-		return result.get(result.size()-1);
+		return result.get(0);
 
 		}
 		else if (result.size() == 1) {

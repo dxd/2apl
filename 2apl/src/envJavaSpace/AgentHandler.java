@@ -44,22 +44,26 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             
             if (type.equals("reading")) {
             	//System.out.println("agent position notification");
-            	Reading r = spaceTest.readReading(agent);
+            	Reading temp = new Reading(agent);
+            	Reading r = (Reading) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, r);
             }
             else if (type.equals("obligation")) {
             	//System.out.println("agent obligation notification");
-            	Obligation o = spaceTest.readObligation(agent);
+            	Obligation temp = new Obligation(agent);
+            	Obligation o = (Obligation) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, o);
             }
             else if (type.equals("prohibition")) {
             	//System.out.println("agent prohibition notification");
-            	Prohibition p = spaceTest.readProhibition(agent);
+            	Prohibition temp = new Prohibition(agent);
+            	Prohibition p = (Prohibition) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, p);
             }
             else if (type.equals("points")) {
             	//System.out.println("agent prohibition notification");
-            	Points p = spaceTest.readPoints(agent);
+            	Points temp = new Points(agent);
+            	Points p = (Points) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, p);
             }
         } catch (Exception anE) {

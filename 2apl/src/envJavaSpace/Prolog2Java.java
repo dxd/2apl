@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import oopl.DistributedOOPL;
 import tuplespace.Cell;
+import tuplespace.TimeEntry;
 import net.jini.core.entry.Entry;
 import apapl.data.APLFunction;
 import apapl.data.APLIdent;
@@ -23,7 +24,7 @@ public class Prolog2Java {
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
 	//public APAPLTermConverter converter;
 	
-	public Entry parseTerm(int[] call,APAPLTermConverter converter, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
+	public TimeEntry parseTerm(int[] call,APAPLTermConverter converter, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
 		int type = call[4];
 		//converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
 		System.out.println("!!!!! from org !!!!!!");
@@ -86,7 +87,7 @@ public class Prolog2Java {
 		Constructor<?> ctor = clazz.getConstructor(Object[].class);
 		Object object = ctor.newInstance(new Object[] { params });
 		System.out.println(object.toString());
-		return (Entry) object;
+		return (TimeEntry) object;
 		
 		
 		/*

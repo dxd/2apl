@@ -290,7 +290,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				long lease = get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1);
 				if(lease <= 0) lease = Lease.FOREVER;
 				
-				Entry e = createEntry(call);
+				TimeEntry e = createEntry(call);
+				e.setTime();
 				space.write(e, null, lease);
 				//System.out.println(e+"  "+lease+"   "+Lease.FOREVER);
 				ea.intResult = ar_true;
@@ -334,7 +335,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * Create an entry object form an integer array. Perhaps we want to replace this with
 	 * something like createEntry(oopl.prolog.toPrologString(call)).
 	 */
-	public Entry createEntry(int[] call) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchMethodException{ // e.g.: read(tuple(name,point(2,4),20),0)
+	public TimeEntry createEntry(int[] call) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchMethodException{ // e.g.: read(tuple(name,point(2,4),20),0)
 		//System.out.println(oopl.prolog.arStr(call));
 		return p2j.parseTerm(call, converter, oopl);
 		
@@ -1006,7 +1007,12 @@ public class SpaceTest  extends Environment implements ExternalTool{
                 30000, new DebugListener());*/
 	}
 	
-	public Obligation readObligation(String agent) {
+	public TimeEntry readTuple(TimeEntry te) {
+		TimeEntry t = (TimeEntry) getLast(te);
+		return t;
+	}
+	
+	/*public Obligation readObligation(String agent) {
 		Obligation obligation = new Obligation(agent);
 		ArrayList<TimeEntry> obligations = new ArrayList<TimeEntry>();
 		getAll(obligation, obligations);
@@ -1049,41 +1055,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		if (points.size() > 0)
 			return (Points) points.get(0);
 		return null;
-	}
+	}*/
 
 	
-	private void getAll(Object template, ArrayList<TimeEntry> result) {
-
-		TimeEntry entry;
-		try {
-			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
-			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
-			Transaction txn = trans.transaction;
-			try {
-				while ((entry = (TimeEntry) space.take((Entry) template, txn, 200)) != null){
-					//System.out.println(entry.toString());
-					result.add(entry);
-				}
-				TimeEntry t = getLatest(result);
-				result = new ArrayList<TimeEntry>();
-				result.add(t);
-				System.out.println(result.toString());
-				txn.abort();
-				//leaseRenewalManager.cancel(trans.lease);
-			} catch (UnusableEntryException e) {
-				e.printStackTrace();
-			} catch (TransactionException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} 
-			
-		} catch (LeaseDeniedException e1) {
-			e1.printStackTrace();
-		} catch (RemoteException e1) {
-			e1.printStackTrace();
-		}
-	}
 	private Entry getLast(Entry a) {
 		TimeEntry entry;
 		try {
@@ -1130,7 +1104,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			  }
 			  
 			});
-		return result.get(result.size()-1);
+		return result.get(0);
 
 		}
 		else if (result.size() == 1) {
