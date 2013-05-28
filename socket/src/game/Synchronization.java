@@ -26,10 +26,11 @@ import net.jini.core.transaction.TransactionException;
 //import org.json.JSONTokener;
 
 import tuplespace.ActionRequest;
+import tuplespace.Cargo;
+import tuplespace.Coin;
 import tuplespace.NotificationHandler;
 import tuplespace.Points;
 import tuplespace.Position;
-
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -207,13 +208,13 @@ public class Synchronization {
 		//jspace.writeAll(clock, status);
 		
 	}
-	private void push() {
+/*	private void push() {
 		postLocations();
 		postPoints();
 		postCargos();
 		postRequests();
 		getReadings();
-	}
+	}*/
 	
 	public void postRequests() {
 		if (update.getRequests() != null)
@@ -222,6 +223,11 @@ public class Synchronization {
 			LatLng latlng = Game.gridToLocation(r.getCell());
 			updateRequests(latlng);
 		}
+		
+	}
+	public void postRequest(Coin coin) {
+		LatLng latlng = Game.gridToLocation(coin.getCell());
+		updateRequests(latlng);
 		
 	}
 	private void updateRequests(LatLng loc) {
@@ -238,6 +244,10 @@ public class Synchronization {
 			e.printStackTrace();
 		}
 		
+	}
+	public void postCargo(Cargo cargo) {
+		LatLng latlng = Game.gridToLocation(cargo.getCell());
+		dropCargos(latlng);
 	}
 	public void postCargos() {
 		if (update.getCargos()!= null)
@@ -263,6 +273,10 @@ public class Synchronization {
 		}
 		
 	}
+	
+	public void postPoint(Points a) {
+		updatePoints(a.id, a.value);
+	}
 	public void postPoints() {
 		if (update.Points() != null)
 		for (Points a : update.Points())
@@ -286,7 +300,20 @@ public class Synchronization {
 		}
 		
 	}
-	public void getReadings() {
+	
+	public void getReading(ActionRequest ar) {
+		LatLng latlng = Game.gridToLocation(ar.getCell());
+		ReadingResponse rr = getReading(ar.getId(), latlng);
+		
+		jspace.writeReading(new tuplespace.Reading(ar.agent, ar.cell,rr.getDistance()), Start.gs.getClock(), status);
+	}
+	
+	public void getInvestigation(ActionRequest readUpdate) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+/*	public void getReadings() {
 		for (ActionRequest ar : update.getActionRead())
 		{
 			LatLng latlng = Game.gridToLocation(ar.getCell());
@@ -295,8 +322,14 @@ public class Synchronization {
 		}
 		
 
-	}
+	}*/
 
+	public void postLocation(Position loc) {
+		LatLng latlng = Game.gridToLocation(loc.getCell());
+		postLocation(loc.getId(), latlng);
+		System.out.println(loc.getId().toString()+ latlng.toString());
+	}
+	
 	public void postLocations() {
 		if (update.getPositions() != null)
 		for (Position loc : update.getPositions())
@@ -331,26 +364,32 @@ public class Synchronization {
 	}
 	public void register() {
 		try {
-			JSpace.space.notify(new Position(), null,
-			        new NotificationHandler(this),
-			        3000000,
-			        new MarshalledObject(new String("position")));
-			JSpace.space.notify(new ActionRequest(), null,
-			        new NotificationHandler(this),
-			        3000000,
-			        new MarshalledObject(new String("makeReading")));
-			JSpace.space.notify(new tuplespace.Coin(), null,
-			        new NotificationHandler(this),
-			        3000000,
-			        new MarshalledObject(new String("coin")));
+			for (int i=0; i<jspace.agents.length;i++) {
+				JSpace.space.notify(new Position(jspace.agents[i]), null,
+						new NotificationHandler(this),
+						3000000,
+						new MarshalledObject(new String[]{"position", jspace.agents[i]}));
+				JSpace.space.notify(new ActionRequest(jspace.agents[i],"reading"), null,
+						new NotificationHandler(this),
+						3000000,
+						new MarshalledObject(new String[]{"makeReading", jspace.agents[i]}));
+				JSpace.space.notify(new ActionRequest(jspace.agents[i],"investigation"), null,
+						new NotificationHandler(this),
+						3000000,
+						new MarshalledObject(new String[]{"makeInvestigation", jspace.agents[i]}));
+				JSpace.space.notify(new tuplespace.Coin(jspace.agents[i]), null,
+						new NotificationHandler(this),
+						3000000,
+						new MarshalledObject(new String[]{"coin", jspace.agents[i]}));
+				JSpace.space.notify(new tuplespace.Points(jspace.agents[i]), null,
+						new NotificationHandler(this),
+						3000000,
+						new MarshalledObject(new String[]{"points", jspace.agents[i]}));
+			}
 			JSpace.space.notify(new tuplespace.Cargo(), null,
-			        new NotificationHandler(this),
-			        3000000,
-			        new MarshalledObject(new String("cargo")));
-			JSpace.space.notify(new tuplespace.Points(), null,
-			        new NotificationHandler(this),
-			        3000000,
-			        new MarshalledObject(new String("points")));
+					new NotificationHandler(this),
+					3000000,
+					new MarshalledObject(new String("cargo")));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -362,6 +401,18 @@ public class Synchronization {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 	
 }

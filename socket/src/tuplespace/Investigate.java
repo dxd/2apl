@@ -29,8 +29,8 @@ public class Investigate implements TimeEntry {
 		this.value = value;
 	}
 
-	public Investigate(String[] params) {
-		this.agent = params[2];
+	public Investigate(Object[] params) {
+		this.agent = params[2].toString();
 	} 
 	
 	public int[] toArray(DistributedOOPL oopl) {

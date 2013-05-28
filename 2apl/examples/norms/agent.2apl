@@ -88,20 +88,52 @@ aprohibition(coin(X,Y,_,_), reduce_500(_)) <- true | {
     adoptprohibition(coin(X,Y,_) -> reduce_500)
 }
 
-adoptObligation(coin(X,Y,_,_), D, reduce_100(_)) <- true | {
-    adopta(coin(X,Y,_) : D -> reduce_100)
+adoptObligation(coin(X,Y,_,A), D, reduce_100(_)) <- true | {
+    adopta(coin(X,Y,A) : D -> reduce_100)
 }
-adoptObligation(coin(X,Y,_,_), D, reduce_200(_)) <- true | {
-    adopta(coin(X,Y,_) : D -> reduce_200)
+adoptObligation(coin(X,Y,_,A), D, reduce_200(_)) <- true | {
+    adopta(coin(X,Y,A) : D -> reduce_200)
 }
-adoptObligation(coin(X,Y,_,_), D, reduce_300(_)) <- true | {
-    adopta(coin(X,Y,_) : D -> reduce_300)
+adoptObligation(coin(X,Y,_,A), D, reduce_300(_)) <- true | {
+    adopta(coin(X,Y,A) : D -> reduce_300)
 }
-adoptObligation(coin(X,Y,_,_), D, reduce_400(_)) <- true | {
-    adopta(coin(X,Y,_) : D -> reduce_400)
+adoptObligation(coin(X,Y,_,A), D, reduce_400(_)) <- true | {
+    adopta(coin(X,Y,A) : D -> reduce_400)
 }
-adoptObligation(coin(X,Y,_,_), D, reduce_500(_)) <- true | {
-    adopta(coin(X,Y,_) : D -> reduce_500)
+adoptObligation(coin(X,Y,_,A), D, reduce_500(_)) <- true | {
+    adopta(placeCoin(X,Y,A) : D -> reduce_500)
+}
+
+aprohibition(coin(A), reduce_100(_)) <- true | {
+    adoptprohibition(coin(_,_,_) -> reduce_100)
+}
+aprohibition(coin(A), reduce_200(_)) <- true | {
+    adoptprohibition(coin(_,_,_) -> reduce_200)
+}
+aprohibition(coin(A), reduce_300(_)) <- true | {
+    adoptprohibition(coin(_,_,_) -> reduce_300)
+}
+aprohibition(coin(A), reduce_400(_)) <- true | {
+    adoptprohibition(coin(_,_,_) -> reduce_400)
+}
+aprohibition(coin(A), reduce_500(_)) <- true | {
+    adoptprohibition(coin(_,_,_) -> reduce_500)
+}
+
+adoptObligation(coin(A), D, reduce_100(_)) <- true | {
+    adopta(placeCoin : D -> reduce_100)
+}
+adoptObligation(coin(A), D, reduce_200(_)) <- true | {
+    adopta(placeCoin : D -> reduce_200)
+}
+adoptObligation(coin(A), D, reduce_300(_)) <- true | {
+    adopta(placeCoin : D -> reduce_300)
+}
+adoptObligation(coin(A), D, reduce_400(_)) <- true | {
+    adopta(placeCoin : D -> reduce_400)
+}
+adoptObligation(coin(A), D, reduce_500(_)) <- true | {
+    adopta(placeCoin : D -> reduce_500)
 }
 
 aprohibition(cargo(X,Y,_), reduce_100(_)) <- true | {
@@ -122,21 +154,52 @@ aprohibition(cargo(X,Y,_), reduce_500(_)) <- true | {
 
 
 adoptObligation(cargo(X,Y,_), D, reduce_100(_)) <- true | {
-    adopta(coin(X,Y) : D -> reduce_100)
+    adopta(drop(X,Y) : D -> reduce_100)
 }
 adoptObligation(cargo(X,Y,_), D, reduce_200(_)) <- true | {
-    adopta(coin(X,Y) : D -> reduce_200)
+    adopta(drop(X,Y) : D -> reduce_200)
 }	
 adoptObligation(cargo(X,Y,_), D, reduce_300(_)) <- true | {
-    adopta(coin(X,Y) : D -> reduce_300)
+    adopta(drop(X,Y) : D -> reduce_300)
 }
 adoptObligation(cargo(X,Y,_), D, reduce_400(_)) <- true | {
-    adopta(coin(X,Y) : D -> reduce_400)
+    adopta(drop(X,Y) : D -> reduce_400)
 }
 adoptObligation(cargo(X,Y,_), D, reduce_500(_)) <- true | {
-    adopta(coin(X,Y) : D -> reduce_500)
+    adopta(drop(X,Y) : D -> reduce_500)
 }
 
+adoptObligation(cargo(A), D, reduce_100(_)) <- true | {
+    adopta(dropLoad : D -> reduce_100)
+}
+adoptObligation(cargo(A), D, reduce_200(_)) <- true | {
+    adopta(dropLoad : D -> reduce_200)
+}	
+adoptObligation(cargo(A), D, reduce_300(_)) <- true | {
+    adopta(dropLoad : D -> reduce_300)
+}
+adoptObligation(cargo(A), D, reduce_400(_)) <- true | {
+    adopta(dropLoad : D -> reduce_400)
+}
+adoptObligation(cargo(A), D, reduce_500(_)) <- true | {
+    adopta(dropLoad : D -> reduce_500)
+}
+
+aprohibition(cargo(A), reduce_100(_)) <- true | {
+    adoptprohibition(cargo(_,_) -> reduce_100)
+}
+aprohibition(cargo(A), reduce_200(_)) <- true | {
+    adoptprohibition(cargo(_,_) -> reduce_200)
+}
+aprohibition(cargo(A), reduce_300(_)) <- true | {
+    adoptprohibition(cargo(_,_) -> reduce_300)
+}
+aprohibition(cargo(A), reduce_400(_)) <- true | {
+    adoptprohibition(cargo(_,_) -> reduce_400)
+}
+aprohibition(cargo(A), reduce_500(_)) <- true | {
+    adoptprohibition(cargo(_,_) -> reduce_500)
+}
 
 
 aprohibition(reading(X,Y,_,_,_), reduce_100(_)) <- true | {

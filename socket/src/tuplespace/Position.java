@@ -45,10 +45,10 @@ public class Position implements TimeEntry {
 	}
 
 	
-	public Position(String[] params) {
-		this.agent = params[0];
+	public Position(Object[] params) {
+		this.agent = params[0].toString();
 		if (params[1] != null)
-			this.cell = new Cell(Integer.getInteger(params[1]), Integer.getInteger(params[2]));
+			this.cell = new Cell(Integer.getInteger(params[1].toString()), Integer.getInteger(params[2].toString()));
 	}
 	
 	public int[] toArray(DistributedOOPL oopl) {

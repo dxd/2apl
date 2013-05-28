@@ -19,21 +19,28 @@ PG-rules:
 
 dropLoad <- position(X,Y) | {
 
-   [drop(X,Y); 
-    dropgoal(dropLoad)]
+   drop(X,Y); 
+    dropgoal(dropLoad)
     
 } : 1
 
 at(X,Y) <- true | {
 
-   [moveTo(X,Y); 
-    dropgoal(at(X,Y))]
+   moveTo(X,Y); 
+    dropgoal(at(X,Y))
     
 } : 1
 
 PC-rules:
 
 drop(X,Y) <- true | {
+    @space(clock(),R);
+    B(R=[actionresult(Clock)]);
+    UpdateCargos(X,Y);
+    @space(write(cargo(position(X,Y),Clock),-1),_)
+} 
+
+drop() <- position(X,Y) | {
     @space(clock(),R);
     B(R=[actionresult(Clock)]);
     UpdateCargos(X,Y);

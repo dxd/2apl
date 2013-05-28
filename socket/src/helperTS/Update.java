@@ -43,6 +43,14 @@ public class Update {
 		}
 		
 	}
+	
+	public void UpdatePosition(Position p) {
+
+			p.id = status.getPlayerId(p.agent);
+			positions.add(p);
+
+		
+	}
 
 	public ArrayList<Position> getPositions() {
 		return positions;

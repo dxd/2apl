@@ -23,6 +23,14 @@ placeCoin(X,Y,Agent) <- true | {
     
 } : 1
 
+placeCoin <- true | {
+
+   
+   [coin(5,5,all); 
+    dropgoal(placeCoin)]
+    
+} : 1
+
 PC-rules:
 
 coin(X,Y,Agent) <- true | {

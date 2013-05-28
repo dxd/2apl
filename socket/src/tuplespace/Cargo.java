@@ -36,8 +36,11 @@ public class Cargo implements TimeEntry {
 		this.time = new Date();
 	}
 	
-	public Cargo(String[] params) {
-		
+	public Cargo(Object[] params) {
+		if (params[0] != null)
+    		this.cell = (Cell) params[0];
+		if (params[1] != null)
+			this.clock = Integer.getInteger((String) params[1]);
 	}
 	
 	@Override

@@ -28,13 +28,19 @@ public class Reading implements TimeEntry {
 		this.time = new Date();
 		this.value = value;
 	}
+	
+	public Reading(String agent, Cell cell, float value) {
+		this.agent = agent;
+		this.cell = cell;
+		this.value = value;
+	}
 
 	public Reading(String agent) {
 		this.agent = agent;
 	}
 
-	public Reading(String[] params) {
-		this.agent = params[2];
+	public Reading(Object[] params) {
+		this.agent = params[2].toString();
 	}
 	
 	public int[] toArray(DistributedOOPL oopl) {

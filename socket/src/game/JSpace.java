@@ -165,7 +165,7 @@ public class JSpace {
 		return space == null;
 	}
 
-	public Update readAll(Update update, int clock) {
+	/*public Update readAll(Update update, int clock) {
 		
 		ArrayList<Position> positions = readLocations(clock);
 		ArrayList<Points> points = readPoints(clock);
@@ -179,16 +179,24 @@ public class JSpace {
 		update.Coins(coins);
 		update.ActionRequests(ar);
 		return update;
-	}
+	}*/
+	
 
-	public ArrayList<Position> readLocations(Integer clock) {
+	public TimeEntry readUpdate(TimeEntry entry) {
+	
+		Position p1 = (Position) getLatest(entry);
+		return p1;
+	}
+	
+	
+/*	public ArrayList<Position> readLocations(Integer clock) {
 		ArrayList<Position> positions = new ArrayList<Position>();
 		for (String a : agents)
 		{
 			Position position = new Position(a);
-			ArrayList<Position> p = new ArrayList<Position>();
-			getLatest(position, p);
-			positions.addAll(p);
+			ArrayList<TimeEntry> p = new ArrayList<TimeEntry>();
+			Position p1 = (Position) getLatest(position);
+			positions.add((Position)p1);
 		}
 		return positions;
 	}
@@ -242,26 +250,26 @@ public class JSpace {
 		
 		return ar;
 		
-	}
+	}*/
 
 
-	private <T> void getLatest(Entry template, ArrayList<T> result) {
+	private TimeEntry getLatest(Entry template) {
 
-		T entry;
+		TimeEntry entry;
+		TimeEntry t = null;
 		
+		ArrayList<TimeEntry> result = new ArrayList<TimeEntry>();
 		try {
 			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
 			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
 			Transaction txn = trans.transaction;
 			try {
-				while ((entry = (T) space.take(template, txn, 200)) != null){
+				while ((entry = (TimeEntry) space.take(template, txn, 200)) != null){
 					//System.out.println(entry.toString());
 					result.add(entry);
 				}
-				T t = getLatest(result);
-				result = new ArrayList<T>();
-				result.add(t);
-				System.out.println(result.toString());
+				t = getLatest(result);
+				//System.out.println(result.toString());
 				txn.abort();
 				//leaseRenewalManager.cancel(trans.lease);
 			} catch (UnusableEntryException e) {
@@ -277,6 +285,8 @@ public class JSpace {
 		} catch (RemoteException e1) {
 			e1.printStackTrace();
 		}
+
+		return t;
 	}
 
 	
@@ -352,34 +362,59 @@ public class JSpace {
 		write(time);	
 	}
 
-	private <T> T getLatest(ArrayList<T> result) {
+	private TimeEntry getLatest(ArrayList<TimeEntry> result) {
+		
+		if (result.size() > 1) {
+			//System.out.println("to be compared: "+result.toString());	
+		Collections.sort(result, new Comparator<TimeEntry>(){
+			  public int compare(TimeEntry t1, TimeEntry t2) {
+				  //TimeEntry t3 = (TimeEntry) t1;
+				 //TimeEntry t4 = (TimeEntry) t2;
+				if (t1.time != null && t1.time != null)  
+					return t1.time.compareTo(t2.time);
+				return 1;
+			  }
+			  
+			});
+		return result.get(result.size()-1);
+
+		}
+		else if (result.size() == 1) {
+			return result.get(0);
+		}
+
+		return null;
+		
+	}
+/*	private <T> T getLatest(ArrayList<T> result) {
 		
 		if (result.size() > 0) {
 			System.out.println("to be compared: "+result.toString());	
-		/*Collections.sort(result, new Comparator<T>(){
+		Collections.sort(result, new Comparator<T>(){
 			  public int compare(T t1, T t2) {
 				  TimeEntry t3 = (TimeEntry) t1;
 				  TimeEntry t4 = (TimeEntry) t2;
 			    return (int) (t3.time.getTime() - t4.time.getTime());
 			  }
 			  
-			});*/
+			});
 		return result.get(result.size()-1);
 
 		}
 
 		return null;
 		
-	}
+	}*/
 
-	public void writeReading(Reading r, int clock, Status status) {
-		Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
+	public void writeReading(tuplespace.Reading reading, int clock, Status status) {
+		//Cell cell = Game.locationToGrid(new LatLng(reading2.getLatitude(), reading2.getLongitude()));
 		//System.out.println(cell.toString());
-		tuplespace.Reading reading = new tuplespace.Reading(r.getId(),status.getPlayerName(r.getPlayer_id()), cell, clock, r.getValue());
-		write(reading);
+		tuplespace.Reading reading2 = new tuplespace.Reading(reading.id,reading.agent, reading.cell, clock, reading.value);
+		write(reading2);
 		
 	}
-	
+
+
 
 
 /*			theManager.renewFor(myReg.getLease(), Lease.FOREVER,
