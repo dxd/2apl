@@ -42,4 +42,9 @@ public class Prohibition implements TimeEntry {
 		return null;
 	}
 
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 }

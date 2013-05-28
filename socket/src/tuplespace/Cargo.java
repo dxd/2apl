@@ -93,6 +93,10 @@ public class Cargo implements TimeEntry {
 		return "Cargo [id=" + id + ", cell=" + cell + ", time=" + time
 				+ ", clock=" + clock + "]";
 	}
-	
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 
 }

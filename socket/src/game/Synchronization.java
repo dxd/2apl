@@ -326,8 +326,8 @@ public class Synchronization {
 
 	public void postLocation(Position loc) {
 		LatLng latlng = Game.gridToLocation(loc.getCell());
-		postLocation(loc.getId(), latlng);
-		System.out.println(loc.getId().toString()+ latlng.toString());
+		postLocation(status.getPlayerId(loc.agent), latlng);
+		//System.out.println(loc.getId().toString()+ latlng.toString());
 	}
 	
 	public void postLocations() {
@@ -389,7 +389,7 @@ public class Synchronization {
 			JSpace.space.notify(new tuplespace.Cargo(), null,
 					new NotificationHandler(this),
 					3000000,
-					new MarshalledObject(new String("cargo")));
+					new MarshalledObject(new String[]{"cargo"}));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

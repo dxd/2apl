@@ -1,6 +1,7 @@
 package tuplespace;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Cell implements Serializable {
 	
@@ -17,5 +18,4 @@ public class Cell implements Serializable {
 	public String toString() {
 		return "Cell [x=" + x + ", y=" + y + "]";
 	}
-
 }

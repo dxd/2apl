@@ -56,6 +56,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	//private Object leaseRenewalManager;
 	private ServiceDiscoveryManager sdm;
 	private Prolog2Java p2j;
+	public static String[] agents = {"a1", "a2", "a3", "t1", "c1"};
 	
 	/*
 	 * Just for testing.
@@ -73,7 +74,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
+			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
+			ll = new LookupLocator("jini://10.154.219.251");
 			//ll = new LookupLocator("jini://192.168.0.5"); 
 		} catch (MalformedURLException e) { 
 			
@@ -610,7 +612,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * @param call The predicate from the call.
 	 * @return The entry representation of the predicate.
 	 */
-	public Entry createEntry(String sAgent, APLFunction call){ 
+	public TimeEntry createEntry(String sAgent, APLFunction call){ 
 		
 		System.out.print("from/for agent " + sAgent + "  ");
 		System.out.println(call.toString());
@@ -716,7 +718,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//System.out.println(o.toString());
 			return o; // Create Tuple
 		} 
-		else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
+		/*else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
 			String name = ((APLIdent)call.getParams().get(0)).getName();
 			Point p = null;
 			if(call.getParams().get(1) instanceof APLFunction){ // null is APLIdent so 
@@ -726,7 +728,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				p = new Point(pointX,pointY);
 			}
 			return new Tuple(name,p,null); // Create Tuple
-		}  
+		}  */
 		return null;
 	}
 	
@@ -943,7 +945,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		try{
 			long leaseVal = lease.toInt();
 			if(leaseVal < 0) leaseVal = Lease.FOREVER; 
-			space.write(createEntry(sAgent,call), null, leaseVal);
+			TimeEntry e = (TimeEntry) createEntry(sAgent,call);
+			e.setTime();
+			space.write(e, null, leaseVal);
 			//oopl.handleEvent(ar_state_change, false); // check the norms
 			return new APLIdent("true");
 		}catch (Exception e){ e.printStackTrace(); return new APLIdent("null"); }
@@ -1152,27 +1156,29 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		
 		OrgHandler handler;
 		try {
-			handler = new OrgHandler(this);
-			space.notify(new Position(), null,
-			        handler,
-			        3000000,
-			        new MarshalledObject(new String("position")));
-			space.notify(new Coin(), null,
-			        handler,
-			        3000000,
-			        new MarshalledObject(new String("coin")));
-			space.notify(new Cargo(), null,
-			        handler,
-			        3000000,
-			        new MarshalledObject(new String("cargo")));
-			space.notify(new Reading(), null,
-			        handler,
-			        3000000,
-			        new MarshalledObject(new String("reading")));
-			space.notify(new Points(), null,
-			        handler,
-			        3000000,
-			        new MarshalledObject(new String("points")));
+			for (int i=0; i<agents.length;i++) {
+				handler = new OrgHandler(this);
+				space.notify(new Position(), null,
+						handler,
+						3000000,
+						new MarshalledObject(new String[]{"position",agents[i]}));
+				space.notify(new Coin(), null,
+						handler,
+						3000000,
+						new MarshalledObject(new String[]{"coin",agents[i]}));
+				space.notify(new Cargo(), null,
+						handler,
+						3000000,
+						new MarshalledObject(new String[]{"cargo",agents[i]}));
+				space.notify(new Reading(), null,
+						handler,
+						3000000,
+						new MarshalledObject(new String[]{"reading",agents[i]}));
+				space.notify(new Points(), null,
+						handler,
+						3000000,
+						new MarshalledObject(new String[]{"points",agents[i]}));
+			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

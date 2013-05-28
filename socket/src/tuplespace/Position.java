@@ -115,5 +115,10 @@ public class Position implements TimeEntry {
 		this.clock = clock;
 	}
 		
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 }
 

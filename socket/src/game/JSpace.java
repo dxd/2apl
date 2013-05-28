@@ -95,7 +95,8 @@ public class JSpace {
 		
 		LookupLocator ll = null;
 		try {
-			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk:4160");
+			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk:4160");
+			ll = new LookupLocator("jini://10.154.219.251");
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

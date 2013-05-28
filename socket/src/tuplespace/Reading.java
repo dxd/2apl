@@ -70,5 +70,10 @@ public class Reading implements TimeEntry {
 				+ ", time=" + time + ", value=" + value + ", clock=" + clock
 				+ "]";
 	}
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 		
 }

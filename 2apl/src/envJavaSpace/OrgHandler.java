@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import tuplespace.Obligation;
-
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.space.JavaSpace;
@@ -23,29 +22,29 @@ public class OrgHandler extends UnicastRemoteObject implements RemoteEventListen
 	public void notify(RemoteEvent anEvent) {
 
         try {
-        	String type = anEvent.getRegistrationObject().get().toString();
+        	String[] type = (String[]) anEvent.getRegistrationObject().get();
            // System.out.println("Got event: " + anEvent.getSource() + ", " +
              //                  anEvent.getID() + ", " +
                //                anEvent.getSequenceNumber() + ", " + 
                  //              anEvent.getRegistrationObject().get());
             
-            if (type.equals("position")) {
+            if (type[0].equals("position")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type.equals("reading")) {
+            if (type[0].equals("reading")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type.equals("points")) {
+            if (type[0].equals("points")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type.equals("cargo")) {
+            if (type[0].equals("cargo")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type.equals("coin")) {
+            if (type[0].equals("coin")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }

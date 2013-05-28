@@ -107,4 +107,9 @@ public Coin(Cell cell, String agent, Integer clock) {
 	public void setClock(Integer clock) {
 		this.clock = clock;
 	}
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 }

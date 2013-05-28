@@ -57,4 +57,9 @@ public class Points implements TimeEntry {
 		return "Points [agent=" + agent + ", time=" + time + ", clock=" + clock
 				+ ", value=" + value + ", id=" + id + "]";
 	}
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 }

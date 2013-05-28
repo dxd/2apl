@@ -84,5 +84,10 @@ public class ActionRequest implements TimeEntry {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void setTime() {
+		this.time = new Date();
+		
+	}
 
 }
