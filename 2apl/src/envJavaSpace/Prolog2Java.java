@@ -7,6 +7,7 @@ import java.util.Arrays;
 import oopl.DistributedOOPL;
 import net.jini.core.entry.Entry;
 import apapl.data.APLFunction;
+import apapl.data.Term;
 
 
 public class Prolog2Java {
@@ -17,19 +18,18 @@ public class Prolog2Java {
 			TYPE_OBJECT="object", TYPE_INVENTORY="inventory", NULL="null"; // for matching string with class type
 	public int[] ar_true, ar_null, ar_state_change, ar_false; // precalculated IntProlog data 
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
-	public APAPLTermConverter converter;
+	//public APAPLTermConverter converter;
 	
-	public Entry parseTerm(int[] call, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
+	public Entry parseTerm(int[] call,APAPLTermConverter converter, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
 		int type = call[4];
-		converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
+		//converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
 		System.out.println("!!!!! from org !!!!!!");
 		
 		String tuple = oopl.prolog.strStorage.getString(call[4]);
 		//System.out.println(tuple);
 		int l = call.length;
-		//if (!tuple.startsWith("position")) return null;
-		//System.out.println(l);
-		APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
+
+		APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 3, call.length));
 		System.out.println(event.toString());
 		
 		String[] params = new String[10];
@@ -51,6 +51,7 @@ public class Prolog2Java {
 		
 		//System.out.println(params.toString());
 		Entry e;
+		
 		String output = tuple.substring(0, 1).toUpperCase() + tuple.substring(1);
 		Class<?> clazz = Class.forName("tuplespace."+ output);
 		Constructor<?> ctor = clazz.getConstructor(String[].class);
