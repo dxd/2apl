@@ -47,7 +47,7 @@ public class Position implements TimeEntry {
 	
 	public Position(String[] params) {
 		this.agent = params[0];
-		if (params[1] != null && params[1] != "null")
+		if (params[1] != null)
 			this.cell = new Cell(Integer.getInteger(params[1]), Integer.getInteger(params[2]));
 	}
 	

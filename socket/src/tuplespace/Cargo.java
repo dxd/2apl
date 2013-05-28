@@ -39,6 +39,7 @@ public class Cargo implements TimeEntry {
 	public Cargo(String[] params) {
 		
 	}
+	
 	@Override
 	public int[] toArray(DistributedOOPL oopl) {
 		//JL = new JiniLib();

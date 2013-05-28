@@ -26,7 +26,7 @@ public class Prohibition implements TimeEntry {
 		this.time = new Date();
 	}
 	
-	public Prohibition(String agent2) {
+	public Prohibition(String agent) {
 		this.agent = agent;
 	}
 
