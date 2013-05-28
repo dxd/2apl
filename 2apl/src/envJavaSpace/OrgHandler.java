@@ -32,19 +32,19 @@ public class OrgHandler extends UnicastRemoteObject implements RemoteEventListen
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type[0].equals("reading")) {
+            else if (type[0].equals("reading")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type[0].equals("points")) {
+            else if (type[0].equals("points")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type[0].equals("cargo")) {
+            else if (type[0].equals("cargo")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
-            if (type[0].equals("coin")) {
+            else if (type[0].equals("coin")) {
             	//System.out.println("org position notification");
             	spaceTest.notifyOrg();
             }
