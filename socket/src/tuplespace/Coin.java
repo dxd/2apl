@@ -43,7 +43,8 @@ public Coin(Cell cell, String agent, Integer clock) {
 	}
 	
     public Coin(String[] params) {
-		
+		if (params[2] != null)
+			this.agent = params[2];
 	}
     
 	public int[] toArray(DistributedOOPL oopl) {
