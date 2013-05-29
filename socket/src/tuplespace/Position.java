@@ -99,9 +99,6 @@ public class Position implements TimeEntry {
 		this.cell = cell;
 	}
 
-	public Date getTime() {
-		return time;
-	}
 
 	public void setTime(Date time) {
 		this.time = time;
@@ -119,6 +116,10 @@ public class Position implements TimeEntry {
 	public void setTime() {
 		this.time = new Date();
 		
+	}
+	@Override
+	public Date getTime() {
+		return this.time;
 	}
 }
 

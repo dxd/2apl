@@ -74,8 +74,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
-			ll = new LookupLocator("jini://10.154.219.251");
+			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
+			//ll = new LookupLocator("jini://10.154.219.251");
 			//ll = new LookupLocator("jini://192.168.0.5"); 
 		} catch (MalformedURLException e) { 
 			
@@ -264,9 +264,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 					ea.intResult = ar_true;
 				else
 					ea.intResult = ar_false;*/
-				Entry a = createEntry(call);
+				TimeEntry a = createEntry(call);
 				//System.out.println(a.toString());
-				Entry e = getLast(a);
+				TimeEntry e = getLast(a);
 				//System.out.println(e.toString());
 				ea.intResult = entryToArray(e);
 			} catch (Exception e) {e.printStackTrace();}
@@ -291,7 +291,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				if(lease <= 0) lease = Lease.FOREVER;
 				
 				TimeEntry e = createEntry(call);
-				e.setTime();
+				if (e.getTime() == null)
+					e.setTime();
+				System.out.println("Organization writes: "+e.toString());
 				space.write(e, null, lease);
 				//System.out.println(e+"  "+lease+"   "+Lease.FOREVER);
 				ea.intResult = ar_true;
@@ -310,7 +312,11 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 6, call.length));
 			//System.out.println("Sending event to "+recipient+": "+event);
 			try {
-				space.write(createEntry(recipient, event), null, Lease.FOREVER);
+				TimeEntry e = createEntry(recipient, event);
+				if (e.getTime() == null)
+					e.setTime();
+				System.out.println("Organization notifies agent (write): "+e.toString());
+				space.write(e, null, Lease.FOREVER);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -605,7 +611,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	}
 	
 	
-	//////////////////////// 2APL AND JAVASPACE
+	//////////////////////// 2APL/2OPL from APLFunction to TimeEntry AND JAVASPACE
 
 	/**
 	 * Convert a Prolog predicate to a suitable JavaSpace datatype.
@@ -652,7 +658,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			Integer clock = null; // if health is null (which is ident) it stays also in java null
 			if(call.getParams().get(1) instanceof APLNum) clock = ((APLNum)call.getParams().get(1)).toInt(); // The health meter
 			String agent = null; // if health is null (which is ident) it stays also in java null
-			if(call.getParams().get(1) instanceof APLIdent) agent = ((APLIdent)call.getParams().get(1)).toString(); // The health meter
+			if(call.getParams().get(2) instanceof APLIdent) agent = ((APLIdent)call.getParams().get(2)).toString(); // The health meter
 			
 			return new Coin(c,agent,clock); // Create Tuple
 		}
@@ -946,8 +952,10 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		try{
 			long leaseVal = lease.toInt();
 			if(leaseVal < 0) leaseVal = Lease.FOREVER; 
-			TimeEntry e = (TimeEntry) createEntry(sAgent,call);
-			e.setTime();
+			TimeEntry e = createEntry(sAgent,call);
+			if (e.getTime() == null)
+				e.setTime();
+			System.out.println("Agent writes: "+e.toString());
 			space.write(e, null, leaseVal);
 			//oopl.handleEvent(ar_state_change, false); // check the norms
 			return new APLIdent("true");
@@ -966,7 +974,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * ENVIRONMENT OVERRIDES
 	 */
 	public synchronized void addAgent(String sAgent) {
-		//System.out.println("register " + sAgent);
+		System.out.println("register " + sAgent);
 		register(sAgent);
 	}
 	
@@ -978,19 +986,19 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			space.notify(new Prohibition(agent), null,
 			        handler,
 			        3000000,
-			        new MarshalledObject(new String("prohibition")));
+			        new MarshalledObject<Object>(new String("prohibition")));
 			space.notify(new Obligation(agent), null,
 			        handler,
 			        3000000,
-			        new MarshalledObject(new String("obligation")));
+			        new MarshalledObject<Object>(new String("obligation")));
 			space.notify(new Points(agent), null,
 			        handler,
 			        3000000,
-			        new MarshalledObject(new String("points")));
+			        new MarshalledObject<Object>(new String("points")));
 			space.notify(new Reading(agent), null,
 			        handler,
 			        3000000,
-			        new MarshalledObject(new String("reading")));
+			        new MarshalledObject<Object>(new String("reading")));
 
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -1058,7 +1066,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	}*/
 
 	
-	private Entry getLast(Entry a) {
+	private TimeEntry getLast(TimeEntry a) {
 		TimeEntry entry;
 		try {
 			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
@@ -1098,13 +1106,13 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			  public int compare(TimeEntry t1, TimeEntry t2) {
 				  //TimeEntry t3 = (TimeEntry) t1;
 				 //TimeEntry t4 = (TimeEntry) t2;
-				if (t1.time != null && t1.time != null)  
-					return t1.time.compareTo(t2.time);
-				return 1;
+				//if (t1.time != null && t1.time != null)  
+					return t1.getTime().compareTo(t2.getTime());
+				//return 1;
 			  }
 			  
 			});
-		return result.get(0);
+		return result.get(result.size()-1);
 
 		}
 		else if (result.size() == 1) {
@@ -1115,8 +1123,10 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		
 	}
 
-	public void notifyAgent(String agent, Entry o) {
+	public void notifyAgent(String agent, TimeEntry o) {
 		Term t = entryToTerm(o);
+		if (t.toString() == "null")
+			return;
 		throwEvent((APLFunction) t, new String[]{agent});
 		System.out.println(t.toString());
 	}
@@ -1126,33 +1136,32 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		oopl.handleEvent(ar_state_change, false);
 	}
 	
-    private void registerOrg() {
+    private void registerOrg() throws RemoteException {
 		
-		OrgHandler handler;
+		OrgHandler handler = new OrgHandler(this);
 		try {
 			for (int i=0; i<agents.length;i++) {
-				handler = new OrgHandler(this);
-				space.notify(new Position(), null,
+				space.notify(new Position(agents[i]), null,
 						handler,
 						3000000,
 						new MarshalledObject(new String[]{"position",agents[i]}));
-				space.notify(new Coin(), null,
+				space.notify(new Coin(agents[i]), null,
 						handler,
 						3000000,
 						new MarshalledObject(new String[]{"coin",agents[i]}));
-				space.notify(new Cargo(), null,
-						handler,
-						3000000,
-						new MarshalledObject(new String[]{"cargo",agents[i]}));
-				space.notify(new Reading(), null,
+				space.notify(new Reading(agents[i]), null,
 						handler,
 						3000000,
 						new MarshalledObject(new String[]{"reading",agents[i]}));
-				space.notify(new Points(), null,
+				space.notify(new Points(agents[i]), null,
 						handler,
 						3000000,
 						new MarshalledObject(new String[]{"points",agents[i]}));
 			}
+			space.notify(new Cargo(), null,
+					handler,
+					3000000,
+					new MarshalledObject(new String[]{"cargo"}));
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1182,7 +1191,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
     	Coin c1 = new Coin(10, new Cell(15,15), "a1", 1);
     	Coin c2 = new Coin(20, new Cell(1,15), "a2", 1);
     	Coin c3 = new Coin(30, new Cell(15,1), "a3", 1);
-    	
+    	Time t1 = new Time(0);
+    	Prohibition px = new Prohibition("t1","[at(5, 5, t1)]", "[reduce_300(t1)]",0);
     	try {
 			space.write(cargo, null, Lease.FOREVER);
 			space.write(p1, null, Lease.FOREVER);
@@ -1196,6 +1206,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			space.write(c1, null, Lease.FOREVER);
 			space.write(c2, null, Lease.FOREVER);
 			space.write(c3, null, Lease.FOREVER);
+			space.write(t1, null, Lease.FOREVER);
+			space.write(px, null, Lease.FOREVER);
 			
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block

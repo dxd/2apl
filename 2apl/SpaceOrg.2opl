@@ -141,7 +141,7 @@ norm(
 norm(
     collect_coin(Thing),
     Thing, // the subject agent
-    ( agent(Thing), coin(X,Y,Thing), clock(Now), Deadline is Now + 10 ), // precondition
+    ( agent(Thing), coin(X,Y,Z,Thing), clock(Now), Deadline is Now + 10 ), // precondition
     obligation([reading(X,Y,A,Thing,B)],Deadline,[reduce_400(Thing)]) // obligation format
     ).
 

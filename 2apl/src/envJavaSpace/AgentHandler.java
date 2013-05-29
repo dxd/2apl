@@ -18,6 +18,10 @@ import net.jini.space.JavaSpace;
 
 public class AgentHandler extends UnicastRemoteObject implements RemoteEventListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	SpaceTest spaceTest;
 	String agent;
 	
@@ -34,7 +38,7 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
 	}
 
 	public void notify(RemoteEvent anEvent) {
-
+		System.out.println("Got event for "+agent);
         try {
         	String type = anEvent.getRegistrationObject().get().toString();
             //System.out.println("Got event: " + anEvent.getSource() + ", " +
@@ -43,31 +47,31 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             //                   anEvent.getRegistrationObject().get());
             
             if (type.equals("reading")) {
-            	//System.out.println("agent position notification");
+            	System.out.println("agent position notification");
             	Reading temp = new Reading(agent);
             	Reading r = (Reading) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, r);
             }
             else if (type.equals("obligation")) {
-            	//System.out.println("agent obligation notification");
+            	System.out.println("agent obligation notification");
             	Obligation temp = new Obligation(agent);
             	Obligation o = (Obligation) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, o);
             }
             else if (type.equals("prohibition")) {
-            	//System.out.println("agent prohibition notification");
+            	System.out.println("agent prohibition notification");
             	Prohibition temp = new Prohibition(agent);
             	Prohibition p = (Prohibition) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, p);
             }
             else if (type.equals("points")) {
-            	//System.out.println("agent prohibition notification");
+            	System.out.println("agent prohibition notification");
             	Points temp = new Points(agent);
             	Points p = (Points) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, p);
             }
         } catch (Exception anE) {
-           // System.out.println("Got event but couldn't display it");
+           System.out.println("Got event for agent but couldn't display it");
             anE.printStackTrace(System.out);
         }
     }

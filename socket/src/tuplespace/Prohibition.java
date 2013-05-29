@@ -47,4 +47,8 @@ public class Prohibition implements TimeEntry {
 		this.time = new Date();
 		
 	}
+	@Override
+	public Date getTime() {
+		return this.time;
+	}
 }

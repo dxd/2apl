@@ -356,13 +356,13 @@ public class JSpace {
 			  public int compare(TimeEntry t1, TimeEntry t2) {
 				  //TimeEntry t3 = (TimeEntry) t1;
 				 //TimeEntry t4 = (TimeEntry) t2;
-				if (t1.time != null && t1.time != null)  
-					return t1.time.compareTo(t2.time);
-				return 1;
+				//if (t1.time != null && t1.time != null)  
+					return t1.getTime().compareTo(t2.getTime());
+				//return 1;
 			  }
 			  
 			});
-		return result.get(0);
+		return result.get(result.size()-1);
 
 		}
 		else if (result.size() == 1) {
