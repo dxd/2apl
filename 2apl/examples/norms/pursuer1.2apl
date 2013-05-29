@@ -30,16 +30,22 @@ at(X,Y) <- true | {
 
 makeReading <- position(X,Y) | {
 
-   reading(X,Y); 
+   readingP(X,Y); 
     dropgoal(makeReading)
     
 } : 1
 
+reading(X,Y) <- true | {
 
+   moveTo(X,Y); 
+   readingP(X,Y);
+   dropgoal(reading(X,Y))
+    
+} : 1
 
 PC-rules:
 
-reading(X,Y) <- true | {
+readingP(X,Y) <- true | {
     @space(readingRequest(position(X,Y)),V);
     //@space(reading(position(X,Y)),V);
     B(V=[actionresult(Value)]);

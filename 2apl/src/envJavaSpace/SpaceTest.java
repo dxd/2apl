@@ -852,7 +852,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		Term yt = numOrVar(y);
 		Term zt = numOrVar(z);
 		Term wt = numOrVar(w);
-		Term posTerm = new APLFunction("investigate", new Term[]{xt,yt,zt, new APLIdent(agent), wt});return posTerm;
+		Term posTerm = new APLFunction("investigate", new Term[]{xt,yt,zt,wt});return posTerm;
 	}
 
 	private Term readingTerm(String s, String term, String agent) {
@@ -869,7 +869,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		Term yt = numOrVar(y);
 		Term zt = numOrVar(z);
 		Term wt = numOrVar(w);
-		Term posTerm = new APLFunction("reading", new Term[]{xt,yt,zt, new APLIdent(agent), wt});
+		Term posTerm = new APLFunction("reading", new Term[]{xt,yt,zt,wt});
 		return posTerm;
 	}
 
@@ -1128,11 +1128,11 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		if (t.toString() == "null")
 			return;
 		throwEvent((APLFunction) t, new String[]{agent});
-		System.out.println(t.toString());
+		System.out.println("Event sent to agent      "+t.toString());
 	}
 
 	public void notifyOrg() {
-		System.out.println("org notified ");
+		//System.out.println("org notified ");
 		oopl.handleEvent(ar_state_change, false);
 	}
 	

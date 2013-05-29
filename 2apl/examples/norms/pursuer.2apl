@@ -16,22 +16,30 @@ Beliefs:
 Goals:
   //randomize :: 200 >> 1,
   at(10,10) :: 200 >> 7, 
-  makeReading :: 300 >> 5
+  reading(5,5) :: 300 >> 5
  
 
 PG-rules:
 
 at(X,Y) <- true | {
 
-   [moveTo(X,Y); 
-    dropgoal(at(X,Y))]
+   moveTo(X,Y);
+    dropgoal(at(X,Y))
+    
+} : 1
+
+reading(X,Y) <- true | {
+
+   moveTo(X,Y); 
+   readingP(X,Y);
+   dropgoal(reading(X,Y))
     
 } : 1
 
 makeReading <- position(X,Y) | {
 
-   [reading(X,Y); 
-    dropgoal(makeReading)]
+   readingP(X,Y); 
+   dropgoal(makeReading)
     
 } : 1
 
@@ -39,7 +47,7 @@ makeReading <- position(X,Y) | {
 
 PC-rules:
 
-reading(X,Y) <- true | {
+readingP(X,Y) <- true | {
     @space(readingRequest(position(X,Y)),V);
     //@space(reading(position(X,Y)),V);
     B(V=[actionresult(Value)]);

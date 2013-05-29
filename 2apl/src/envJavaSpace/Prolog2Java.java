@@ -27,14 +27,14 @@ public class Prolog2Java {
 	public TimeEntry parseTerm(int[] call,APAPLTermConverter converter, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
 		int type = call[4];
 		//converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
-		System.out.println("!!!!! from org !!!!!!");
+		//System.out.println("!!!!! from org !!!!!!");
 		
 		String tuple = oopl.prolog.strStorage.getString(call[4]);
 		//System.out.println(tuple);
 		int l = call.length;
 
 		APLFunction event = (APLFunction)converter.get2APLTerm(Arrays.copyOfRange(call, 3, call.length));
-		System.out.println(event.toString());
+		//System.out.println(event.toString());
 		
 		Object[] params = new String[5];
 		
