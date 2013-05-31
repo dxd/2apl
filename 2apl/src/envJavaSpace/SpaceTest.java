@@ -766,29 +766,30 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			String term;
 			int t = o.obligation.indexOf("(");
 			term = o.obligation.substring(1, t).trim();
-			if (term.startsWith("at"))
-			{
-				int i = o.obligation.indexOf(",");
-				int j = o.obligation.indexOf(",", i+1);
-				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
-				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
-			}
-			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
-				posTerm = coinTerm(o.obligation, term, o.agent);
-			}
-			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
-				posTerm = cargoTerm(o.obligation, term, o.agent);
-			}
-			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
-				posTerm = readingTerm(o.obligation, term, o.agent);
-			}
-			else if (term.startsWith("makeReading")) { //[reading(X1,Y1,Value,Thing,Time)]
-				posTerm = makeReadingTerm(o.obligation, term, o.agent);
-			}
-			else if (term.startsWith("investigate")) {
-				posTerm = investigateTerm(o.obligation, term, o.agent);
-			}
+			posTerm = constructTerm(o.obligation,term,name);
+//			if (term.startsWith("at"))
+//			{
+//				int i = o.obligation.indexOf(",");
+//				int j = o.obligation.indexOf(",", i+1);
+//				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
+//				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
+//				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
+//			}
+//			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
+//				posTerm = coinTerm(o.obligation, term, o.agent);
+//			}
+//			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
+//				posTerm = cargoTerm(o.obligation, term, o.agent);
+//			}
+//			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
+//				posTerm = readingTerm(o.obligation, term, o.agent);
+//			}
+//			else if (term.startsWith("makeReading")) { //[reading(X1,Y1,Value,Thing,Time)]
+//				posTerm = makeReadingTerm(o.obligation, term, o.agent);
+//			}
+//			else if (term.startsWith("investigate")) {
+//				posTerm = investigateTerm(o.obligation, term, o.agent);
+//			}
 			
 			if(o.deadline!=null){
 				posTerm1 = new APLNum(o.deadline);
@@ -798,7 +799,6 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				posTerm2 = new APLFunction(o.sanction.substring(1,i), new Term[]{new APLIdent(name)});
 			}
 			return new APLFunction("obligation", new Term[]{posTerm,posTerm1,posTerm2});
-			// TODO: other datatypes
 		}
 		else if(entry instanceof Prohibition){ // in case of tuples return tuple(name,position(2,4),48)
 			Prohibition o = (Prohibition) entry;   // cast to tuple
@@ -810,29 +810,30 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			String term;
 			int t = o.prohibition.indexOf("(");
 			term = o.prohibition.substring(1, t).trim();
-			if (term.startsWith("at"))
-			{
-				int i = o.prohibition.indexOf(",");
-				int j = o.prohibition.indexOf(",", i+1);
-				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
-				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
-				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
-			}
-			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
-				posTerm = coinTerm(o.prohibition, term, o.agent);
-			}
-			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
-				posTerm = cargoTerm(o.prohibition, term, o.agent);
-			}
-			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
-				posTerm = readingTerm(o.prohibition, term, o.agent);
-			}
-			else if (term.startsWith("makeReading")) { //[reading(X1,Y1,Value,Thing,Time)]
-				posTerm = makeReadingTerm(o.prohibition, term, o.agent);
-			}
-			else if (term.startsWith("investigate")) {
-				posTerm = investigateTerm(o.prohibition, term, o.agent);
-			}
+			posTerm = constructTerm(o.prohibition,term,name);
+//			if (term.startsWith("at"))
+//			{
+//				int i = o.prohibition.indexOf(",");
+//				int j = o.prohibition.indexOf(",", i+1);
+//				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
+//				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
+//				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
+//			}
+//			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
+//				posTerm = coinTerm(o.prohibition, term, o.agent);
+//			}
+//			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
+//				posTerm = cargoTerm(o.prohibition, term, o.agent);
+//			}
+//			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
+//				posTerm = readingTerm(o.prohibition, term, o.agent);
+//			}
+//			else if (term.startsWith("makeReading")) { //[reading(X1,Y1,Value,Thing,Time)]
+//				posTerm = makeReadingTerm(o.prohibition, term, o.agent);
+//			}
+//			else if (term.startsWith("investigate")) {
+//				posTerm = investigateTerm(o.prohibition, term, o.agent);
+//			}
 			
 
 			if(o.sanction!=null){
@@ -840,116 +841,131 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				posTerm2 = new APLFunction(o.sanction.substring(1,i), new Term[]{new APLIdent(name)});
 			}
 			return new APLFunction("prohibition", new Term[]{posTerm,posTerm2});
-			// TODO: other datatypes
 		}
 		return new APLIdent("null");
 	}
-
-	private Term investigateTerm(String s, String term, String agent) {
-		int i = s.indexOf(",");
-		int j = s.indexOf(",", i+1);
-		int k = s.indexOf(",", j+1);
-		int l = s.indexOf(",", k+1);
-		int m = s.indexOf(")", l+1);
-		String x = s.substring(term.length() + 2, i).trim();
-		String y = s.substring(i+1, j).trim();
-		String z = s.substring(j+1, k).trim();
-		String w = s.substring(k+1, m).trim();
-		Term xt = numOrVar(x);
-		Term yt = numOrVar(y);
-		Term zt = numOrVar(z);
-		Term wt = numOrVar(w);
-		Term posTerm = new APLFunction("investigate", new Term[]{xt,yt,zt,wt});return posTerm;
-	}
-
-	private Term readingTerm(String s, String term, String agent) {
-		//[reading(A,B,C,NewTime)]
-		int i = s.indexOf(",");
-		int j = s.indexOf(",", i+1);
-		int k = s.indexOf(",", j+1);
-		int l = s.indexOf(",", k+1);
-		int m = s.indexOf(")", l+1);
-		String x = s.substring(term.length() + 2, i).trim();
-		String y = s.substring(i+1, j).trim();
-		String z = s.substring(j+1, k).trim();
-		String w = s.substring(k+1, m).trim();
-		Term xt = numOrVar(x);
-		Term yt = numOrVar(y);
-		Term zt = numOrVar(z);
-		Term wt = numOrVar(w);
-		Term posTerm = new APLFunction("reading", new Term[]{xt,yt,zt,wt});
-		return posTerm;
-	}
 	
-	private Term makeReadingTerm(String s, String term, String agent) {
-		//[reading(A,B)]
-/*		int i = s.indexOf(",");
-		int m = s.indexOf(")", i+1);
-		String x = s.substring(term.length() + 2, i).trim();
-		String y = s.substring(i+1, m).trim();
-		APLNum xt = num(x);
-		APLNum yt = num(y);*/
+	private Term constructTerm(String s, String term, String agent) {
+		Term[] t = new Term[10];
+		int i = s.indexOf(",");
+		int index = 0;
+		if (i == -1) {
+			return new APLFunction(term);
+		}
+		else {
+			String x = s.substring(term.length() + 2, i).trim();
+			t[index] = numOrIdent(x);
+			index++;
+		}
+		while (s.indexOf(",", i+1) > 0) {
+			int j = s.indexOf(",", i+1);
+			String y = s.substring(i+1, j).trim();
+			t[index] = numOrIdent(y);
+			i=j;
+			index++;
+		}
+		int j = s.indexOf(")");
+		String y = s.substring(i+1, j).trim();
+		t[index] = numOrIdent(y);
+		Term posTerm = new APLFunction(term, t);
+		return posTerm;
 		
-		int i = s.indexOf(",");
-		int j = s.indexOf(")", i+1);
-		int x = Integer.parseInt(s.substring(term.length() + 2, i).trim());
-		int y = Integer.parseInt(s.substring(i+1, j).trim());
-		Term posTerm = new APLFunction("makeReading", new Term[]{new APLNum(x), new APLNum(y)});
-		return posTerm;
 	}
 
-	private Term cargoTerm(String s, String term, String agent) {
-		int i = s.indexOf(",");
-		int j = s.indexOf(",", i+1);
-		int k = s.indexOf(")", j+1);
-		String x = s.substring(term.length() + 2, i).trim();
-		String y = s.substring(i+1, j).trim();
-		String z = s.substring(j+1, k).trim();
-		Term xt = numOrVar(x);
-		Term yt = numOrVar(y);
-		Term zt = numOrVar(z);
-		Term posTerm = new APLFunction("cargo", new Term[]{xt,yt,zt, new APLIdent(agent)});
-		return posTerm;
-	}
+//	private Term investigateTerm(String s, String term, String agent) {
+//		int i = s.indexOf(",");
+//		int j = s.indexOf(",", i+1);
+//		int k = s.indexOf(",", j+1);
+//		int l = s.indexOf(",", k+1);
+//		int m = s.indexOf(")", l+1);
+//		String x = s.substring(term.length() + 2, i).trim();
+//		String y = s.substring(i+1, j).trim();
+//		String z = s.substring(j+1, k).trim();
+//		String w = s.substring(k+1, m).trim();
+//		Term xt = numOrVar(x);
+//		Term yt = numOrVar(y);
+//		Term zt = numOrVar(z);
+//		Term wt = numOrVar(w);
+//		Term posTerm = new APLFunction("investigate", new Term[]{xt,yt,zt,wt});return posTerm;
+//	}
+//
+//	private Term readingTerm(String s, String term, String agent) {
+//		//[reading(A,B,C,NewTime)]
+//		int i = s.indexOf(",");
+//		int j = s.indexOf(",", i+1);
+//		int k = s.indexOf(",", j+1);
+//		int l = s.indexOf(",", k+1);
+//		int m = s.indexOf(")", l+1);
+//		String x = s.substring(term.length() + 2, i).trim();
+//		String y = s.substring(i+1, j).trim();
+//		String z = s.substring(j+1, k).trim();
+//		String w = s.substring(k+1, m).trim();
+//		Term xt = numOrVar(x);
+//		Term yt = numOrVar(y);
+//		Term zt = numOrVar(z);
+//		Term wt = numOrVar(w);
+//		Term posTerm = new APLFunction("reading", new Term[]{xt,yt,zt,wt});
+//		return posTerm;
+//	}
+//	
+//	private Term makeReadingTerm(String s, String term, String agent) {
+//		//[reading(A,B)]
+///*		int i = s.indexOf(",");
+//		int m = s.indexOf(")", i+1);
+//		String x = s.substring(term.length() + 2, i).trim();
+//		String y = s.substring(i+1, m).trim();
+//		APLNum xt = num(x);
+//		APLNum yt = num(y);*/
+//		
+//		int i = s.indexOf(",");
+//		int j = s.indexOf(")", i+1);
+//		int x = Integer.parseInt(s.substring(term.length() + 2, i).trim());
+//		int y = Integer.parseInt(s.substring(i+1, j).trim());
+//		Term posTerm = new APLFunction("makeReading", new Term[]{new APLNum(x), new APLNum(y)});
+//		return posTerm;
+//	}
+//
+//	private Term cargoTerm(String s, String term, String agent) {
+//		int i = s.indexOf(",");
+//		int j = s.indexOf(",", i+1);
+//		int k = s.indexOf(")", j+1);
+//		String x = s.substring(term.length() + 2, i).trim();
+//		String y = s.substring(i+1, j).trim();
+//		String z = s.substring(j+1, k).trim();
+//		Term xt = numOrVar(x);
+//		Term yt = numOrVar(y);
+//		Term zt = numOrVar(z);
+//		Term posTerm = new APLFunction("cargo", new Term[]{xt,yt,zt, new APLIdent(agent)});
+//		return posTerm;
+//	}
+//
+//	private Term coinTerm(String s, String term, String name) {
+//		int i = s.indexOf(",");
+//		int j = s.indexOf(",", i+1);
+//		int k = s.indexOf(",", j+1);
+//		String x = s.substring(term.length() + 2, i).trim();
+//		String y = s.substring(i+1, j).trim();
+//		String z = s.substring(j+1, k).trim();
+//		Term xt = numOrVar(x);
+//		Term yt = numOrVar(y);
+//		Term zt = numOrVar(z);
+//		Term posTerm = new APLFunction("coin", new Term[]{xt,yt,zt, new APLIdent(name)});
+//		return posTerm;
+//	}
 
-	private Term coinTerm(String s, String term, String name) {
-		int i = s.indexOf(",");
-		int j = s.indexOf(",", i+1);
-		int k = s.indexOf(",", j+1);
-		String x = s.substring(term.length() + 2, i).trim();
-		String y = s.substring(i+1, j).trim();
-		String z = s.substring(j+1, k).trim();
-		Term xt = numOrVar(x);
-		Term yt = numOrVar(y);
-		Term zt = numOrVar(z);
-		Term posTerm = new APLFunction("coin", new Term[]{xt,yt,zt, new APLIdent(name)});
-		return posTerm;
-	}
-
-	private Term numOrVar(String x) {
+	private Term numOrIdent(String x) {
 		Term xt;
 		Integer ix = Integer.getInteger(x);
 		if (ix != null) {
 			xt = new APLNum(ix);
 		}
 		else {
-			xt = new APLVar(x);
+			xt = new APLIdent(x);
 		}
 		return xt;
 	}
 
-	private APLNum num(String x) {
-		APLNum xt;
-		Integer ix = Integer.getInteger(x);
-		if (ix != null) {
-			xt = new APLNum(ix);
-		}
-		else {
-			return null;
-		}
-		return xt;
-	}
-	
+
 	//from agent program
 	public synchronized Term read(String sAgent, APLFunction call, APLNum timeOut){
 	
