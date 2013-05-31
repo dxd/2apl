@@ -24,7 +24,7 @@ public class Prolog2Java {
 	public int INT_TUPLE=0, INT_POINT=0, INT_NULL=0;
 	//public APAPLTermConverter converter;
 	
-	public TimeEntry parseTerm(int[] call,APAPLTermConverter converter, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
+	public synchronized TimeEntry parseTerm(int[] call,APAPLTermConverter converter, DistributedOOPL oopl) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
 		int type = call[4];
 		//converter = new APAPLTermConverter(oopl.prolog); // Make a term converter (relies on Prolog engine for string storage)
 		//System.out.println("!!!!! from org !!!!!!");

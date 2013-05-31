@@ -23,8 +23,8 @@ PG-rules:
 
 at(X,Y) <- true | {
 
-   moveTo(X,Y); 
-    dropgoal(at(X,Y))
+   [moveTo(X,Y); 
+    dropgoal(at(X,Y))]
     
 } : 1
 
@@ -43,6 +43,13 @@ reading(X,Y) <- true | {
     
 } : 1
 
+makeReading(X,Y) <- true | {
+
+    moveTo(X,Y);
+   readingP(X,Y); 
+   dropgoal(makeReading(X,Y))
+    
+} : 1
 
 PC-rules:
 

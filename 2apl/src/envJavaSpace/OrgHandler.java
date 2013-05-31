@@ -19,7 +19,7 @@ public class OrgHandler extends UnicastRemoteObject implements RemoteEventListen
 		
 	}
 
-	public void notify(RemoteEvent anEvent) {
+	public synchronized void notify(RemoteEvent anEvent) {
 
         try {
         	String[] type = (String[]) anEvent.getRegistrationObject().get();

@@ -1,12 +1,8 @@
 package envJavaSpace;
 
-import game.Synchronization;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import tuplespace.Cargo;
-import tuplespace.Coin;
 import tuplespace.Obligation;
 import tuplespace.Points;
 import tuplespace.Prohibition;
@@ -14,14 +10,13 @@ import tuplespace.Reading;
 
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
-import net.jini.space.JavaSpace;
 
 public class AgentHandler extends UnicastRemoteObject implements RemoteEventListener {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	//private static final long serialVersionUID = 1L;
 	SpaceTest spaceTest;
 	String agent;
 	
@@ -37,7 +32,7 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
 		
 	}
 
-	public void notify(RemoteEvent anEvent) {
+	public synchronized void notify(RemoteEvent anEvent) {
 		System.out.println("Got event for "+agent);
         try {
         	String type = anEvent.getRegistrationObject().get().toString();

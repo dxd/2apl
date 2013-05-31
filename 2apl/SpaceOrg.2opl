@@ -100,7 +100,7 @@ norm(
     make_false_reading(Thing),
     Thing, // the subject agent
     ( agent(Thing), at(X,Y,Thing), X1 \= X, Y1 \= Y, area(X1, Y1)), // precondition
-    prohibition([reading(X1,Y1,A,A1,B)],[reduce_500(Thing)]) // prohibition format
+    prohibition([reading(X1,Y1,A,B)],[reduce_500(Thing)]) // prohibition format
     ).
   
 norm(
@@ -114,7 +114,7 @@ norm(
     read_too_often(Thing),
     Thing, // the subject agent
     ( agent(Thing), reading(X,Y, Value,Thing,Time), NewTime is Time + 1), // precondition
-    prohibition([reading(A,B,C,Thing,NewTime)],[reduce_300(Thing)]) // prohibition format
+    prohibition([reading(A,B,C,NewTime)],[reduce_300(Thing)]) // prohibition format
     ). 
     
 //norm(
@@ -141,15 +141,15 @@ norm(
 norm(
     collect_coin(Thing),
     Thing, // the subject agent
-    ( agent(Thing), coin(X,Y,Z,Thing), clock(Now), Deadline is Now + 10 ), // precondition
-    obligation([reading(X,Y,A,Thing,B)],Deadline,[reduce_400(Thing)]) // obligation format
+    ( agent(Thing), coin(X,Y,A,B), clock(Now), Deadline is Now + 50 ), // precondition
+    obligation([makeReading(X,Y)],Deadline,[reduce_400(Thing)]) // obligation format
     ).
 
 norm(
     make_reading(Thing),
     Thing, // the subject agent
     ( agent(Thing), reading(X,Y, Value,Thing,Time), clock(Now), Deadline is Now + 10, time_since(NewTime) ), // precondition
-    obligation([reading(A,B,C,Thing,NewTime)],Deadline,[reduce_100(Thing)]) // obligation format
+    obligation([reading(A,B,C,NewTime)],Deadline,[reduce_100(Thing)]) // obligation format
     ).    
     
 //norm(
@@ -163,7 +163,7 @@ norm(
     false_publish(Thing),
     Thing, // the subject agent
     ( agent(Thing), reading(X,Y, Value,Thing,Time), clock(Now), Deadline is Now + 1 ), // precondition
-    obligation([reading(X,Y,Value,Thing,Time)],Deadline,[reduce_500(Thing)]) // obligation format
+    obligation([reading(X,Y,Value,Time)],Deadline,[reduce_500(Thing)]) // obligation format
     ).  
     
 agent(a1).
