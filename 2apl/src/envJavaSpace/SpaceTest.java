@@ -74,9 +74,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
+			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
 			//ll = new LookupLocator("jini://localhost"); 
-			//ll = new LookupLocator("jini://10.154.154.26");
+			ll = new LookupLocator("jini://10.154.154.26");
 			//ll = new LookupLocator("jini://192.168.0.5"); 
 		} catch (MalformedURLException e) { 
 			
@@ -193,6 +193,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//Thread t = new Thread(new ClockTicker(this));
 			//t.start(); 
 			//this.insertTestData();
+			this.clearJS();
 		} else { 
 			System.out.println("No Java Space found."); 
 		}
@@ -878,14 +879,34 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		} catch (TransactionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+    	
+    
+    	
     }
 
 
 
+    private void clearJS() throws UnusableEntryException, InterruptedException {
+    	TimeEntry entry;
+        //Entry temp = new Time();
+    	System.out.println("-------------------------last log tuples start--------------------------------");
+    	try {
+			ArrayList<TimeEntry> result = new ArrayList<TimeEntry>();
+			while ((entry = (TimeEntry) space.take(null, null, 200)) != null){
+				System.out.println(entry.toString());
+				result.add(entry);
+			}
+		System.out.println("-------------------------last log tuples end----------------------------------");
+		return;
+    	} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	
 }

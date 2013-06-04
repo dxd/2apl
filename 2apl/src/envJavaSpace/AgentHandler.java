@@ -33,7 +33,7 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
 	}
 
 	public synchronized void notify(RemoteEvent anEvent) {
-		//System.out.println("Got event for "+agent);
+		//System.out.println("agent notification "+agent+" number "+anEvent.getSequenceNumber());
         try {
         	String type = anEvent.getRegistrationObject().get().toString();
             //System.out.println("Got event: " + anEvent.getSource() + ", " +
@@ -42,25 +42,25 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             //                   anEvent.getRegistrationObject().get());
             
             if (type.equals("reading")) {
-            	System.out.println(agent+" agent position notification");
+            	System.out.println("agent position notification "+agent+" number "+anEvent.getSequenceNumber());
             	Reading temp = new Reading(agent);
             	Reading r = (Reading) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, r);
             }
             else if (type.equals("obligation")) {
-            	System.out.println(agent+" agent obligation notification");
+            	System.out.println("agent obligation notification "+agent+" number "+anEvent.getSequenceNumber());
             	Obligation temp = new Obligation(agent);
             	Obligation o = (Obligation) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, o);
             }
             else if (type.equals("prohibition")) {
-            	System.out.println(agent+" agent prohibition notification");
+            	System.out.println("agent prohibition notification "+agent+" number "+anEvent.getSequenceNumber());
             	Prohibition temp = new Prohibition(agent);
             	Prohibition p = (Prohibition) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, p);
             }
             else if (type.equals("points")) {
-            	System.out.println(agent+" agent prohibition notification");
+            	System.out.println("agent points notification "+agent+" number "+anEvent.getSequenceNumber());
             	Points temp = new Points(agent);
             	Points p = (Points) spaceTest.readTuple(temp);
             	spaceTest.notifyAgent(agent, p);

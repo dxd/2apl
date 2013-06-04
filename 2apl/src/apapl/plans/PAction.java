@@ -62,7 +62,7 @@ public class PAction extends ModulePlan
 			e.printStackTrace();
 		}
 		if (action.equals("adoptprohibition")) {
-			p.evaluate();
+			//p.evaluate();
 			prohibitions.add(p);
 			//System.out.println("PAction:   "+p);
 			parent.removeFirst();
