@@ -31,14 +31,8 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
 		timestamps = new HashMap<String,Date>();
     }
 
-	public AgentHandler(SpaceTest spaceTest) throws RemoteException{ 
-		
-		this.spaceTest = spaceTest;
-		
-	}
-
 	public synchronized void notify(RemoteEvent anEvent) {
-		System.out.println("agent notification "+agent+" number "+anEvent.getSequenceNumber());
+		//System.out.println("agent notification "+agent+" number "+anEvent.getSequenceNumber());
         try {
         	String type = anEvent.getRegistrationObject().get().toString();
         	timestamps.put(type, new Date());
