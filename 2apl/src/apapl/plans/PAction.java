@@ -53,12 +53,12 @@ public class PAction extends ModulePlan
 		int r = PlanResult.FAILED;
 		
 		Prohibitionbase prohibitions = updatedModule.getProhibitionbase();
-		try {
+		/*try {
 			p.unvar();
 		} catch (UnboundedVarException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		if (action.equals("adoptprohibition")) {
 			prohibitions.add(p);
 			parent.removeFirst();

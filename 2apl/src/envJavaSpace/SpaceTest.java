@@ -75,8 +75,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		LookupLocator ll = null; 
 		try { 
 			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
-			ll = new LookupLocator("jini://localhost"); 
-			//ll = new LookupLocator("jini://10.154.219.251");
+			//ll = new LookupLocator("jini://localhost"); 
+			ll = new LookupLocator("jini://10.154.154.26");
 			//ll = new LookupLocator("jini://192.168.0.5"); 
 		} catch (MalformedURLException e) { 
 			
@@ -347,84 +347,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		return p2j.parseTerm(call, converter, oopl);
 		
 		
-	/*	
-		int type = call[4];
-		System.out.println("!!!!!!!!!!!!!!!!");
-		String tuple = oopl.prolog.strStorage.getString(call[4]);
-		System.out.println(call.toString());
-		if (tuple.startsWith("position")) {
-			//System.out.println("org reads position");
-			String name = null;
-			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
-			Cell c = null;
-			if(call[10]!=INT_NULL) c = new Cell(get_number(call,13),get_number(call,16)); 
-			//c = new Cell(3,3); 
-			//System.out.println(c.toString());
-
-			return new Position(name,c);
-		}
-		else if (tuple.startsWith("cargo")) {
-			//System.out.println("org reads cargo");
-			return new Cargo();
-		}
-		else if (tuple.startsWith("coin")) {
-			//System.out.println("org reads coin");
-			int l = call.length;
-		
-			return new Coin();
-		}
-		else if (tuple.startsWith("reading")) {
-			//System.out.println("org reads reading");
-			
-			return new Reading();
-		}
-		else if (tuple.startsWith("investigate")) {
-			//System.out.println("org reads investigate");
-		
-			return new Investigate();
-		}
-		else if(tuple == ""){
-			
-		}
-		
-/*		for (int i = 0;  i<call.length; i++){
-			
-			String recipient = oopl.prolog.strStorage.getString(call[i]);
-			System.out.println("create entry test "+ i + recipient);
-		}
-		else if(type == INT_TUPLE){ // I have to make this more accessable 
-			String name = null;
-			if(call[7]!=INT_NULL) name = oopl.prolog.strStorage.getString(call[7]);
-			Point p = null;
-
-			if(call[10]!=INT_NULL) p = new Point(get_number(call,13),get_number(call,16)); 
-
-			Integer i = null;
-			int c = oopl.prolog.harvester.scanElement(call, 9, false, false);
-			if(call[c+1]!=INT_NULL) i = get_number(call,c+1);
-			return new Tuple(name,p,i);
-		}
-
-		return null;*/
 	}
 	
-	/*
-	public Entry fromProlog(String s) {
-		
-		String delims = "[(),]+";
-		String[] tokens = s.split(delims);
-		System.out.println("create entry test " + tokens.toString());
-		return null;
-		
-	}
-	
-	public String fromJava(Entry e) {
-		
-		
-		return null;
-		
-	}
-	*/
 
 	/*
 	 * Convert an entry to an array. Can also be done by calling the prolog compiler and give
@@ -440,140 +364,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		else {
 			return ((TimeEntry) e).toArray(oopl);
 		}
-		/*
-		else if(e instanceof Tuple){
-			Tuple t = (Tuple)e;
-			int[] r = new int[t.point==null?12:18];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("tuple"),3); // tuple/3
-			addPredicate(r,3,makeStringKnown(t.str==null?"null":t.str),0); // the name
-			int c = 9;
-			if(t.point == null) addPredicate(r, 6, oopl.prolog.strStorage.getInt("null"), 0);
-			else {
-				addPredicate(r, 6, oopl.prolog.strStorage.getInt("point"), 2);
-				addNumber(r, 9, t.point.x);
-				addNumber(r, 12, t.point.y);
-				c = 15;
-			} 
-			addNumber(r, c,t.i);
-			return r;
-		}
-		
-		
-		else if(e instanceof Position){
-			Position t = (Position)e;
-			int[] r = new int[t.cell==null?12:18];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("position"),2); // tuple/3
-			addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
-			int c = 9;
-			if(t.cell == null) addPredicate(r, 6, oopl.prolog.strStorage.getInt("null"), 0);
-			else {
-				addPredicate(r, 6, oopl.prolog.strStorage.getInt("cell"), 2);
-				addNumber(r, 9, t.cell.x);
-				addNumber(r, 12, t.cell.y);
-				c = 15;
-			} 
-			//System.out.println("to array: " + r.toString());
-			//addNumber(r, c,t.i);
-			return r;
-		}
-		else if(e instanceof Cargo){
-			Cargo t = (Cargo)e;
-			int[] r = new int[15];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("cargo"),2); // cargo/2
 	
-			
-				addPredicate(r, 3, oopl.prolog.strStorage.getInt("cell"), 2);
-				addNumber(r, 6, t.cell.x);
-				addNumber(r, 9, t.cell.y);
-				
-			addNumber(r,12,t.clock);
-			//addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
-			//for (int i = 0;  i<r.length; i++){
-			//	System.out.println("to array: " + oopl.prolog.strStorage.getString(r[i]));
-				
-			//}
-			
-			//addNumber(r, c,t.i);
-			return r;
-		}
-		else if(e instanceof Coin){
-			Coin t = (Coin)e;
-			int[] r = new int[18];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("coin"),3); // cargo/2
-	
-			
-				addPredicate(r, 3, oopl.prolog.strStorage.getInt("cell"), 2);
-				addNumber(r, 6, t.cell.x);
-				addNumber(r, 9, t.cell.y);
-				
-			addNumber(r,12,t.clock);
-			addPredicate(r,15, makeStringKnown(t.agent),0);
-			//addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
-			//for (int i = 0;  i<r.length; i++){
-			//	System.out.println("to array: " + oopl.prolog.strStorage.getString(r[i]));
-				
-			//}
-			
-			//addNumber(r, c,t.i);
-			return r;
-		}
-		else if(e instanceof Reading){
-			Reading t = (Reading)e;
-			int[] r = new int[21];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("reading"),4); // cargo/2
-	
-			
-			addPredicate(r, 3, oopl.prolog.strStorage.getInt("cell"), 2);
-			addNumber(r, 6, t.cell.x);
-			addNumber(r, 9, t.cell.y);
-			addNumber(r, 12, t.value.intValue());
-			addPredicate(r,15, makeStringKnown(t.agent),0);
-			addNumber(r,18,t.clock);
-			//addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
-			//for (int i = 0;  i<r.length; i++){
-			//	System.out.println("to array: " + oopl.prolog.strStorage.getString(r[i]));
-				
-			//}
-			
-			//addNumber(r, c,t.i);
-			return r;
-		}
-		else if(e instanceof Investigate){
-			Investigate t = (Investigate)e;
-			int[] r = new int[21];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("investigate"),4); // cargo/2
-	
-			
-			addPredicate(r, 3, oopl.prolog.strStorage.getInt("cell"), 2);
-			addNumber(r, 6, t.cell.x);
-			addNumber(r, 9, t.cell.y);
-			addNumber(r, 12, t.value.intValue());
-			addPredicate(r,15, makeStringKnown(t.agent),0);
-			addNumber(r,18,t.clock);
-			//addPredicate(r,3,makeStringKnown(t.agent==null?"null":t.agent),0); // the name
-			//for (int i = 0;  i<r.length; i++){
-			//	System.out.println("to array: " + oopl.prolog.strStorage.getString(r[i]));
-				
-			//}
-			
-			//addNumber(r, c,t.i);
-			return r;
-		
-		}
-		else if(e instanceof Points){
-			Points t = (Points)e;
-			int[] r = new int[12];
-			addPredicate(r,0,oopl.prolog.strStorage.getInt("points"),4); // points/2
-			
-			addPredicate(r,3,makeStringKnown(t.agent),0); // the name
-			addNumber(r,6,t.clock);
-			addNumber(r, 9, t.value);
-
-			return r;
-		}
-		
-		return null;
-		*/
 	}
 	/*
 	 * Gets the int value of a number out of an integer array.
@@ -726,17 +517,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			//System.out.println(o.toString());
 			return o; // Create Tuple
 		} 
-		/*else if(call.getName().equals(TYPE_OBJECT)){ // Prolog format: object(truck,position(30,20))
-			String name = ((APLIdent)call.getParams().get(0)).getName();
-			Point p = null;
-			if(call.getParams().get(1) instanceof APLFunction){ // null is APLIdent so 
-				APLFunction point = (APLFunction) call.getParams().get(1); // Get the point coordinations TODO: type check the arguments
-				int pointX = ((APLNum)point.getParams().get(0)).toInt(); // Get the position
-				int pointY = ((APLNum)point.getParams().get(1)).toInt();
-				p = new Point(pointX,pointY);
-			}
-			return new Tuple(name,p,null); // Create Tuple
-		}  */
+
 		return null;
 	}
 	
@@ -767,29 +548,6 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			int t = o.obligation.indexOf("(");
 			term = o.obligation.substring(1, t).trim();
 			posTerm = constructTerm(o.obligation,term,name);
-//			if (term.startsWith("at"))
-//			{
-//				int i = o.obligation.indexOf(",");
-//				int j = o.obligation.indexOf(",", i+1);
-//				int x = Integer.parseInt(o.obligation.substring(term.length() + 2, i).trim());
-//				int y = Integer.parseInt(o.obligation.substring(i+1, j).trim());
-//				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
-//			}
-//			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
-//				posTerm = coinTerm(o.obligation, term, o.agent);
-//			}
-//			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
-//				posTerm = cargoTerm(o.obligation, term, o.agent);
-//			}
-//			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
-//				posTerm = readingTerm(o.obligation, term, o.agent);
-//			}
-//			else if (term.startsWith("makeReading")) { //[reading(X1,Y1,Value,Thing,Time)]
-//				posTerm = makeReadingTerm(o.obligation, term, o.agent);
-//			}
-//			else if (term.startsWith("investigate")) {
-//				posTerm = investigateTerm(o.obligation, term, o.agent);
-//			}
 			
 			if(o.deadline!=null){
 				posTerm1 = new APLNum(o.deadline);
@@ -811,30 +569,6 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			int t = o.prohibition.indexOf("(");
 			term = o.prohibition.substring(1, t).trim();
 			posTerm = constructTerm(o.prohibition,term,name);
-//			if (term.startsWith("at"))
-//			{
-//				int i = o.prohibition.indexOf(",");
-//				int j = o.prohibition.indexOf(",", i+1);
-//				int x = Integer.parseInt(o.prohibition.substring(term.length() + 2, i).trim());
-//				int y = Integer.parseInt(o.prohibition.substring(i+1, j).trim());
-//				posTerm = new APLFunction("at", new Term[]{new APLNum(x),new APLNum(y), new APLIdent(name)}); // get position
-//			}
-//			else if (term.startsWith("coin")) { //[coin(X,Y,NewTime,A1)]
-//				posTerm = coinTerm(o.prohibition, term, o.agent);
-//			}
-//			else if (term.startsWith("cargo")) { //[cargo(X,Y,NewTime)]
-//				posTerm = cargoTerm(o.prohibition, term, o.agent);
-//			}
-//			else if (term.startsWith("reading")) { //[reading(X1,Y1,Value,Thing,Time)]
-//				posTerm = readingTerm(o.prohibition, term, o.agent);
-//			}
-//			else if (term.startsWith("makeReading")) { //[reading(X1,Y1,Value,Thing,Time)]
-//				posTerm = makeReadingTerm(o.prohibition, term, o.agent);
-//			}
-//			else if (term.startsWith("investigate")) {
-//				posTerm = investigateTerm(o.prohibition, term, o.agent);
-//			}
-			
 
 			if(o.sanction!=null){
 				int i = o.sanction.indexOf("(");
@@ -872,86 +606,6 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		
 	}
 
-//	private Term investigateTerm(String s, String term, String agent) {
-//		int i = s.indexOf(",");
-//		int j = s.indexOf(",", i+1);
-//		int k = s.indexOf(",", j+1);
-//		int l = s.indexOf(",", k+1);
-//		int m = s.indexOf(")", l+1);
-//		String x = s.substring(term.length() + 2, i).trim();
-//		String y = s.substring(i+1, j).trim();
-//		String z = s.substring(j+1, k).trim();
-//		String w = s.substring(k+1, m).trim();
-//		Term xt = numOrVar(x);
-//		Term yt = numOrVar(y);
-//		Term zt = numOrVar(z);
-//		Term wt = numOrVar(w);
-//		Term posTerm = new APLFunction("investigate", new Term[]{xt,yt,zt,wt});return posTerm;
-//	}
-//
-//	private Term readingTerm(String s, String term, String agent) {
-//		//[reading(A,B,C,NewTime)]
-//		int i = s.indexOf(",");
-//		int j = s.indexOf(",", i+1);
-//		int k = s.indexOf(",", j+1);
-//		int l = s.indexOf(",", k+1);
-//		int m = s.indexOf(")", l+1);
-//		String x = s.substring(term.length() + 2, i).trim();
-//		String y = s.substring(i+1, j).trim();
-//		String z = s.substring(j+1, k).trim();
-//		String w = s.substring(k+1, m).trim();
-//		Term xt = numOrVar(x);
-//		Term yt = numOrVar(y);
-//		Term zt = numOrVar(z);
-//		Term wt = numOrVar(w);
-//		Term posTerm = new APLFunction("reading", new Term[]{xt,yt,zt,wt});
-//		return posTerm;
-//	}
-//	
-//	private Term makeReadingTerm(String s, String term, String agent) {
-//		//[reading(A,B)]
-///*		int i = s.indexOf(",");
-//		int m = s.indexOf(")", i+1);
-//		String x = s.substring(term.length() + 2, i).trim();
-//		String y = s.substring(i+1, m).trim();
-//		APLNum xt = num(x);
-//		APLNum yt = num(y);*/
-//		
-//		int i = s.indexOf(",");
-//		int j = s.indexOf(")", i+1);
-//		int x = Integer.parseInt(s.substring(term.length() + 2, i).trim());
-//		int y = Integer.parseInt(s.substring(i+1, j).trim());
-//		Term posTerm = new APLFunction("makeReading", new Term[]{new APLNum(x), new APLNum(y)});
-//		return posTerm;
-//	}
-//
-//	private Term cargoTerm(String s, String term, String agent) {
-//		int i = s.indexOf(",");
-//		int j = s.indexOf(",", i+1);
-//		int k = s.indexOf(")", j+1);
-//		String x = s.substring(term.length() + 2, i).trim();
-//		String y = s.substring(i+1, j).trim();
-//		String z = s.substring(j+1, k).trim();
-//		Term xt = numOrVar(x);
-//		Term yt = numOrVar(y);
-//		Term zt = numOrVar(z);
-//		Term posTerm = new APLFunction("cargo", new Term[]{xt,yt,zt, new APLIdent(agent)});
-//		return posTerm;
-//	}
-//
-//	private Term coinTerm(String s, String term, String name) {
-//		int i = s.indexOf(",");
-//		int j = s.indexOf(",", i+1);
-//		int k = s.indexOf(",", j+1);
-//		String x = s.substring(term.length() + 2, i).trim();
-//		String y = s.substring(i+1, j).trim();
-//		String z = s.substring(j+1, k).trim();
-//		Term xt = numOrVar(x);
-//		Term yt = numOrVar(y);
-//		Term zt = numOrVar(z);
-//		Term posTerm = new APLFunction("coin", new Term[]{xt,yt,zt, new APLIdent(name)});
-//		return posTerm;
-//	}
 
 	private Term numOrIdent(String x) {
 		Term xt;
@@ -1073,51 +727,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		return t;
 	}
 	
-	/*public Obligation readObligation(String agent) {
-		Obligation obligation = new Obligation(agent);
-		ArrayList<TimeEntry> obligations = new ArrayList<TimeEntry>();
-		getAll(obligation, obligations);
-		if (obligations.size() > 0)
-			return (Obligation) obligations.get(0);
-		return null;
-	}
 	
-	public Prohibition readProhibition(String agent) {
-		Prohibition prohibition = new Prohibition(agent);
-		ArrayList<TimeEntry> prohibitions = new ArrayList<TimeEntry>();
-		getAll(prohibition, prohibitions);
-		if (prohibitions.size() > 0)
-			return (Prohibition) prohibitions.get(0);
-		return null;
-	}
-
-	public Coin readCoin(String agent) {
-		Coin coin = new Coin(agent);
-		ArrayList<TimeEntry> coins = new ArrayList<TimeEntry>();
-		getAll(coin, coins);
-		if (coins.size() > 0)
-			return (Coin) coins.get(0);
-		return null;
-	}
-	
-	public Reading readReading(String agent) {
-		Reading reading = new Reading(agent);
-		ArrayList<TimeEntry> readings = new ArrayList<TimeEntry>();
-		getAll(reading, readings);
-		if (readings.size() > 0)
-			return (Reading) readings.get(0);
-		return null;
-	}
-	
-	public Points readPoints(String agent) {
-		Points point = new Points(agent);
-		ArrayList<TimeEntry> points = new ArrayList<TimeEntry>();
-		getAll(point, points);
-		if (points.size() > 0)
-			return (Points) points.get(0);
-		return null;
-	}*/
-
 	
 	private synchronized TimeEntry getLast(TimeEntry a) {
 		TimeEntry entry;

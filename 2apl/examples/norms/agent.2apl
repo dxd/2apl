@@ -267,6 +267,7 @@ adoptObligation(makeReading(X,Y), D, reduce_500(_)) <- true | {
     adopta(makeReading(X,Y) : D -> reduce_500)
 }
 
+
 aprohibition(investigate(X,Y,_,_,_), reduce_100(_)) <- true | {
     adoptprohibition(investigate(X,Y) -> reduce_100)
 }
