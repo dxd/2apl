@@ -86,7 +86,7 @@ public class Prolog2Java {
 		Class<?> clazz = Class.forName("tuplespace."+ output);
 		Constructor<?> ctor = clazz.getConstructor(Object[].class);
 		Object object = ctor.newInstance(new Object[] { params });
-		System.out.println(object.toString());
+		//System.out.println(object.toString());
 		return (TimeEntry) object;
 		
 		

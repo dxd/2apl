@@ -12,6 +12,7 @@ import apapl.program.Prohibitionbase;
 import apapl.data.Goal;
 import apapl.plans.Plan;
 import apapl.SubstList;
+
 import java.util.ArrayList;
 
 /**
@@ -28,10 +29,11 @@ public class PAction extends ModulePlan
 		this.moduleId = moduleId;
 		this.p = p;
 		this.action = action.toLowerCase().trim();
+		//System.out.println("PAction created:   "+p);
 	}
 	
 	
-	public PlanResult execute(APLModule module)
+	public synchronized PlanResult execute(APLModule module)
 	{
 		APLModule updatedModule;
 		//System.out.println(action);
@@ -53,14 +55,16 @@ public class PAction extends ModulePlan
 		int r = PlanResult.FAILED;
 		
 		Prohibitionbase prohibitions = updatedModule.getProhibitionbase();
-		/*try {
+		try {
 			p.unvar();
 		} catch (UnboundedVarException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		if (action.equals("adoptprohibition")) {
+			p.evaluate();
 			prohibitions.add(p);
+			//System.out.println("PAction:   "+p);
 			parent.removeFirst();
 			module.assignPriorities();
 			r = PlanResult.SUCCEEDED;
@@ -108,6 +112,11 @@ public class PAction extends ModulePlan
 	public Prohibition getProhibition()
 	{
 		return p;
+	}
+	
+	public void setProhibition(Prohibition p)
+	{
+		this.p = p;
 	}
 
 

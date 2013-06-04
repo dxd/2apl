@@ -74,9 +74,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
+			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
 			//ll = new LookupLocator("jini://localhost"); 
-			ll = new LookupLocator("jini://10.154.154.26");
+			//ll = new LookupLocator("jini://10.154.154.26");
 			//ll = new LookupLocator("jini://192.168.0.5"); 
 		} catch (MalformedURLException e) { 
 			
@@ -413,8 +413,8 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 */
 	public synchronized TimeEntry createEntry(String sAgent, APLFunction call){ 
 		
-		System.out.print("from/for agent " + sAgent + "  ");
-		System.out.println(call.toString());
+		//System.out.print("from/for agent " + sAgent + "  ");
+		//System.out.println(call.toString());
 		if(call.getName().equals(TYPE_STATUS)){ // Prolog format: status(position(1,4),30) 
 			Cell c = null;
 			if(call.getParams().get(0) instanceof APLFunction){ // null is APLIdent  
@@ -484,7 +484,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			
 		
 			if(call.getParams().get(0) instanceof Term){ // null is APLIdent  
-				//APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations TODO: type check the arguments
+				//APLFunction point = (APLFunction) call.getParams().get(0); // Get the point coordinations 
 				String s1 = call.getParams().get(0).toString();// Get the position
 				String s2 = call.getParams().get(1).toString();
 				p = new Prohibition(sAgent, s1, s2, clock);
@@ -662,7 +662,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 			TimeEntry e = createEntry(sAgent,call);
 			if (e.getTime() == null)
 				e.setTime();
-			System.out.println("Agent writes: "+e.toString());
+			//System.out.println("Agent writes: "+e.toString());
 			space.write(e, null, leaseVal);
 			//oopl.handleEvent(ar_state_change, false); // check the norms
 			return new APLIdent("true");

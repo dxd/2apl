@@ -232,7 +232,8 @@ public class Goal implements Iterable<Literal>
 		Goal copy = new Goal();
 		for (Literal l : goal) copy.addLiteral(l.clone());
 		copy.deadline = deadline;
-		copy.sanction = sanction;
+		if (sanction != null)
+			copy.sanction = sanction.clone();
 		copy.priority = priority;
 		copy.varDeadline = varDeadline;
 		

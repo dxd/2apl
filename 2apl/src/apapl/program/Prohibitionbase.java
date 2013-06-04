@@ -14,10 +14,13 @@ import apapl.data.Literal;
 import apapl.data.Term;
 import apapl.plans.PlanSeq;
 import apapl.Prolog;
+
 import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+
 import apapl.SubstList;
+
 import java.util.Enumeration;
 import java.util.Collections;
 import java.util.Iterator;
@@ -57,6 +60,7 @@ public class Prohibitionbase extends Base implements Iterable<Prohibition>{
 	public void add(Prohibition s)
 	{
 		sb.add(s);
+		//System.out.println("Prohibitionbase added:   "+s);
 	}
 	/**
 	 * Converts this object to a <code>String</code> representation.

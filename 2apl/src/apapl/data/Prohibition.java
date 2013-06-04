@@ -117,8 +117,8 @@ public class Prohibition {
 	public Prohibition clone()
 	{
 		Prohibition copy = new Prohibition();
-		copy.prohibition = this.prohibition;
-		copy.sanction = this.sanction;
+		copy.prohibition = this.prohibition.clone();
+		copy.sanction = this.sanction.clone();
 		copy.priority = this.priority;
 		return copy;
 	}
@@ -149,6 +149,10 @@ public class Prohibition {
 	public Literal getProhibition() {
 
 		return prohibition;
+	}
+	public void evaluate()
+	{
+		prohibition.evaluate();
 	}
 
 }

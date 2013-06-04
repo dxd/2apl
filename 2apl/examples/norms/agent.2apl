@@ -72,19 +72,19 @@ adoptObligation(at(X,Y,_), D, reduce_500(_)) <- true | {
     adopta(at(X,Y) : D -> reduce_500)
 }	
 
-aprohibition(coin(X,Y,_,A), reduce_100(_)) <- true | {
+aprohibition(coin(X,Y,A), reduce_100(_)) <- true | {
     adoptprohibition(coin(X,Y,A) -> reduce_100)
 }
-aprohibition(coin(X,Y,_,A), reduce_200(_)) <- true | {
+aprohibition(coin(X,Y,A), reduce_200(_)) <- true | {
     adoptprohibition(coin(X,Y,A) -> reduce_200)
 }
-aprohibition(coin(X,Y,_,A), reduce_300(_)) <- true | {
+aprohibition(coin(X,Y,A), reduce_300(_)) <- true | {
     adoptprohibition(coin(X,Y,A) -> reduce_300)
 }
-aprohibition(coin(X,Y,_,A), reduce_400(_)) <- true | {
+aprohibition(coin(X,Y,A), reduce_400(_)) <- true | {
     adoptprohibition(coin(X,Y,A) -> reduce_400)
 }
-aprohibition(coin(X,Y,_,A), reduce_500(_)) <- true | {
+aprohibition(coin(X,Y,A), reduce_500(_)) <- true | {
     adoptprohibition(coin(X,Y,A) -> reduce_500)
 }
 

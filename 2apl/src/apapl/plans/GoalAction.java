@@ -10,6 +10,7 @@ import apapl.program.Beliefbase;
 import apapl.data.Goal;
 import apapl.plans.Plan;
 import apapl.SubstList;
+
 import java.util.ArrayList;
 
 /**
@@ -26,6 +27,7 @@ public class GoalAction extends ModulePlan
 		this.moduleId = moduleId;
 		this.g = g;
 		this.action = action.toLowerCase().trim();
+		//System.out.println("GoalAction created:   "+g);
 	}
 	
 	private boolean testGoal(Beliefbase bb)
@@ -57,12 +59,13 @@ public class GoalAction extends ModulePlan
 		int r = PlanResult.FAILED;
 		if (action.startsWith("adopt")) {
 			try {
+				//System.out.println("obligation to be adopted: "+g);
 				g.unvar();
 				if(testGoal(module.getBeliefbase())) r = PlanResult.FAILED;
 				else {
 					if (action.equals("adopta")) goals.assertGoalHead(g);
 					else if (action.equals("adoptz")) goals.assertGoal(g);
-						parent.removeFirst();
+					parent.removeFirst();
 					module.assignPriorities();
 					r = PlanResult.SUCCEEDED;
 				}

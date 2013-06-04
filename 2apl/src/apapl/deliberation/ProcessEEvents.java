@@ -26,7 +26,7 @@ public class ProcessEEvents implements DeliberationStep
 		APLFunction e = null;
 
 		// Obtain necessary module bases and module name
-	  Beliefbase beliefs = module.getBeliefbase();
+	    Beliefbase beliefs = module.getBeliefbase();
 		Planbase plans = module.getPlanbase();
 		PCrulebase pcrules = module.getPCrulebase();
 		String name = module.getLocalName();
@@ -47,6 +47,7 @@ public class ProcessEEvents implements DeliberationStep
   	 	{ result.addProcessed( e, rule, theta );
 				PlanSeq p = rule.getBody().clone();
   			p.applySubstitution(theta);
+  		    System.out.println("Event processed "+p);
   			plans.addPlan(p);
   		}
 			else
