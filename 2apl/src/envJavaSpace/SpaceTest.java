@@ -723,13 +723,59 @@ public class SpaceTest  extends Environment implements ExternalTool{
                 30000, new DebugListener());*/
 	}
 	
-	public synchronized TimeEntry readTuple(TimeEntry te) {
-		TimeEntry t = (TimeEntry) getLast(te);
+	public synchronized ArrayList<TimeEntry> readTuple(TimeEntry te, Date date) {
+		ArrayList<TimeEntry> t = (ArrayList<TimeEntry>) getAllFromDate(te, date);
 		return t;
 	}
 	
 	
 	
+	private ArrayList<TimeEntry> getAllFromDate(TimeEntry te, Date date) {
+		TimeEntry entry;
+		try {
+			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
+			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
+			Transaction txn = trans.transaction;
+			try {
+				ArrayList<TimeEntry> result = new ArrayList<TimeEntry>();
+				while ((entry = (TimeEntry) space.take(te, txn, 200)) != null){
+					//System.out.println(entry.toString());
+					result.add(entry);
+				}
+				ArrayList<TimeEntry> e = getFromDate(result,date);
+				//System.out.println(result.toString());
+				txn.abort();
+				//leaseRenewalManager.cancel(trans.lease);
+				return e;
+			} catch (UnusableEntryException e) {
+				e.printStackTrace();
+			} catch (TransactionException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} 
+			
+		} catch (LeaseDeniedException e1) {
+			e1.printStackTrace();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+		return null;
+	}
+
+	private ArrayList<TimeEntry> getFromDate(ArrayList<TimeEntry> result,
+			Date date) {
+		if (result.size() > 0) {
+			for (TimeEntry te : result) {
+				if (te.getTime().after(date))
+					result.remove(te);
+			}
+			return result;
+		}
+
+		return null;
+	}
+
 	private synchronized TimeEntry getLast(TimeEntry a) {
 		TimeEntry entry;
 		try {
@@ -787,12 +833,14 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		
 	}
 
-	public synchronized void notifyAgent(String agent, TimeEntry o) {
-		Term t = entryToTerm(o);
-		if (t.toString() == "null")
-			return;
-		throwEvent((APLFunction) t, new String[]{agent});
-		System.out.println("Event sent to agent      "+agent+ " " +t.toString());
+	public synchronized void notifyAgent(String agent, ArrayList<TimeEntry> r) {
+		for (TimeEntry te : r) {
+			Term t = entryToTerm(te);
+			if (t.toString() == "null")
+				return;
+			throwEvent((APLFunction) t, new String[]{agent});
+			System.out.println("Event sent to agent      "+agent+ " " +t.toString());
+		}
 	}
 
 	public void notifyOrg() {
