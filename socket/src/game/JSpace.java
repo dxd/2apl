@@ -11,17 +11,15 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 
 import com.javadocmd.simplelatlng.LatLng;
 
 import dataJSon.Status;
-
 import tuplespace.Cell;
 import tuplespace.Position;
 import tuplespace.Time;
 import tuplespace.TimeEntry;
-
-
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
 import net.jini.core.entry.UnusableEntryException;
@@ -151,94 +149,58 @@ public class JSpace {
 		return space == null;
 	}
 
-	/*public Update readAll(Update update, int clock) {
-		
-		ArrayList<Position> positions = readLocations(clock);
-		ArrayList<Points> points = readPoints(clock);
-		ArrayList<Coin> coins = readRequests(clock);
-		ArrayList<Cargo> cargos = readCargos(clock);
-		ArrayList<ActionRequest> ar = readReadingRequests(clock);
-		
-		update.Positions(positions);
-		update.Points(points);
-		update.Cargos(cargos);
-		update.Coins(coins);
-		update.ActionRequests(ar);
-		return update;
-	}*/
+	public ArrayList<TimeEntry> readUpdate(TimeEntry entry, Date date) {
 	
-
-	public TimeEntry readUpdate(TimeEntry entry) {
-	
-		Position p1 = (Position) getLatest(entry);
-		return p1;
+		ArrayList<TimeEntry> t = (ArrayList<TimeEntry>) getAllFromDate(entry, date);
+		return t;
 	}
 	
-	
-/*	public ArrayList<Position> readLocations(Integer clock) {
-		ArrayList<Position> positions = new ArrayList<Position>();
-		for (String a : agents)
-		{
-			Position position = new Position(a);
-			ArrayList<TimeEntry> p = new ArrayList<TimeEntry>();
-			Position p1 = (Position) getLatest(position);
-			positions.add((Position)p1);
+
+	private ArrayList<TimeEntry> getAllFromDate(TimeEntry te, Date date) {
+		TimeEntry entry;
+		try {
+			Transaction.Created trans = TransactionFactory.create(transManager, Lease.FOREVER);
+			//leaseRenewalManager.renewUntil(trans.lease, Lease.FOREVER, null);
+			Transaction txn = trans.transaction;
+			try {
+				ArrayList<TimeEntry> result = new ArrayList<TimeEntry>();
+				while ((entry = (TimeEntry) space.take(te, txn, 200)) != null){
+					//System.out.println(entry.toString());
+					result.add(entry);
+				}
+				ArrayList<TimeEntry> e = getFromDate(result,date);
+				//System.out.println(result.toString());
+				txn.abort();
+				//leaseRenewalManager.cancel(trans.lease);
+				return e;
+			} catch (UnusableEntryException e) {
+				e.printStackTrace();
+			} catch (TransactionException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} 
+			
+		} catch (LeaseDeniedException e1) {
+			e1.printStackTrace();
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
 		}
-		return positions;
-	}
-	
-	public ArrayList<Cargo> readCargos(Integer clock) {
-		Cargo cargo = new Cargo(clock);
-		ArrayList<Cargo> cargos = new ArrayList<Cargo>();
-		getLatest(cargo, cargos);
-		return cargos;
+		return null;
 	}
 
-	public ArrayList<Coin> readRequests(Integer clock) {
-		
-		ArrayList<Coin> coins = new ArrayList<Coin>();
-		for (String a : agents)
-		{
-			Coin coin = new Coin(a);
-			ArrayList<Coin> p = new ArrayList<Coin>();
-			getLatest(coin, p);
-			coins.addAll(p);
+	private ArrayList<TimeEntry> getFromDate(ArrayList<TimeEntry> result,
+			Date date) {
+		if (result.size() > 0) {
+			for (TimeEntry te : result) {
+				if (te.getTime().after(date))
+					result.remove(te);
+			}
+			return result;
 		}
-		
-		return coins;
+
+		return null;
 	}
-
-	public ArrayList<Points> readPoints(Integer clock) {
-
-		ArrayList<Points> points = new ArrayList<Points>();
-		for (String a : agents)
-		{
-			Points point = new Points(a);
-			ArrayList<Points> p = new ArrayList<Points>();
-			getLatest(point, p);
-			points.addAll(p);
-		}
-		return points;
-	}
-
-	public ArrayList<ActionRequest> readReadingRequests(Integer clock) {
-		
-		
-		
-		ArrayList<ActionRequest> ar = new ArrayList<ActionRequest>();
-		for (String a : agents)
-		{
-			ActionRequest t = new ActionRequest(a);
-			ArrayList<ActionRequest> p = new ArrayList<ActionRequest>();
-			getLatest(t, p);
-			ar.addAll(p);
-		}
-		
-		return ar;
-		
-	}*/
-
-
 	private TimeEntry getLatest(Entry template) {
 
 		TimeEntry entry;
@@ -275,58 +237,6 @@ public class JSpace {
 		return t;
 	}
 
-	
-
-
-	/*public void writeAll(int clock, Status status) {
-		
-		writeTime(clock);
-		writeReadings(clock, status);
-		writeRequests(clock, status);
-		writeCargos(clock, status);
-		writeLocations(clock, status);
-	}
-
-	private void writeCargos(int clock, Status status) {
-		for (dataJSon.Cargo c : status.getCargos())
-		{
-			Cell cell = Game.locationToGrid(new LatLng(c.getLatitude(), c.getLongitude()));
-			tuplespace.Cargo cargo = new tuplespace.Cargo(c.getId(), cell, clock);
-			write(cargo);
-		}
-	}
-
-	private void writeLocations(int clock, Status status) {
-		for (dataJSon.Location l : status.getLocations())
-		{
-			Cell cell = Game.locationToGrid(new LatLng(l.getLatitude(), l.getLongitude()));
-			tuplespace.Position position = new tuplespace.Position(l.getPlayer_id(),status.getPlayerName(l.getPlayer_id()), cell, clock);
-			write(position);
-		}
-		
-	}
-
-	private void writeRequests(int clock, Status status) {
-		for (dataJSon.Request r : status.getRequests())
-		{
-			Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
-			tuplespace.Coin coin = new tuplespace.Coin(r.getId(), cell,"a1" , clock); //TODO agent is hardcoded
-			write(coin);
-		}
-		
-	}
-
-	private void writeReadings(int clock, Status status) {
-		
-		for (dataJSon.Reading r : status.getReadings())
-		{
-			Cell cell = Game.locationToGrid(new LatLng(r.getLatitude(), r.getLongitude()));
-			//System.out.println(cell.toString());
-			tuplespace.Reading reading = new tuplespace.Reading(r.getId(),status.getPlayerName(r.getPlayer_id()), cell, clock, r.getValue());
-			write(reading);
-		}
-		
-	}*/
 
 	private void write(Entry data)
 	{

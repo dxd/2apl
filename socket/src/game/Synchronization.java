@@ -31,6 +31,7 @@ import tuplespace.Coin;
 import tuplespace.NotificationHandler;
 import tuplespace.Points;
 import tuplespace.Position;
+import tuplespace.TimeEntry;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -137,43 +138,7 @@ public class Synchronization {
 		}
 	}
 	
-	public void postLocation(int id, LatLng loc) {
-
-		Generic gen = new Generic();
-		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
-		params.add(new SimpleEntry<String, Object>("id", id));
-		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
-		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
-		
-		String url = "/game/" + gameId + "/postLocation";
-		try {
-			String data = buildPostData(params);
-			PostRequest(url, data, gen);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
-	}
-	public ReadingResponse getReading(int id, LatLng loc) {
-
-		ReadingResponse result = new ReadingResponse();
-		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
-		params.add(new SimpleEntry<String, Object>("id", id));
-		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
-		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
-		
-		String url = "/game/" + gameId + "/getReading";
-		try {
-			String data = buildPostData(params);
-			PostRequest(url, data, result);
-			return result;
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		return null;
 	
-}
-    	
 	public void getStatus() {
     	//get
     	try {
@@ -202,29 +167,15 @@ public class Synchronization {
     		initialize();
     	}
     	jspace.writeTime(clock);
-		//jspace.readAll(update, clock-1);
-		
-		//push();
-		//jspace.writeAll(clock, status);
 		
 	}
-/*	private void push() {
-		postLocations();
-		postPoints();
-		postCargos();
-		postRequests();
-		getReadings();
-	}*/
-	
-	/*public void postRequests() {
-		if (update.getRequests() != null)
-		for (tuplespace.Coin r : update.getRequests())
-		{
-			LatLng latlng = Game.gridToLocation(r.getCell());
-			updateRequests(latlng);
+
+	public void postRequests(ArrayList<TimeEntry> r) {
+		for (TimeEntry p : r) {
+			postRequest((Coin) p);
 		}
-		
-	}*/
+	}
+	
 	public void postRequest(Coin coin) {
 		LatLng latlng = Game.gridToLocation(coin.getCell());
 		updateRequests(latlng);
@@ -245,19 +196,19 @@ public class Synchronization {
 		}
 		
 	}
+
+
+	public void postCargos(ArrayList<TimeEntry> r) {
+		for (TimeEntry p : r) {
+			postCargo((Cargo) p);
+		}
+	}
+	
 	public void postCargo(Cargo cargo) {
 		LatLng latlng = Game.gridToLocation(cargo.getCell());
 		dropCargos(latlng);
 	}
-	/*public void postCargos() {
-		if (update.getCargos()!= null)
-		for (tuplespace.Cargo c : update.getCargos())
-		{
-			LatLng latlng = Game.gridToLocation(c.getCell());
-			dropCargos(latlng);
-		}
-		
-	}*/
+
 	private void dropCargos(LatLng loc) {
 		Generic gen = new Generic();
 		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
@@ -274,16 +225,12 @@ public class Synchronization {
 		
 	}
 	
-	public void postPoint(Points a) {
-		updatePoints(a.id, a.value);
-	}
-	/*public void postPoints() {
-		if (update.Points() != null)
-		for (Points a : update.Points())
-		{
-			updatePoints(a.id, a.value);
+	public void postPoint(ArrayList<TimeEntry> r) {
+		for (TimeEntry p : r) {
+			updatePoints(((Points)p).id, ((Points)p).value);
 		}
-	}*/
+		
+	}
 	
 	private void updatePoints(int id, int points) {
 		Generic gen = new Generic();
@@ -301,6 +248,19 @@ public class Synchronization {
 		
 	}
 	
+	public void getReadings(ArrayList<TimeEntry> r) {
+		for (TimeEntry t : r)
+		{
+			ActionRequest ar = (ActionRequest)t;
+			if (ar.type == "reading") {
+				getReading(ar);
+			}
+			else if (ar.type == "investigation") {
+				getInvestigation(ar);
+			}
+		}
+	}
+
 	public void getReading(ActionRequest ar) {
 		LatLng latlng = Game.gridToLocation(ar.getCell());
 		ReadingResponse rr = getReading(ar.getId(), latlng);
@@ -308,21 +268,37 @@ public class Synchronization {
 		jspace.writeReading(new tuplespace.Reading(ar.agent, ar.cell,rr.getDistance()), Start.gs.getClock(), status);
 	}
 	
+	public ReadingResponse getReading(int id, LatLng loc) {
+
+		ReadingResponse result = new ReadingResponse();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("id", id));
+		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
+		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
+		
+		String url = "/game/" + gameId + "/getReading";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, result);
+			return result;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	
+	}
+	
 	public void getInvestigation(ActionRequest readUpdate) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-/*	public void getReadings() {
-		for (ActionRequest ar : update.getActionRead())
-		{
-			LatLng latlng = Game.gridToLocation(ar.getCell());
-			status.addReading(getReading(ar.getId(), latlng), latlng, ar.getId());
-			jspace.writeReading(status.getReadings().iterator().next(), Start.gs.getClock(), status);
+	public void postLocations(ArrayList<TimeEntry> r) {
+		for (TimeEntry p : r) {
+			postLocation((Position) p);
 		}
 		
-
-	}*/
+	}
 
 	public void postLocation(Position loc) {
 		LatLng latlng = Game.gridToLocation(loc.getCell());
@@ -330,16 +306,25 @@ public class Synchronization {
 		//System.out.println(loc.getId().toString()+ latlng.toString());
 	}
 	
-	/*public void postLocations() {
-		if (update.getPositions() != null)
-		for (Position loc : update.getPositions())
-		{
-			LatLng latlng = Game.gridToLocation(loc.getCell());
-			postLocation(loc.getId(), latlng);
-			System.out.println(loc.getId().toString()+ latlng.toString());
+	public void postLocation(int id, LatLng loc) {
+
+		Generic gen = new Generic();
+		ArrayList<SimpleEntry<String, Object>> params = new ArrayList<SimpleEntry<String, Object>>();
+		params.add(new SimpleEntry<String, Object>("id", id));
+		params.add(new SimpleEntry<String, Object>("latitude", loc.getLatitude()));
+		params.add(new SimpleEntry<String, Object>("longitude", loc.getLongitude()));
+		
+		String url = "/game/" + gameId + "/postLocation";
+		try {
+			String data = buildPostData(params);
+			PostRequest(url, data, gen);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 		
-	}*/
+	}
+	
+  
 	private void pull() {
 		getStatus();
 	}
@@ -401,6 +386,10 @@ public class Synchronization {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
 
 
 
