@@ -28,7 +28,7 @@ public class NotificationHandler extends UnicastRemoteObject implements RemoteEv
 
         try {
         	String[] type = (String[]) anEvent.getRegistrationObject().get();
-        	Pair pair = new Pair(type[0],type[1]);
+        	Pair<String, String> pair = new Pair<String, String>(type[0],type[1]);
         	timestamps.put(pair, new Date());
         	ArrayList<TimeEntry> r = new ArrayList<TimeEntry>();
            // System.out.println("Got event: " + anEvent.getSource() + ", " +
