@@ -52,7 +52,7 @@ public class OrgHandler extends UnicastRemoteObject implements RemoteEventListen
             
 
         } catch (Exception anE) {
-            System.out.println("Got event for org but couldn't display it");
+            System.out.println("Error while procession organizaiton notification");
             anE.printStackTrace(System.out);
         }
     }

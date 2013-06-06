@@ -74,9 +74,9 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		System.setSecurityManager(new RMISecurityManager());
 		LookupLocator ll = null; 
 		try { 
-			//ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
+			ll = new LookupLocator("jini://kafka.cs.nott.ac.uk"); 
 			//ll = new LookupLocator("jini://localhost"); 
-			ll = new LookupLocator("jini://10.154.154.26");
+			//ll = new LookupLocator("jini://10.154.154.26");
 			//ll = new LookupLocator("jini://192.168.0.5"); 
 		} catch (MalformedURLException e) { 
 			
@@ -202,7 +202,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	/*
 	 * Both used for increasing or just reading the clock. 
 	 */
-	public int updateClock(int amount){
+	public synchronized int updateClock(int amount){
 		//if(amount>0)  oopl.handleEvent(ar_state_change, false); // clock ticked so deadlines can be passed, handleEvent causes the interpreter to check the norms
 		Time t = new Time();
 		Entry e = getLast(t);
@@ -248,7 +248,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * ExternalActions ea is a part of the Prolog engine which reads returns ea.intResult after the
 	 * external call.
 	 */
-	public synchronized void handleCall(int[] call, ExternalActions ea, int returnType) {  
+	public void handleCall(int[] call, ExternalActions ea, int returnType) {  
 		/*
 		 * For JavaSpace calls: the integer array is first transformed to an Entry object, then passed
 		 * to the JavaSpaced using the appropriate method call, and then the result is converted back
@@ -287,7 +287,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 				ea.intResult = entryToArray(space.takeIfExists(createEntry(call), null, get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1)));
 			} catch (Exception e) {e.printStackTrace();}
 		} else if(call[1] == oopl.prolog.strStorage.getInt("write")){
-			System.out.println("write");
+			//System.out.println("write");
 			try {
 				long lease = get_number(call,oopl.prolog.harvester.scanElement(call, 3, false, false)+1);
 				if(lease <= 0) lease = Lease.FOREVER;
@@ -343,7 +343,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * Create an entry object form an integer array. Perhaps we want to replace this with
 	 * something like createEntry(oopl.prolog.toPrologString(call)).
 	 */
-	public synchronized TimeEntry createEntry(int[] call) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchMethodException{ // e.g.: read(tuple(name,point(2,4),20),0)
+	public TimeEntry createEntry(int[] call) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchMethodException{ // e.g.: read(tuple(name,point(2,4),20),0)
 		//System.out.println(oopl.prolog.arStr(call));
 		return p2j.parseTerm(call, converter, oopl);
 		
@@ -355,7 +355,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * Convert an entry to an array. Can also be done by calling the prolog compiler and give
 	 * it e.toPrologString() as an argument.
 	 */
-	public synchronized int[] entryToArray(Entry e){
+	public int[] entryToArray(Entry e){
 		if(e == null){
 			int[] r = new int[3];
 			addPredicate(r, 0, oopl.prolog.strStorage.getInt("null"), 0);
@@ -412,7 +412,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	 * @param call The predicate from the call.
 	 * @return The entry representation of the predicate.
 	 */
-	public synchronized TimeEntry createEntry(String sAgent, APLFunction call){ 
+	public TimeEntry createEntry(String sAgent, APLFunction call){ 
 		
 		//System.out.print("from/for agent " + sAgent + "  ");
 		//System.out.println(call.toString());
@@ -523,7 +523,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	}
 	
 	//agent use
-	public synchronized Term entryToTerm(Entry entry){ 
+	public Term entryToTerm(Entry entry){ 
 		
 		if(entry instanceof Points){ // in case of tuples return points(name,value,clock)
 			Points points = (Points) entry;   // cast to tuple
@@ -622,7 +622,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 
 
 	//from agent program
-	public synchronized Term read(String sAgent, APLFunction call, APLNum timeOut){
+	public Term read(String sAgent, APLFunction call, APLNum timeOut){
 	
 		try{ 
 			return entryToTerm(space.read(createEntry(sAgent,call), null, timeOut.toInt())); 
@@ -639,7 +639,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		return new APLIdent("true");
 	}
 	
-	public synchronized Term take(String sAgent, APLFunction call, APLNum timeOut){
+	public Term take(String sAgent, APLFunction call, APLNum timeOut){
 		try{ 
 			Term e =  entryToTerm(space.take(createEntry(sAgent,call), null, timeOut.toInt())); 
 			//oopl.handleEvent(ar_state_change, false); // check the norms
@@ -647,7 +647,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		} catch(Exception e){ e.printStackTrace(); return new APLIdent("null"); }
 	}
 	
-	public synchronized Term takeIfExists(String sAgent, APLFunction call, APLNum timeOut){
+	public Term takeIfExists(String sAgent, APLFunction call, APLNum timeOut){
 		try{ 
 			Term e =  entryToTerm(space.takeIfExists(createEntry(sAgent,call), null, timeOut.toInt())); 
 			//if(e!=null)oopl.handleEvent(ar_state_change, false); // check the norms
@@ -655,7 +655,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		} catch(Exception e){ e.printStackTrace(); return new APLIdent("null"); }
 	}
 	
-	public synchronized Term write(String sAgent, APLFunction call, APLNum lease){ 
+	public Term write(String sAgent, APLFunction call, APLNum lease){ 
 		//System.out.println("write " + sAgent);
 		try{
 			long leaseVal = lease.toInt();
@@ -681,12 +681,12 @@ public class SpaceTest  extends Environment implements ExternalTool{
 	/*
 	 * ENVIRONMENT OVERRIDES
 	 */
-	public synchronized void addAgent(String sAgent) {
+	public void addAgent(String sAgent) {
 		System.out.println("register " + sAgent);
 		register(sAgent);
 	}
 	
-	private synchronized void register(String agent) {
+	private void register(String agent) {
 		
 		AgentHandler handler;
 		try {
@@ -723,7 +723,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
                 30000, new DebugListener());*/
 	}
 	
-	public synchronized ArrayList<TimeEntry> readTuple(TimeEntry te, Date date) {
+	public ArrayList<TimeEntry> readTuple(TimeEntry te, Date date) {
 		ArrayList<TimeEntry> t = (ArrayList<TimeEntry>) getAllFromDate(te, date);
 		return t;
 	}
@@ -765,12 +765,13 @@ public class SpaceTest  extends Environment implements ExternalTool{
 
 	private ArrayList<TimeEntry> getFromDate(ArrayList<TimeEntry> result,
 			Date date) {
+		ArrayList<TimeEntry> results = new ArrayList<TimeEntry>();
 		if (result.size() > 0) {
 			for (TimeEntry te : result) {
-				if (te.getTime().after(date))
-					result.remove(te);
+				if (!te.getTime().after(date))
+					results.add(te);
 			}
-			return result;
+			return results;
 		}
 
 		return null;
@@ -808,7 +809,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		}
 		return null;
 	}
-	private synchronized TimeEntry getLatest(ArrayList<TimeEntry> result) {
+	private TimeEntry getLatest(ArrayList<TimeEntry> result) {
 		
 		if (result.size() > 1) {
 			//System.out.println("to be compared: "+result.toString());	
@@ -833,7 +834,7 @@ public class SpaceTest  extends Environment implements ExternalTool{
 		
 	}
 
-	public synchronized void notifyAgent(String agent, ArrayList<TimeEntry> r) {
+	public void notifyAgent(String agent, ArrayList<TimeEntry> r) {
 		for (TimeEntry te : r) {
 			Term t = entryToTerm(te);
 			if (t.toString() == "null")

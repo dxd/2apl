@@ -2,9 +2,11 @@ package envJavaSpace;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import tuplespace.Obligation;
 import tuplespace.Points;
@@ -22,20 +24,20 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
 	//private static final long serialVersionUID = 1L;
 	SpaceTest spaceTest;
 	String agent;
-	HashMap<String, Date> timestamps;
+	HashMap<String, Timestamp> timestamps;
 	
 	public AgentHandler(SpaceTest spaceTest, String agent) throws RemoteException {
 		
 		this.spaceTest = spaceTest;
 		this.agent = agent;
-		timestamps = new HashMap<String,Date>();
+		timestamps = new HashMap<String,Timestamp>();
     }
 
 	public synchronized void notify(RemoteEvent anEvent) {
 		//System.out.println("agent notification "+agent+" number "+anEvent.getSequenceNumber());
         try {
         	String type = anEvent.getRegistrationObject().get().toString();
-        	timestamps.put(type, new Date());
+        	timestamps.put(type, new Timestamp(new Date().getTime()));
         	ArrayList<TimeEntry> r = new ArrayList<TimeEntry>();
             //System.out.println("Got event: " + anEvent.getSource() + ", " +
             //                   anEvent.getID() + ", " +
@@ -68,7 +70,7 @@ public class AgentHandler extends UnicastRemoteObject implements RemoteEventList
             }
             spaceTest.notifyAgent(agent, r);
         } catch (Exception anE) {
-           System.out.println("Got event for agent but couldn't display it");
+           System.out.println("Error while processing notification");
             anE.printStackTrace(System.out);
         }
     }
