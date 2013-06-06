@@ -1,5 +1,6 @@
 package tuplespace;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import oopl.DistributedOOPL;
@@ -10,7 +11,7 @@ public class Position implements TimeEntry {
 	public Integer id = null;
 	public String agent = null;
 	public Cell cell = null;
-	public Date time = null;
+	public Timestamp time = null;
 	public Integer clock;
 	
 	public Position() {
@@ -19,25 +20,25 @@ public class Position implements TimeEntry {
 	public Position(Integer id, Cell cell) {
 		this.id = id;
 		this.cell = cell;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	public Position(String agent, Cell cell) {
 		this.agent = agent;
 		this.cell = cell;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	public Position(Integer id, String agent, Cell cell, int clock) {
 		this.id = id;
 		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	public Position(String agent, Cell cell, int clock) {
 		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 
 	public Position(String agent) {
@@ -100,7 +101,7 @@ public class Position implements TimeEntry {
 	}
 
 
-	public void setTime(Date time) {
+	public void setTime(Timestamp time) {
 		this.time = time;
 	}
 
@@ -114,11 +115,11 @@ public class Position implements TimeEntry {
 		
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 	@Override
-	public Date getTime() {
+	public Timestamp getTime() {
 		return this.time;
 	}
 }

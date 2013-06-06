@@ -1,5 +1,6 @@
 package tuplespace;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import oopl.DistributedOOPL;
@@ -8,14 +9,14 @@ import net.jini.core.entry.Entry;
 public class Time implements TimeEntry {
 
 	public Integer clock;
-	public Date time;
+	public Timestamp time;
 	
 	public Time() {
 
 	}
 	public Time(int clock) {
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	@Override
 	public String toString() {
@@ -28,11 +29,11 @@ public class Time implements TimeEntry {
 	}
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 	@Override
-	public Date getTime() {
+	public Timestamp getTime() {
 		return this.time;
 	}
 }

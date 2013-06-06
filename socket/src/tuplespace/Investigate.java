@@ -12,7 +12,7 @@ public class Investigate implements TimeEntry {
 	public Integer id;
 	public String agent;
 	public Cell cell;
-	public Date time;
+	public Timestamp time;
 	public Float value;
 	public Integer clock;
 	
@@ -25,7 +25,7 @@ public class Investigate implements TimeEntry {
 		this.agent = agent;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		this.value = value;
 	}
 
@@ -62,12 +62,12 @@ public class Investigate implements TimeEntry {
 	}
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 
 	@Override
-	public Date getTime() {
+	public Timestamp getTime() {
 		return this.time;
 	}
 		

@@ -1,5 +1,6 @@
 package tuplespace;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import oopl.DistributedOOPL;
@@ -8,7 +9,7 @@ import net.jini.core.entry.Entry;
 public class Points implements TimeEntry {
 	
 	public String agent;
-	public Date time;
+	public Timestamp time;
 	public Integer clock;
 	public Integer value;
 	public Integer id;
@@ -21,7 +22,7 @@ public class Points implements TimeEntry {
 
 		this.agent = agent;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		this.value = value;
 
 	}
@@ -29,7 +30,7 @@ public class Points implements TimeEntry {
 
 		this.agent = agent;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 
 	}
 
@@ -39,6 +40,13 @@ public class Points implements TimeEntry {
 
 	public Points(String agent) {
 		this.agent = agent;
+	}
+	public Points(Object[] params) {
+		this.agent = params[0].toString();
+		if (params[1] != null)
+			this.clock = Integer.getInteger(params[1].toString());
+		if (params[2] != null)
+			this.value = Integer.getInteger(params[2].toString());
 	}
 
 	public int[] toArray(DistributedOOPL oopl) {
@@ -59,11 +67,11 @@ public class Points implements TimeEntry {
 	}
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 	@Override
-	public Date getTime() {
+	public Timestamp getTime() {
 		return this.time;
 	}
 }

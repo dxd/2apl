@@ -1,5 +1,6 @@
 package tuplespace;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import oopl.DistributedOOPL;
@@ -12,7 +13,7 @@ public class Cargo implements TimeEntry {
 
 	public Integer id;
 	public Cell cell;
-	public Date time;
+	public Timestamp time;
 	public Integer clock;
 	
 	public Cargo() {
@@ -26,14 +27,14 @@ public class Cargo implements TimeEntry {
 		this.id = id;
 		this.cell = cell;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 
 	}
 	public Cargo(Cell cell, Integer clock) {
 		
 		this.cell = cell;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	
 	public Cargo(Object[] params) {
@@ -76,10 +77,10 @@ public class Cargo implements TimeEntry {
 	public void setCell(Cell cell) {
 		this.cell = cell;
 	}
-	public Date getTime() {
+	public Timestamp getTime() {
 		return time;
 	}
-	public void setTime(Date time) {
+	public void setTime(Timestamp time) {
 		this.time = time;
 	}
 	public Integer getClock() {
@@ -95,7 +96,7 @@ public class Cargo implements TimeEntry {
 	}
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 

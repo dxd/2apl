@@ -1,5 +1,6 @@
 package tuplespace;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import oopl.DistributedOOPL;
@@ -11,7 +12,7 @@ public class Prohibition implements TimeEntry {
 	public String prohibition;
 	public String sanction;
 	public Integer clock;
-	public Date time;
+	public Timestamp time;
 	
 
 	public Prohibition() {
@@ -23,7 +24,7 @@ public class Prohibition implements TimeEntry {
 		this.prohibition = prohibition;
 		this.sanction = sanction;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	
 	public Prohibition(String agent) {
@@ -44,11 +45,11 @@ public class Prohibition implements TimeEntry {
 
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 	@Override
-	public Date getTime() {
+	public Timestamp getTime() {
 		return this.time;
 	}
 }

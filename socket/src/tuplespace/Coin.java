@@ -11,7 +11,7 @@ public class Coin implements TimeEntry {
 	public Integer id;
 	public Cell cell;
 	public String agent;
-	public Date time;
+	public Timestamp time;
 	public Integer clock;
 	
 	public Coin() {
@@ -22,7 +22,7 @@ public Coin(Cell cell, String agent, Integer clock) {
 		this.cell = cell;
 		this.agent = agent;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 	}
 	public Coin(Integer id, Cell cell, String agent, int clock) {
 
@@ -30,7 +30,7 @@ public Coin(Cell cell, String agent, Integer clock) {
 		this.cell = cell;
 		this.agent = agent;
 		this.clock = clock;
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 
 	}
 
@@ -92,11 +92,11 @@ public Coin(Cell cell, String agent, Integer clock) {
 		this.cell = cell;
 	}
 
-	public Date getTime() {
+	public Timestamp getTime() {
 		return time;
 	}
 
-	public void setTime(Date time) {
+	public void setTime(Timestamp time) {
 		this.time = time;
 	}
 
@@ -109,7 +109,7 @@ public Coin(Cell cell, String agent, Integer clock) {
 	}
 	@Override
 	public void setTime() {
-		this.time = new Date();
+		this.time = new Timestamp(new Date().getTime());
 		
 	}
 }

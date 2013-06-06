@@ -1,6 +1,7 @@
 package tuplespace;
 
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import oopl.DistributedOOPL;
@@ -9,11 +10,11 @@ import net.jini.core.entry.Entry;
 
 public interface TimeEntry extends Entry{
 	
-	public Date time = null;
+	public Timestamp time = null;
 	public JiniLib JL = new JiniLib();
 	public int[] toArray(DistributedOOPL oopl);
 	public void setTime();
-	public Date getTime();
+	public Timestamp getTime();
 	//public Term to2APLterm();
 
 }
